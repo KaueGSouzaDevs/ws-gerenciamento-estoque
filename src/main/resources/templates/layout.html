@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<html lang="pt-br" xmlns:th="http://thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <th:block layout:fragment="pagetitle"/>
+    <div th:replace="~{partials/head-css :: head-css}" th:remove="tag"></div>
+</head>
+
+<body>
+
+    <div class="layout-wrapper layout-content-navbar"> <!-- Layout wrapper -->
+        <div class="layout-container"> <!-- Layout container -->
+
+            <div th:replace="~{partials/sidebar :: sidebar}"></div> <!-- Sidebar -->
+
+            <div class="layout-page"> <!-- Layout page -->
+
+                <div th:replace= "~{partials/top-header :: topbar}"></div> <!-- Topbar -->
+
+                <div class="content-wrapper"> <!-- Content wrapper -->
+                    <div class="container-xxl flex-grow-1 container-p-y"> <!-- Container XXL -->
+                        
+                        <th:block layout:fragment="conteudo"/><!-- Content -->
+    
+                        <div th:replace="~{partials/footer :: footer}"></div> <!-- Footer -->
+
+                    </div> <!-- End Container XXL -->
+                </div> <!-- End content wrapper -->
+            </div> <!-- End layout page -->
+        </div> <!-- End Layout container -->
+    </div> <!-- End Layout wrapper -->
+
+    <div th:replace="~{partials/vendor-scripts :: scripts}"></div> <!-- Vendor JS Files -->
+
+    <th:block layout:fragment="pageJs"/>
+
+</body>
+
+</html>
