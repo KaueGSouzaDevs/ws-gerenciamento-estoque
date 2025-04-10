@@ -1,8 +1,8 @@
 <th:block th:fragment="sidebar">
     <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme"> <!-- Sidebar -->
         <div class="app-brand demo">
-            <a href="index.html" class="app-brand-link">
-                <span class="app-brand-text demo menu-text fw-bolder ms-2">Finanças</span>
+            <a th:href="@{/}" class="app-brand-link">
+                <span class="app-brand-text demo menu-text fw-bolder ms-2">Gestão Geral</span>
             </a>
 
             <!-- <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
@@ -14,17 +14,17 @@
 
         <ul class="menu-inner py-1">
             <!-- Dashboard -->
-            <li class="menu-item active">
-                <a th:href="@{/home}" class="menu-link">
+            <li class="menu-item" th:classappend="${menu=='dashboards'} ? 'active' : ''">
+                <a th:href="@{/}" class="menu-link">
                     <i class="menu-icon tf-icons bx bx-home-circle"></i>
                     <div data-i18n="Analytics">Dashboard</div>
                 </a>
             </li>
 
-            <!-- Layouts -->
+            <!-- Operações -->
             <li class="menu-item">
                 <a href="#" class="menu-link menu-toggle">
-                    <i class="menu-icon tf-icons bx bx-layout"></i>
+                    <i class="menu-icon tf-icons bx bx-dollar-circle"></i>
                     <div data-i18n="Layouts">Operações</div>
                 </a>
 
@@ -45,6 +45,39 @@
                         </a>
                     </li>
                 </ul>
+            </li>
+
+            <!-- Cadastros -->
+            <li class="menu-item" th:classappend="${menu=='cadastro'} ? 'active open' : ''">
+                <a href="#" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-plus-circle"></i>
+                    <div data-i18n="Layouts">Cadastros</div>
+                </a>
+
+                <ul class="menu-sub">
+                    <li class="menu-item" th:classappend="${submenu=='fornecedores'} ? 'active' : ''">
+                        <a th:href="@{/fornecedores}" class="menu-link">
+                            <div data-i18n="Without menu">Fornecedores</div>
+                        </a>
+                    </li>
+                    <li class="menu-item" th:classappend="${submenu=='categorias'} ? 'active' : ''">
+                        <a th:href="@{/categorias}" class="menu-link">
+                            <div data-i18n="Without navbar">Categorias</div>
+                        </a>
+                    </li>
+                    <li class="menu-item" th:classappend="${submenu=='materiais'} ? 'active' : ''">
+                        <a th:href="@{/materiais}" class="menu-link">
+                            <div data-i18n="Container">Materiais</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="menu-item" th:classappend="${menu=='movimentos'} ? 'active' : ''">
+                <a th:href= "@{/movimentos}" class="menu-link" >
+                    <i class="menu-icon tf-icons bx bx-transfer"></i>
+                    <span>Movimentações</span>
+                </a>
             </li>
         </ul>
     </aside><!-- End Sidebar -->

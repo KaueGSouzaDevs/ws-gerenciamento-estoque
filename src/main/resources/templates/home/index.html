@@ -1,5 +1,7 @@
 <!doctype html>
-<html lang="pt-br" xmlns:th="http://thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<html lang="pt-br" xmlns:th="http://thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}"
+
+th:with= "menu='dashboards'">
 
 <head>
 </head>
@@ -11,41 +13,7 @@
     <th:block layout:fragment="conteudo">
         <div th:replace= "~{partials/page-title :: page-title('Página Inicial','Home')}"> </div>
 
-        <!-- <div th:text="${#authentication.principal}"></div> -->
-
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-
-                        <div class="d-sm-flex flex-wrap">
-                            <h4 class="card-title mb-4">Categorias</h4>
-                            <div class="ms-auto">
-                                <button type="button" id="btn-adicionar" class="btn btn-primary btn-sm">
-                                    <i class="mdi mdi-plus me-1"></i> Adicionar
-                                </button>
-                            </div>
-                        </div>
-                        
-                        
-                        <table id="datatable" class="table table-bordered table-striped dt-responsive nowrap w-100">
-
-                            <thead>
-                                <tr>
-
-                                    <th class="coluna-id">Id</th>
-                                    <th>Nome</th>
-                                    <th>Situação</th>
-                                    <th class="text-center coluna-acoes">Ações</th>
-
-                                </tr>
-
-                        </table>
-
-                    </div>
-                </div>
-            </div> 
-        </div>
+        <div th:text="${#authentication.principal}"></div>
         
     </th:block>
 
