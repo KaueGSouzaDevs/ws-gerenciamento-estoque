@@ -60,22 +60,32 @@ public class CategoriaService {
 		categoriaRepository.deleteById(idCategoria);
 	}
 
-		public DataTableResult dataTableCategoria(DataTableParams params)  {
+	public DataTableResult dataTableCategoria(DataTableParams params) {
 
+		System.out.println("a");
+		System.out.println("params: " + params);
+		
 		// colunas a serem consultadas conforme modelos relacionais
-		String[] colunas={"id","nome","situacao"};
-				
+		String[] colunas={"id","nome","situacao", "id"};
+		
+		System.out.println("b");
 		// varre a lista de registros no banco de dados e adiciona na lista de informações
-		var categoriasList = categoriaCustomRepository.listEntitiesToDataTable(colunas, params, Categoria.class);
+		var categoriasList = categoriaCustomRepository.listEntitiesToDataTableCategoria(colunas, params);
+		System.out.println("c");
 		
 		// gera o DataTable e popula com as informações da lista de objetos
 		DataTableResult dataTable = new DataTableResult();
+		System.out.println("d");
 		dataTable.setSEcho(String.valueOf(System.currentTimeMillis()));
+		System.out.println("e");
 		dataTable.setITotalRecords(categoriasList.size());
-		dataTable.setITotalDisplayRecords(categoriaCustomRepository.totalEntitiesToDataTable(
-			colunas, Auxiliar.removeAcentos(params.sSearch()), Categoria.class)
-			);
+		System.out.println("f");
+		
+		dataTable.setITotalDisplayRecords(categoriaCustomRepository.totalEntitiesToDataTableCategoria(colunas, Auxiliar.removeAcentos(params.sSearch())));
+		System.out.println("g");
+		
 		dataTable.setAaData(categoriasList.toArray());
+		System.out.println("h");
 		return dataTable;
 	}
 

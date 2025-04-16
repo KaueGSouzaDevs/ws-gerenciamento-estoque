@@ -24,7 +24,6 @@ import jakarta.validation.Valid;
  */
 @Controller
 @RequestMapping("/categorias")
-// @PreAuthorize("hasAuthority('ROLE_CATEGORIAS')")
 public class CategoriaController {
 
     @Autowired
@@ -33,9 +32,12 @@ public class CategoriaController {
     /**
 	 * Gera json dinâmico para Data Table (CRUD)
 	 */
-	@GetMapping("jsonDataTable")
+	@GetMapping("/dataTable")
     @ResponseBody
 	public DataTableResult jsonDataTable(DataTableParams params) {
+
+        System.out.println("a");
+
 		return categoriaService.dataTableCategoria(params);
 	}
 
