@@ -24,16 +24,23 @@ public abstract class CustomRepository<T> {
         jpql.append(" AND ( 1 = 0 ");
 
         for (String coluna : colunas) {
-            jpql.append(" OR UNACCENT(LOWER(CAST(t.").append(coluna).append(" AS text))) LIKE :sSearch ");
+            if (coluna.equals("id")) {
+                // Faz CAST do id direto pra string (sem UNACCENT)
+                jpql.append(" OR CAST(t.").append(coluna).append(" AS string) LIKE :searchValue ");
+            } else {
+                // Para os campos String, aplica lower + unaccent
+                jpql.append(" OR LOWER(CAST(UNACCENT(t.").append(coluna).append(") AS string)) LIKE :searchValue ");
+            }
         }
 
         jpql.append(" ) ");
-        jpql.append(" ORDER BY "+ colunas[params.iSortCol_0()]+ " " +  params.sSortDir_0());
+
+        jpql.append(" ORDER BY %s %s".formatted(colunas[params.getOrderCol()], params.getOrderDir()));
 
         var query = em.createQuery(jpql.toString(), type);
-		query.setParameter("sSearch", "%"+Auxiliar.removeAcentos(params.sSearch().toLowerCase())+"%");
-		query.setFirstResult(params.iDisplayStart());
-		query.setMaxResults(params.iDisplayLength());
+        query.setParameter("searchValue", "%"+Auxiliar.removeAcentos(params.getSearchValue().toLowerCase())+"%");
+        query.setFirstResult(params.getStart());
+        query.setMaxResults(params.getLength());
 
         return query.getResultList();
     }
@@ -52,13 +59,19 @@ public abstract class CustomRepository<T> {
         jpql.append(" AND ( 1 = 0 ");
 
         for (String coluna : colunas) {
-            jpql.append(" OR UNACCENT(LOWER(CAST(t.").append(coluna).append(" AS text))) LIKE :sSearch ");
+            if (coluna.equals("id")) {
+                // Faz CAST do id direto pra string (sem UNACCENT)
+                jpql.append(" OR CAST(t.").append(coluna).append(" AS string) LIKE :searchValue ");
+            } else {
+                // Para os campos String, aplica lower + unaccent
+                jpql.append(" OR LOWER(CAST(UNACCENT(t.").append(coluna).append(") AS string)) LIKE :searchValue ");
+            }
         }
 
         jpql.append(" ) ");
 
         var query = em.createQuery(jpql.toString(), Long.class);
-        query.setParameter("sSearch", "%" + sSearch.toLowerCase() + "%");
+        query.setParameter("searchValue", "%" + sSearch.toLowerCase() + "%");
 
         return (Long) query.getSingleResult();
     }

@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import br.com.kg.estoque.custom.DataTableParams;
 import br.com.kg.estoque.custom.DataTableResult;
 import br.com.kg.estoque.domain.categoria.Categoria;
 import br.com.kg.estoque.domain.categoria.CategoriaService;
@@ -34,11 +34,17 @@ public class CategoriaController {
 	 */
 	@GetMapping("/dataTable")
     @ResponseBody
-	public DataTableResult jsonDataTable(DataTableParams params) {
+	public DataTableResult jsonDataTable(
+        @RequestParam("draw") String draw,
+        @RequestParam("start") Integer start,
+        @RequestParam("length") Integer length,
+        @RequestParam("search[value]") String searchValue,
+        @RequestParam("order[0][column]") Integer orderCol,
+        @RequestParam("order[0][dir]") String orderDir) {
 
         System.out.println("a");
 
-		return categoriaService.dataTableCategoria(params);
+		return categoriaService.dataTableCategoria(draw, start, length, searchValue, orderCol, orderDir);
 	}
 
     /**

@@ -4,27 +4,15 @@ window.addEventListener("DOMContentLoaded", function () {
         language: { url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json' },
         ajax: {
             url: `/categorias/dataTable`,
-            data: function (d) {
-                // Converter os parâmetros novos para o formato legado
-                return {
-                    iDisplayStart: d.start,
-                    iDisplayLength: d.length,
-                    sSortDir_0: d.order && d.order[0] ? d.order[0].dir : 'asc',
-                    iSortCol_0: d.order && d.order[0] ? d.order[0].column : 0,
-                    sSearch: d.search ? d.search.value : ""
-                };
-            },
-            dataSrc: function (json) {
-                return json.data;
-            }
+            type: 'GET' // ou 'POST'
         },
-        bServerSide: true,
+        serverSide: true,
         columns: [
-            { data: 'id' },
-            { data: 'nome' },
-            { data: 'situacao' },
+            { data: 0 },
+            { data: 1 },
+            { data: 2 },
             {
-                data: 'id', class: "text-center", orderable: false,
+                data: 0, class: "text-center", orderable: false,
                 render: function (data, type, row, meta) {
                     return `
                         <a href="javascript:editar(${data});" class="btn btn-primary btn-sm">

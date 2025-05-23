@@ -60,32 +60,56 @@ public class CategoriaService {
 		categoriaRepository.deleteById(idCategoria);
 	}
 
-	public DataTableResult dataTableCategoria(DataTableParams params) {
 
-		System.out.println("a");
-		System.out.println("params: " + params);
+
+	/**
+	 * Gera json dinâmico para Data Table (CRUD)
+	 * 
+	 * @param draw        o valor do draw do DataTable
+	 * @param start       o valor do start do DataTable
+	 * @param length      o valor do length do DataTable
+	 * @param searchValue o valor do searchValue do DataTable
+	 * @param orderCol    o valor do orderCol do DataTable
+	 * @param orderDir    o valor do orderDir do DataTable
+	 * @return o objeto DataTableResult com os dados para o DataTable
+	 */
+
+	public DataTableResult dataTableCategoria(
+												String draw,
+												Integer start,
+												Integer length,
+												String searchValue,
+												Integer orderCol,
+												String orderDir) {
 		
 		// colunas a serem consultadas conforme modelos relacionais
-		String[] colunas={"id","nome","situacao", "id"};
-		
-		System.out.println("b");
-		// varre a lista de registros no banco de dados e adiciona na lista de informações
+		String[] colunas={"id","nome","situacao"};
+		DataTableParams params = new DataTableParams(draw, start, length, searchValue, orderCol, orderDir);
+
 		var categoriasList = categoriaCustomRepository.listEntitiesToDataTableCategoria(colunas, params);
-		System.out.println("c");
+		long totalFiltrado = categoriaCustomRepository.totalEntitiesToDataTableCategoria(colunas, Auxiliar.removeAcentos(params.getSearchValue()));
+
 		
 		// gera o DataTable e popula com as informações da lista de objetos
 		DataTableResult dataTable = new DataTableResult();
-		System.out.println("d");
-		dataTable.setSEcho(String.valueOf(System.currentTimeMillis()));
-		System.out.println("e");
-		dataTable.setITotalRecords(categoriasList.size());
-		System.out.println("f");
+
+		// Gera o draw do DataTable
+		dataTable.setDraw(String.valueOf(System.currentTimeMillis()));
+
+		// Gera a quantidade de registros totais no DataTable
+		dataTable.setRecordsTotal(categoriasList.size());
+
+		// Gera a quantidade de registros filtrados no DataTable
+		dataTable.setRecordsFiltered(totalFiltrado);
 		
-		dataTable.setITotalDisplayRecords(categoriaCustomRepository.totalEntitiesToDataTableCategoria(colunas, Auxiliar.removeAcentos(params.sSearch())));
-		System.out.println("g");
-		
-		dataTable.setAaData(categoriasList.toArray());
-		System.out.println("h");
+		//Gera a lista de dados para serem populados no DataTable
+		dataTable.setData(categoriasList.stream()
+							.map(c -> new Object[]{
+								c.getId(), 
+								c.getNome(), 
+								c.getSituacao(), 
+								c.getId()
+							}).toList());
 		return dataTable;
 	}
 
