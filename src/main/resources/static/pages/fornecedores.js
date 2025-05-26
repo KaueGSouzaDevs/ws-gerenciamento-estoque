@@ -1,22 +1,24 @@
-window.addEventListener("load", function() {
+window.addEventListener("load", function () {
 
     $("#datatable").DataTable({
-        language: {url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json'},
-        processing: true,        
-        sAjaxSource: '/fornecedores/jsonDataTable',
-        bServerSide: true,
-        drawCallback: function( settings ) {		    	
+        language: { url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json' },
+        processing: true,
+        ajax: {
+            url: `/fornecedores/jsonDataTable`,
+            type: 'GET' // ou 'POST'
         },
+        serverSide: true,
         columns: [
-            {data: 'id'},
-            {data: 'nome'},
-            {data: 'telefone'},
-            {data: 'email'},
-            {data: 'contato'},
-            {data: 'situacao'},
-            {data: 'id', class:"text-center", orderable: false,
-                render: function(data, type, row, meta) {
-                        return `
+            { data: 0 },
+            { data: 1 },
+            { data: 2 },
+            { data: 3 },
+            { data: 4 },
+            { data: 5 },
+            {
+                data: 0, class: "text-center", orderable: false,
+                render: function (data, type, row, meta) {
+                    return `
 
                         <a href="/fornecedores/${data}/editar" class="btn btn-primary btn-sm">
                             <i class="mdi mdi-pencil me-1"></i> Editar
@@ -27,9 +29,9 @@ window.addEventListener("load", function() {
                         </a>
 
                         `;
-                }        
+                }
             },
-            
+
         ],
     });
     $(".dataTables_length select").addClass("form-select form-select-sm");
@@ -37,7 +39,7 @@ window.addEventListener("load", function() {
 });
 
 // Função para excluir um fornecedor
-function excluir(idFornecedor){
+function excluir(idFornecedor) {
 
     Swal.fire({
         title: "Are you sure?",
@@ -47,29 +49,29 @@ function excluir(idFornecedor){
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
         confirmButtonText: "Yes, delete it!"
-      }).then((result) => {
+    }).then((result) => {
         if (result.isConfirmed) {
 
             fetch("/fornecedores/" + idFornecedor + "/excluir", { method: 'DELETE' })
-            .then(response => response.text())
-            .then(retorno => {
-                if (retorno == 'OK') {
-                    Swal.fire({
-                        title: "Sucesso!",
-                        text: "Seu fornecedor foi deletado com sucesso!",
-                        icon: "success"
-                    }).then((result) => {
-                        window.location.reload();
-                    });                        
-                } else {                        
-                    Swal.fire({
-                        title: "Atenção!",
-                        text: "Não foi possível deletar o registro.",
-                        icon: "warning"
-                    });
-                }
-            });
+                .then(response => response.text())
+                .then(retorno => {
+                    if (retorno == 'OK') {
+                        Swal.fire({
+                            title: "Sucesso!",
+                            text: "Seu fornecedor foi deletado com sucesso!",
+                            icon: "success"
+                        }).then((result) => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Atenção!",
+                            text: "Não foi possível deletar o registro.",
+                            icon: "warning"
+                        });
+                    }
+                });
         }
-      });
+    });
 
 }

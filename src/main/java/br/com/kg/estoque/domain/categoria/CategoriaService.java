@@ -74,17 +74,10 @@ public class CategoriaService {
 	 * @return o objeto DataTableResult com os dados para o DataTable
 	 */
 
-	public DataTableResult dataTableCategoria(
-												String draw,
-												Integer start,
-												Integer length,
-												String searchValue,
-												Integer orderCol,
-												String orderDir) {
+	public DataTableResult dataTableCategoria(DataTableParams params) {
 		
 		// colunas a serem consultadas conforme modelos relacionais
 		String[] colunas={"id","nome","situacao"};
-		DataTableParams params = new DataTableParams(draw, start, length, searchValue, orderCol, orderDir);
 
 		var categoriasList = categoriaCustomRepository.listEntitiesToDataTableCategoria(colunas, params);
 		long totalFiltrado = categoriaCustomRepository.totalEntitiesToDataTableCategoria(colunas, Auxiliar.removeAcentos(params.getSearchValue()));

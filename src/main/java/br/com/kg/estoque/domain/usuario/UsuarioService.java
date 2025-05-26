@@ -37,14 +37,14 @@ public class UsuarioService {
 		
 		// varre a lista de registros no banco de dados e adiciona na lista de informações
 		List<Usuario> usuariosList = customUsuarioRepository.listEntitiesToDataTable(colunas, params, Usuario.class); 
-
+		Long registrosFiltrados = customUsuarioRepository.totalEntitiesToDataTable(colunas, Auxiliar.removeAcentos(params.getSearchValue()), Usuario.class);
 		
 		// gera o DataTable e popula com as informações da lista de objetos
 		DataTableResult dataTable = new DataTableResult();
-		dataTable.setSEcho(String.valueOf(System.currentTimeMillis()));
-		dataTable.setITotalRecords(usuariosList.size());
-		dataTable.setITotalDisplayRecords(customUsuarioRepository.totalEntitiesToDataTable(colunas, Auxiliar.removeAcentos(params.sSearch()), Usuario.class));
-		dataTable.setAaData(usuariosList.toArray());
+		dataTable.setDraw(String.valueOf(System.currentTimeMillis()));
+		dataTable.setRecordsTotal(usuariosList.size());
+		dataTable.setRecordsFiltered(registrosFiltrados);
+		dataTable.setData(usuariosList.stream().map(c -> new Object[]{c.getNome(), c.getEmail(), c.getLogin(), c.getSituacaoUsuario(), c.getId()}).toList());
 		return dataTable;
 	}
 

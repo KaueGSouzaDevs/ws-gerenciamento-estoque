@@ -8,11 +8,11 @@ window.addEventListener("DOMContentLoaded", function () {
         },
         serverSide: true,
         columns: [
-            { data: 0 },
+            { data: 0, class: "text-start" },
             { data: 1 },
             { data: 2 },
             {
-                data: 0, class: "text-center", orderable: false,
+                data: 0, class: "coluna-acoes", orderable: false,
                 render: function (data, type, row, meta) {
                     return `
                         <a href="javascript:editar(${data});" class="btn btn-primary btn-sm">

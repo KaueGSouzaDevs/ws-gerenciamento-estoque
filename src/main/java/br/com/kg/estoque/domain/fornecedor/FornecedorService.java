@@ -111,17 +111,33 @@ public class FornecedorService {
     public DataTableResult dataTableFornecedores(DataTableParams params)  {
 
 		// colunas a serem consultadas conforme modelos relacionais
-		String[] colunas={"f.id","f.nome","f.telefone","f.email","f.contato","f.situacao"};
+		String[] colunas={"id","nome","telefone","email","contato","situacao"};
 				
 		// varre a lista de registros no banco de dados e adiciona na lista de informações
-		var fornecedoresList = fornecedorRepository.listFornecedoresToDataTable(colunas, params); 
+		var fornecedoresList = fornecedorRepository.listFornecedoresToDataTable(colunas, params);
+        long registrosFiltrados = fornecedorRepository.totalFornecedoresToDataTable(colunas, Auxiliar.removeAcentos(params.getSearchValue()));
 		
 		// gera o DataTable e popula com as informações da lista de objetos
 		DataTableResult dataTable = new DataTableResult();
-		dataTable.setSEcho(String.valueOf(System.currentTimeMillis()));
-		dataTable.setITotalRecords(fornecedoresList.size());
-		dataTable.setITotalDisplayRecords(fornecedorRepository.totalFornecedoresToDataTable(colunas, Auxiliar.removeAcentos(params.sSearch())));
-		dataTable.setAaData(fornecedoresList.toArray());
+		// Gera o draw do DataTable
+		dataTable.setDraw(String.valueOf(System.currentTimeMillis()));
+
+		// Gera a quantidade de registros totais no DataTable
+		dataTable.setRecordsTotal(fornecedoresList.size());
+
+		// Gera a quantidade de registros filtrados no DataTable
+		dataTable.setRecordsFiltered(registrosFiltrados);
+		
+		//Gera a lista de dados para serem populados no DataTable
+		dataTable.setData(fornecedoresList.stream()
+							.map(c -> new Object[]{
+								c.getId(),
+								c.getNome(),
+                                c.getTelefone(),
+                                c.getEmail(),
+                                c.getContato(),
+								c.getSituacao()
+							}).toList());
 		return dataTable;
 	}
 }

@@ -6,7 +6,6 @@ import org.springframework.format.annotation.NumberFormat;
 
 import br.com.kg.estoque.domain.categoria.Categoria;
 import br.com.kg.estoque.domain.fornecedor.Fornecedor;
-import br.com.kg.estoque.enuns.UnidadeMedida;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

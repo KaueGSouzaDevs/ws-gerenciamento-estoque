@@ -67,7 +67,7 @@ public class MaterialService {
         String[] colunas={"id", "nome", "categoria.nome", "fabricante", "fornecedor.nome", "valor", "saldo", "situacao"};
 
         // varre a lista de registros no banco de dados e adiciona na lista de informações
-        var materiaisList = materialCustomRepository.listEntitiesToDataTable(colunas, params, Material.class);
+        var materiaisList = materialCustomRepository.listEntitiesToDataTable(colunas, params);
         
         List<Object[]> listaObjects = new ArrayList<Object[]>();
 
@@ -87,14 +87,14 @@ public class MaterialService {
             listaObjects.add(linha);
         });
 
+        Long registrosFiltrados = materialCustomRepository.totalEntitiesToDataTable(colunas, Auxiliar.removeAcentos(params.getSearchValue()));
+
         // gera o DataTable e popula com as informações da lista de objetos
         DataTableResult dataTable = new DataTableResult();
-        dataTable.setSEcho(String.valueOf(System.currentTimeMillis()));
-        dataTable.setITotalRecords(materiaisList.size());
-        dataTable.setITotalDisplayRecords(
-            materialCustomRepository.totalEntitiesToDataTable (colunas, Auxiliar.removeAcentos(params.sSearch()), Material.class)
-            );
-        dataTable.setAaData(listaObjects.toArray());
+        dataTable.setDraw(String.valueOf(System.currentTimeMillis()));
+        dataTable.setRecordsTotal(materiaisList.size());
+        dataTable.setRecordsFiltered(registrosFiltrados);
+        dataTable.setData(listaObjects.stream().toList());
         return dataTable;
     }
 }

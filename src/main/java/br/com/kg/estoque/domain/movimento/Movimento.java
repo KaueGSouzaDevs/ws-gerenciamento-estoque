@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 import br.com.kg.estoque.domain.fornecedor.Fornecedor;
 import br.com.kg.estoque.domain.material.Material;
-import br.com.kg.estoque.domain.usuario.Usuario;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

@@ -2,7 +2,6 @@ package br.com.kg.estoque.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -28,7 +28,7 @@ import jakarta.validation.Valid;
  */
 @Controller
 @RequestMapping("/materiais")
-@PreAuthorize("hasAuthority('ROLE_MATERIAIS')")
+// @PreAuthorize("hasAuthority('ROLE_MATERIAIS')")
 public class MaterialController {
 
     @Autowired
@@ -45,7 +45,15 @@ public class MaterialController {
 	 */
 	@GetMapping("jsonDataTable")
     @ResponseBody
-	public DataTableResult jsonDataTable(DataTableParams params) {
+	public DataTableResult jsonDataTable(
+            @RequestParam("draw") String draw,
+            @RequestParam("start") Integer start,
+            @RequestParam("length") Integer length,
+            @RequestParam("search[value]") String searchValue,
+            @RequestParam("order[0][column]") Integer orderCol,
+            @RequestParam("order[0][dir]") String orderDir) {
+
+        DataTableParams params = new DataTableParams(draw, start, length, searchValue, orderCol, orderDir);
 		return materialService.dataTableMaterial(params);
 	}
 
@@ -100,7 +108,7 @@ public class MaterialController {
         if(result.hasErrors()){
             return novo(material);
         }
-        materialService.salvar(material);        
+        materialService.salvar(material);
         return new ModelAndView("materiais/close-modal");
     }
 

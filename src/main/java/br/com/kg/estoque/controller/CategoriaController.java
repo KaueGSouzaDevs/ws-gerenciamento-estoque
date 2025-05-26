@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import br.com.kg.estoque.custom.DataTableParams;
 import br.com.kg.estoque.custom.DataTableResult;
 import br.com.kg.estoque.domain.categoria.Categoria;
 import br.com.kg.estoque.domain.categoria.CategoriaService;
@@ -42,9 +43,8 @@ public class CategoriaController {
         @RequestParam("order[0][column]") Integer orderCol,
         @RequestParam("order[0][dir]") String orderDir) {
 
-        System.out.println("a");
-
-		return categoriaService.dataTableCategoria(draw, start, length, searchValue, orderCol, orderDir);
+        DataTableParams params = new DataTableParams(draw, start, length, searchValue, orderCol, orderDir);
+		return categoriaService.dataTableCategoria(params);
 	}
 
     /**

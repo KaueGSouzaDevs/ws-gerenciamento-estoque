@@ -120,13 +120,13 @@ public class MovimentoService {
             listaObjects.add(linha);
         });
 
+        Long registrosFiltrados = movimentoCustomRepository.totalEntitiesToDataTable(colunas, Auxiliar.removeAcentos(params.getSearchValue()), Movimento.class);
+
         DataTableResult dataTable = new DataTableResult();
-        dataTable.setSEcho(String.valueOf(System.currentTimeMillis()));
-        dataTable.setITotalRecords(movimentoList.size());
-        dataTable.setITotalDisplayRecords(
-            movimentoCustomRepository.totalEntitiesToDataTable(colunas, Auxiliar.removeAcentos(params.sSearch()), Movimento.class)
-        );
-        dataTable.setAaData(listaObjects.toArray());
+        dataTable.setDraw(String.valueOf(System.currentTimeMillis()));
+        dataTable.setRecordsTotal(movimentoList.size());
+        dataTable.setRecordsFiltered(registrosFiltrados);
+        dataTable.setData(listaObjects.stream().toList());
         return dataTable;
 
     }

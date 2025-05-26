@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import br.com.kg.estoque.custom.Auxiliar;
 import br.com.kg.estoque.custom.DataTableParams;
 import br.com.kg.estoque.custom.DataTableResult;
-import br.com.kg.estoque.domain.permissao.PermissaoModel;
 
 @Service
 public class GrupoAcessoService {
@@ -26,14 +25,15 @@ public class GrupoAcessoService {
 		String colunas[]={"id","situacao","grupo"};
 		
 		// varre a lista de registros no banco de dados e adiciona na lista de informações
-		List<GrupoAcesso> gruposList = customGrupoAcessoRepository.listEntitiesToDataTable(colunas, params, GrupoAcesso.class); 
+		List<GrupoAcesso> gruposList = customGrupoAcessoRepository.listEntitiesToDataTable(colunas, params, GrupoAcesso.class);
+		Long registrosFiltrados = customGrupoAcessoRepository.totalEntitiesToDataTable(colunas, Auxiliar.removeAcentos(params.getSearchValue()), GrupoAcesso.class);
 
 		// gera o DataTable e popula com as informações da lista de objetos
 		DataTableResult dataTable = new DataTableResult();
-		dataTable.setSEcho(String.valueOf(System.currentTimeMillis()));
-		dataTable.setITotalRecords(gruposList.size());
-		dataTable.setITotalDisplayRecords(customGrupoAcessoRepository.totalEntitiesToDataTable(colunas, Auxiliar.removeAcentos(params.sSearch()), GrupoAcesso.class));
-		dataTable.setAaData(gruposList.toArray());
+		dataTable.setDraw(String.valueOf(System.currentTimeMillis()));
+		dataTable.setRecordsTotal(gruposList.size());
+		dataTable.setRecordsFiltered(registrosFiltrados);
+		dataTable.setData(gruposList.stream().map(c -> new Object[]{c.getId(), c.getSituacao(), c.getGrupo()}).toList());
 		return dataTable;
 	}
 

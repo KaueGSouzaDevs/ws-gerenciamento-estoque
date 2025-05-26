@@ -19,8 +19,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import br.com.kg.estoque.domain.permissao.PermissaoModel;
-
 @Entity
 @Table(name = "grupos_acessos")
 @ToString
