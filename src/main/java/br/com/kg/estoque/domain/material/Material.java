@@ -56,9 +56,10 @@ public class Material {
     @NotBlank(message = "* UM obrigatória")
     private String unidadeMedida;
 
-    @Getter	@Setter	
+    @Getter	@Setter
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="fornecedor_id", foreignKey = @ForeignKey(name="fk_fornecedor"))
+    @NotNull(message="* Fornecedor obrigatório")
 	private Fornecedor fornecedor;
 
     @Getter @Setter
