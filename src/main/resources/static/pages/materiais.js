@@ -1,5 +1,5 @@
-window.addEventListener("load", function () {
-    $("#datatable").DataTable({
+document.addEventListener('DOMContentLoaded', function () {
+    let table = new DataTable(`#datatable`, {
         language: { url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json' },
         processing: true,
         ajax: {
@@ -8,7 +8,7 @@ window.addEventListener("load", function () {
         },
         serverSide: true,
         columns: [
-            { data: 0 }, // id
+            { data: 0, class: "text-start" }, // id
             { data: 1 }, // nome
             { data: 2 }, // categoria
             { data: 3 }, // fabricante
@@ -17,7 +17,7 @@ window.addEventListener("load", function () {
             { data: 6 }, // saldo
             { data: 7 }, // status
             {
-                data: 8,  /**ações */  orderable: false, class: "text-center",
+                data: 8, orderable: false, class: "text-center",  /**ações */
                 render: function (data, type, row, meta) {
                     return `
 
@@ -33,9 +33,27 @@ window.addEventListener("load", function () {
                 }
             },
         ],
+        dom: 'rt' +
+            '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
     });
-    $(".dataTables_length select").addClass("form-select form-select-sm");
-});
+
+    //? Campo de busca customizado
+    if (document.getElementById('customSearchBox')) {
+        document.getElementById('customSearchBox').addEventListener('input', function () {
+            table.search(this.value).draw();
+        });
+    };
+
+
+    //? Seletor de registros por página customizado
+    if (document.getElementById('customPageLength')) {
+        document.getElementById('customPageLength').addEventListener('change', function () {
+            table.page.len(this.value).draw();
+        });
+    };
+})
+
+
 
 // executa os scripts que estão na página de retorno do formulário
 function executeScripts(element) {

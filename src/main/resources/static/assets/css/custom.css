@@ -2,3 +2,29 @@
   text-align: center !important;
   max-width: 50px !important;
 }
+
+.page-title-box {
+  padding: 1rem;
+  background-color: #ffffff;
+  box-shadow: 0 1px 2px rgba(56, 65, 74, 0.15);
+  border-bottom: 1px solid var(--vz-page-title-border);
+  /* margin: 0.5rem; */
+}
+
+@media (min-width: 576px) {
+  .d-sm-flex {
+    display: flex !important;
+  }
+}
+
+.dt-info {
+  margin-top: 1.2rem !important;
+}
+
+.dt-paging {
+  margin-top: 0.8rem !important;
+}
+
+.pagination {
+  justify-content: end !important;
+}

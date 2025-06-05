@@ -100,9 +100,9 @@ public class MovimentoService {
 
     public DataTableResult dataTableMovimento(DataTableParams params){
 
-        String[] colunas={"id", "data", "tipo", "material", "quantidade", "responsavel"};
+        String[] colunas={"id", "data", "tipo", "material.nome", "quantidade", "responsavel"};
 
-        var movimentoList = movimentoCustomRepository.listEntitiesToDataTable(colunas, params, Movimento.class);
+        var movimentoList = movimentoCustomRepository.listMovimentosToDataTable(colunas, params);
 
         List<Object[]> listaObjects = new ArrayList<Object[]>();
 
@@ -120,7 +120,7 @@ public class MovimentoService {
             listaObjects.add(linha);
         });
 
-        Long registrosFiltrados = movimentoCustomRepository.totalEntitiesToDataTable(colunas, Auxiliar.removeAcentos(params.getSearchValue()), Movimento.class);
+        Long registrosFiltrados = movimentoCustomRepository.totalMovimentosToDataTable(colunas, Auxiliar.removeAcentos(params.getSearchValue()));
 
         DataTableResult dataTable = new DataTableResult();
         dataTable.setDraw(String.valueOf(System.currentTimeMillis()));

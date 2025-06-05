@@ -1,4 +1,4 @@
-window.addEventListener("load", function () {
+document.addEventListener("DOMContentLoaded", function () {
 
     $("#datatable").DataTable({
         language: { url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json' },
@@ -31,10 +31,25 @@ window.addEventListener("load", function () {
                         `;
                 }
             },
-
         ],
+        dom: 'rt' +
+            '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
     });
-    $(".dataTables_length select").addClass("form-select form-select-sm");
+
+    //? Campo de busca customizado
+    if (document.getElementById('customSearchBox')) {
+        document.getElementById('customSearchBox').addEventListener('input', function () {
+            table.search(this.value).draw();
+        });
+    };
+
+
+    //? Seletor de registros por página customizado
+    if (document.getElementById('customPageLength')) {
+        document.getElementById('customPageLength').addEventListener('change', function () {
+            table.page.len(this.value).draw();
+        });
+    };
 
 });
 
