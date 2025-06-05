@@ -93,7 +93,17 @@ public class MovimentoController {
 
         if (movimento.getTipo().equals("Entrada")) {
             movimentoService.validaEntradaMaterial(movimento, result);
-        }
+        };
+
+        if (movimento.getTipo().equalsIgnoreCase("Saida")) {
+            if (movimento.getMaterial() != null && movimento.getQuantidade() != null) {
+                if (movimento.getMaterial().getSaldo() != null ) {
+                    if (movimento.getMaterial().getSaldo() < movimento.getQuantidade()) {
+                        result.rejectValue("quantidade", "movimento-error", "* Quantidade insuficiente em estoque");
+                    };
+                };
+            };
+        };
 
         if (result.hasErrors()) {
             System.out.println(result.getAllErrors());

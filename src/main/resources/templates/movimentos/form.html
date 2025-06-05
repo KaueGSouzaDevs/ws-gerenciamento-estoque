@@ -80,7 +80,7 @@ th:with= "menu='movimentos'">
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label for="fornecedor" class="form-label">Fornecedor</label>
-                                                    <select th:field="*{fornecedor}" id="fornecedor" th:errorclass="is-invalid" class="form-select">
+                                                    <select th:field="*{fornecedor}" id="fornecedor" th:errorclass="is-invalid" class="form-select" th:disabled="${tipo == 'Saida'}">
                                                         <option th:value="''">Selecione...</option>
                                                         <option th:each="fornecedor : ${fornecedoresList}" th:value="${fornecedor.id}" th:text="${fornecedor.nome}"></option>
                                                     </select>
@@ -114,6 +114,16 @@ th:with= "menu='movimentos'">
 
     <th:block layout:fragment="pageJs">
     <script th:src="@{/pages/movimentos.js}"></script>
+
+    <script>
+        if (document.getElementById("tipo").value === "Saida") {
+            document.getElementById("notaFiscal").setAttribute('disabled', 'disabled');
+            document.getElementById("fornecedor").setAttribute('disabled', 'disabled');
+        } else {
+            document.getElementById("notaFiscal").removeAttribute('disabled');
+            document.getElementById("fornecedor").removeAttribute('disabled');
+        }
+    </script>
     </th:block>
         
 
