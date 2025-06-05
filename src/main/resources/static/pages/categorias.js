@@ -8,20 +8,22 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         serverSide: true,
         columns: [
-            { data: 0, class: "text-start" },
+            { data: 0 },
             { data: 1 },
             { data: 2 },
             {
-                data: 0, class: "coluna-acoes", orderable: false,
+                data: 0, class: "text-center coluna-acoes", orderable: false, width: "100px",
                 render: function (data, type, row, meta) {
                     return `
-                        <a href="javascript:editar(${data});" class="btn btn-primary btn-sm">
-                            <i class="mdi mdi-pencil me-1"></i> Editar
-                        </a>
-                        
-                        <a href="javascript:excluir(${data});" class="btn btn-danger btn-sm">
-                            <i class="mdi mdi-delete me-1"></i> Excluir
-                        </a>
+
+                        <div class="dropdown">
+                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown" aria-expanded="false"><i class="icon-base bx bx-dots-vertical-rounded"></i></button>
+                            <div class="dropdown-menu" style="">
+                                <a class="dropdown-item" href="javascript:editar(${data});"><i class="icon-base bx bx-pencil"></i> Editar</a>
+
+                                <a class="dropdown-item" href="javascript:excluir(${data});"><i class="icon-base bx bx-trash"></i> Excluir</a>
+                            </div>
+                        </div>
                         `;
                 }
             },

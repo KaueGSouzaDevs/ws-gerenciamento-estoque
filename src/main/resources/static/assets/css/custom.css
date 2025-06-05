@@ -1,6 +1,6 @@
 .coluna-acoes {
   text-align: center !important;
-  max-width: 50px !important;
+  max-width: 100px !important;
 }
 
 .page-title-box {
@@ -27,4 +27,9 @@
 
 .pagination {
   justify-content: end !important;
+}
+
+th,
+td {
+  text-align: start !important;
 }

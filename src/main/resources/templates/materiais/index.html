@@ -41,23 +41,21 @@ th:with= "menu='cadastro', submenu='materiais'">
                                             </div>
                                         </div>
 
-                                        <div class="table-responsive">
-                                            <table id="datatable" class="table table-striped align-middle nowrap w-100">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="text-start">Id</th>
-                                                        <th>Nome</th>
-                                                        <th>Categoria</th>
-                                                        <th>Fabricante</th>
-                                                        <th>Fornecedor</th>
-                                                        <th>Valor</th>
-                                                        <th>Saldo</th>
-                                                        <th>Situação</th>
-                                                        <th class="text-center" style="max-width: 150px;">Ações</th>
-                                                    </tr>
-                                                </thead>
-                                            </table>
-                                        </div>
+                                        <table id="datatable" class="table table-striped align-middle nowrap w-100">
+                                            <thead>
+                                                <tr>
+                                                    <th>Id</th>
+                                                    <th>Nome</th>
+                                                    <th>Categoria</th>
+                                                    <th>Fabricante</th>
+                                                    <th>Fornecedor</th>
+                                                    <th>Valor</th>
+                                                    <th>Saldo</th>
+                                                    <th>Situação</th>
+                                                    <th class="text-center coluna-acoes">Ações</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
         
                                     </div>
                                 </div>
@@ -84,7 +82,7 @@ th:with= "menu='cadastro', submenu='materiais'">
 
     </th:block>
 
-    <th:block layout:fragment="pageJs">        
+    <th:block layout:fragment="pageJs">
         <script th:src="@{/pages/materiais.js}"></script>
     </th:block>
         
