@@ -1,6 +1,8 @@
 package br.com.kg.estoque.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,15 +30,20 @@ import jakarta.validation.Valid;
 @RequestMapping("/movimentos")
 // @PreAuthorize("hasAuthority('ROLE_MOVIMENTACAO')")
 public class MovimentoController {
+    
+    Logger logger = Logger.getLogger(MovimentoController.class.getName());
 
-    @Autowired
     private MovimentoService movimentoService;
-
-    @Autowired
     private MaterialService materialService;
-
-    @Autowired
     private FornecedorService fornecedorService;
+
+    public MovimentoController(MovimentoService movimentoService, MaterialService materialService, FornecedorService fornecedorService) {
+        this.movimentoService = movimentoService;
+        this.materialService = materialService;
+        this.fornecedorService = fornecedorService;
+    }
+
+
 
     /**
 	 * Gera json dinâmico para Data Table (CRUD)
@@ -55,15 +62,18 @@ public class MovimentoController {
 		return movimentoService.dataTableMovimento(params);
 	}
 
+
+
     /**
      * !Tela inicial contendo a lista de movimentações, tanto entrada como saída.
      * @return
      */
     @GetMapping("")
     public ModelAndView listarAllMovimentos() {
-        ModelAndView model = new ModelAndView("movimentos/index");
-        return model; 
+        return new ModelAndView("movimentos/index");
     }
+
+
 
     /**
      * !Abre uma tela para realizar um cadastro de movimento.
@@ -79,7 +89,8 @@ public class MovimentoController {
         model.addObject("erro", erro);
         return model; 
     }
-    
+
+
 
     /**
      * !Salva a movimentação utilizando uma validação para entrada.
@@ -93,20 +104,14 @@ public class MovimentoController {
 
         if (movimento.getTipo().equals("Entrada")) {
             movimentoService.validaEntradaMaterial(movimento, result);
-        };
+        }
 
-        if (movimento.getTipo().equalsIgnoreCase("Saida")) {
-            if (movimento.getMaterial() != null && movimento.getQuantidade() != null) {
-                if (movimento.getMaterial().getSaldo() != null ) {
-                    if (movimento.getMaterial().getSaldo() < movimento.getQuantidade()) {
-                        result.rejectValue("quantidade", "movimento-error", "* Quantidade insuficiente em estoque");
-                    };
-                };
-            };
-        };
+        if (movimento.getTipo().equalsIgnoreCase("Saida") && movimento.getMaterial() != null && movimento.getQuantidade() != null && movimento.getMaterial().getSaldo() != null && movimento.getMaterial().getSaldo() < movimento.getQuantidade()) {
+                result.rejectValue("quantidade", "movimento-error", "* Quantidade insuficiente em estoque");
+        }
 
         if (result.hasErrors()) {
-            System.out.println(result.getAllErrors());
+            logger.log(Level.WARNING , () -> result.getAllErrors().toString());
             return novo(movimento, true);
         }
 
@@ -139,7 +144,7 @@ public class MovimentoController {
      * @return
      */
     @DeleteMapping("/{idMovimento}/excluir")
-    public ResponseEntity<?> excluir(@PathVariable Long idMovimento){
+    public ResponseEntity<String> excluir(@PathVariable Long idMovimento){
         if(movimentoService.buscarPorIdOptional(idMovimento).isEmpty()){
             return ResponseEntity.notFound().build();
         }

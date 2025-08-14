@@ -2,7 +2,6 @@ package br.com.kg.estoque.security;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,9 +14,22 @@ import jakarta.transaction.Transactional;
 @Transactional
 public class AutenticacaoService implements UserDetailsService{
 
-	@Autowired
 	private UsuarioRepository userRepository;
-	
+
+	public AutenticacaoService(UsuarioRepository userRepository) {
+		this.userRepository = userRepository;
+	}
+
+
+
+	/**
+	 * Busca um usuário pelo login informado.
+	 * 
+	 * @param login - login do usuário
+	 * @return - retorna o objeto do tipo UserDetails com as informações do
+	 *         usuário
+	 * @throws UsernameNotFoundException - caso o usuário não seja encontrado
+	 */
 	@Override
 	public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
 		
@@ -26,13 +38,6 @@ public class AutenticacaoService implements UserDetailsService{
             throw new UsernameNotFoundException("Usuário não encontrado");
         }
         return user.get();
-
-		
-		/*
-		Optional<Usuario> usuario = userRepository.findByLoginIgnoreCase(login);
-		return usuario.map(UserDetailsImpl::new).orElse(null);
-		*/
-	    
 	}
 
 }

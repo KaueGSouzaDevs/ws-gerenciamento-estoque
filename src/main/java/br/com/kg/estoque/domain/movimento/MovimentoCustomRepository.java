@@ -66,7 +66,7 @@ public class MovimentoCustomRepository extends CustomRepository<Movimento>{
 		var query = em.createQuery(jpql.toString(), Long.class);
 		query.setParameter("searchValue", "%"+sSearch.toLowerCase()+"%");
 		
-		return (Long) query.getSingleResult();
+		return query.getSingleResult();
 		
 	}
 }

@@ -13,11 +13,7 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {                    
-            
-        //String encodedMessage = URLEncoder.encode(exception.getMessage(), StandardCharsets.UTF_8.toString());
-        //response.sendRedirect(request.getContextPath()+"/login?error="+ encodedMessage);
         response.sendRedirect(request.getContextPath()+"/login?error");
-        
     }
     
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
@@ -17,53 +16,87 @@ import br.com.kg.estoque.domain.material.MaterialService;
 @Service
 public class MovimentoService {
 
-    @Autowired
     private MovimentoRepository movimentoRepository;
-
-    @Autowired
-    private MaterialService materialService;
-
-    @Autowired 
+    private MaterialService materialService; 
     private MovimentoCustomRepository movimentoCustomRepository;
-    
+
+    public MovimentoService(MovimentoRepository movimentoRepository, MaterialService materialService,
+            MovimentoCustomRepository movimentoCustomRepository) {
+        this.movimentoRepository = movimentoRepository;
+        this.materialService = materialService;
+        this.movimentoCustomRepository = movimentoCustomRepository;
+    }
+
+
 
     /**
-     * !Função para salvar o movimento cadastrado
+     * Função para salvar o movimento cadastrado
      * @param movimento
      */
     public void salvarMovimento(Movimento movimento) {
         movimentoRepository.save(movimento);
-        Material material = materialService.buscarPorId(movimento.getMaterial().getId()).get();
+        Optional<Material> materialOptional = materialService.buscarPorId(movimento.getMaterial().getId());
 
+        if (materialOptional.isPresent()) {
+            Material material = materialOptional.get();
 
-        if (movimento.getTipo().equalsIgnoreCase("entrada")) {
-            material.setSaldo(material.getSaldo() + movimento.getQuantidade());
-            if (material.getSaldo() > material.getEstoqueMaximo()) {
-                System.out.println("Disparo de e-mail: O estoque do material " + material.getNome() + " excedeu o máximo permitido.");                 
+            if (movimento.getTipo().equalsIgnoreCase("entrada")) {
+                material.setSaldo(material.getSaldo() + movimento.getQuantidade());
+                if (material.getSaldo() > material.getEstoqueMaximo()) {
+                    System.out.println("Disparo de e-mail: O estoque do material " + material.getNome() + " excedeu o máximo permitido.");                 
+                }
+                material.setFornecedor(movimento.getFornecedor());
+    
+            } else if (movimento.getTipo().equalsIgnoreCase("saida")) {
+                material.setSaldo(material.getSaldo() - movimento.getQuantidade());
+                if (material.getSaldo() < material.getEstoqueMinimo()) {                
+                    System.out.println("Disparo de e-mail: O estoque do material " + material.getNome() + " está abaixo do mínimo permitido.");
+                }
             }
-            material.setFornecedor(movimento.getFornecedor());
+            materialService.salvar(material); // Salva as alterações no material
+        } else {
+            System.out.println("Material com ID (" + movimento.getMaterial().getId() + ") não encontrado.");
+        }
+    }
 
-        } else if (movimento.getTipo().equalsIgnoreCase("saida")) {
-            material.setSaldo(material.getSaldo() - movimento.getQuantidade());
-            if (material.getSaldo() < material.getEstoqueMinimo()) {                
-                System.out.println("Disparo de e-mail: O estoque do material " + material.getNome() + " está abaixo do mínimo permitido.");
-            }
-        }        
-        materialService.salvar(material); // Salva as alterações no material
 
-    }   
 
+    /**
+     * Retorna uma lista de todos os movimentos cadastrados.
+     * 
+     * @return Uma lista de movimentos.
+     */
     public List<Movimento> buscarTodos() {
         return movimentoRepository.findAll();
     }
 
+
+
+    /**
+     * Retorna um movimento com base no id.
+     * 
+     * @param id O id do movimento a ser encontrado.
+     * @return Um movimento com o id informado, ou null se o movimento não for encontrado.
+     */
     public Movimento buscarPorId(Long id) {
         return movimentoRepository.findById(id).orElse(null);
     }
 
+
+
+    /**
+     * Retorna um Optional contendo um movimento com base no id,
+     * ou um Optional vazio se o movimento não for encontrado.
+     * 
+     * @param idMovimento O id do movimento a ser encontrado.
+     * @return Um Optional contendo um movimento com o id informado, ou um Optional vazio
+     *         se o movimento não for encontrado.
+     */
         public Optional<Movimento> buscarPorIdOptional(Long idMovimento) {
         return movimentoRepository.findById(idMovimento);
     }
+
+
 
     /**
      * Realiza a exclusão da movimentação fazendo a atualização do saldo de material
@@ -82,6 +115,8 @@ public class MovimentoService {
         movimentoRepository.deleteById(id);
     }
 
+
+
     /**
      * !Validação de CADASTRO
      * 
@@ -98,12 +133,19 @@ public class MovimentoService {
         }
     }
 
+
+
+    /**
+     * Gera um DataTableResult para o CRUD de movimentações, com base nos parâmetros
+     * de configuração do DataTable.
+     * 
+     * @param params Os parâmetros de configuração do DataTable.
+     * @return Um DataTableResult contendo as informações para o CRUD de movimentações.
+     */
     public DataTableResult dataTableMovimento(DataTableParams params){
 
         String[] colunas={"id", "data", "tipo", "material.nome", "quantidade", "responsavel"};
-
         var movimentoList = movimentoCustomRepository.listMovimentosToDataTable(colunas, params);
-
         List<Object[]> listaObjects = new ArrayList<Object[]>();
 
         movimentoList.forEach( movimento -> {
@@ -121,14 +163,12 @@ public class MovimentoService {
         });
 
         Long registrosFiltrados = movimentoCustomRepository.totalMovimentosToDataTable(colunas, Auxiliar.removeAcentos(params.getSearchValue()));
-
         DataTableResult dataTable = new DataTableResult();
         dataTable.setDraw(String.valueOf(System.currentTimeMillis()));
         dataTable.setRecordsTotal(movimentoList.size());
         dataTable.setRecordsFiltered(registrosFiltrados);
         dataTable.setData(listaObjects.stream().toList());
         return dataTable;
-
     }
 
 

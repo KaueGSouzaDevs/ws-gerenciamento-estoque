@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +17,15 @@ import br.com.kg.estoque.custom.DataTableResult;
 @Service
 public class MaterialService {
 
-    @Autowired
     private MaterialRepository materialRepository;
-
-    @Autowired
     private MaterialCustomRepository materialCustomRepository;
+
+    public MaterialService(MaterialRepository materialRepository, MaterialCustomRepository materialCustomRepository) {
+        this.materialRepository = materialRepository;
+        this.materialCustomRepository = materialCustomRepository;
+    }
+
+
 
     /**
      * Salva um material.
@@ -33,6 +36,8 @@ public class MaterialService {
         materialRepository.save(material);
     }
 
+
+
     /**
      * Retorna uma lista de todos os materiais ordenados pelo nome.
      * 
@@ -41,6 +46,8 @@ public class MaterialService {
     public List<Material> buscarTodos() {
         return materialRepository.findAll(Sort.by(Sort.Direction.ASC, "nome"));
     }
+
+
 
     /**
      * Busca um material pelo seu ID.
@@ -51,6 +58,8 @@ public class MaterialService {
     public Optional<Material> buscarPorId(Long idCategoria) {
         return materialRepository.findById(idCategoria);
     }
+
+
 
     /**
      * Exclui um material pelo seu ID.
@@ -69,7 +78,7 @@ public class MaterialService {
         // varre a lista de registros no banco de dados e adiciona na lista de informações
         var materiaisList = materialCustomRepository.listEntitiesToDataTable(colunas, params);
         
-        List<Object[]> listaObjects = new ArrayList<Object[]>();
+        List<Object[]> listaObjects = new ArrayList<>();
 
         materiaisList.forEach( material -> {
 

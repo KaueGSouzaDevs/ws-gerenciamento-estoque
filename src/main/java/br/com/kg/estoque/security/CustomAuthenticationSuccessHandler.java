@@ -20,10 +20,23 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     public CustomAuthenticationSuccessHandler(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
-    
+
+
+
+    /**
+     * 
+     * Implementa o método de sucesso de autenticação, verificando se a conta está resetada ou nova.
+     * Se sim, redireciona para a página de reset de senha.
+     * Caso contrário, seta o ano no SessionParameters e redireciona para a página inicial.
+     * @param request - O request da requisição.
+     * @param response - A resposta da requisição.
+     * @param authentication - O objeto de autenticação.
+     * @throws IOException - Exceção de Entrada/Saída.
+     * @throws ServletException - Exceção de Servlet.
+     */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        
+
         Usuario usuario = (Usuario) authentication.getPrincipal();
 
         if(usuario.isContaResetada() || usuario.isNovaConta()){
@@ -35,7 +48,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         LocalDate now = LocalDate.now();
         sessionParameters.setAno(now.getYear());
         response.sendRedirect(request.getContextPath());
-        
     }
     
 }

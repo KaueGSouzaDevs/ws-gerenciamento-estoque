@@ -9,7 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import br.com.kg.estoque.domain.grupoAcesso.GrupoAcesso;
+import br.com.kg.estoque.domain.grupo_acesso.GrupoAcesso;
 import br.com.kg.estoque.enuns.SituacaoUsuario;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -86,11 +86,11 @@ public class Usuario implements UserDetails {
 	private String senha;
 
 	public boolean isContaResetada() {
-		return this.getSituacaoUsuario() == SituacaoUsuario.Resetado;
+		return this.getSituacaoUsuario() == SituacaoUsuario.RESETADO;
 	}
 
 	public boolean isNovaConta() {
-		return this.getSituacaoUsuario() == SituacaoUsuario.Novo;
+		return this.getSituacaoUsuario() == SituacaoUsuario.NOVO;
 	}
 
 	@Getter
@@ -120,13 +120,13 @@ public class Usuario implements UserDetails {
 
 		List<GrantedAuthority> authorities = new ArrayList<>();
 
-		this.gruposAcessos.forEach(grupo -> {
+		this.gruposAcessos.forEach(grupo ->
 			grupo.getPermissoes().forEach(p -> {
 				var role = new SimpleGrantedAuthority(p);
 				if (!authorities.contains(role))
 					authorities.add(role);
-			});
-		});
+			})
+		);
 
 		return authorities;
 	}

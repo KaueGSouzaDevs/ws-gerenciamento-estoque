@@ -3,7 +3,6 @@ package br.com.kg.estoque.domain.categoria;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -17,11 +16,13 @@ import br.com.kg.estoque.custom.DataTableResult;
 @Service
 public class CategoriaService {
 
-	@Autowired
 	private CategoriaRepository categoriaRepository;
-
-	@Autowired
 	private CategoriaCustomRepository categoriaCustomRepository;
+
+	public CategoriaService(CategoriaRepository categoriaRepository, CategoriaCustomRepository categoriaCustomRepository) {
+		this.categoriaRepository = categoriaRepository;
+		this.categoriaCustomRepository = categoriaCustomRepository;
+	}
 
 	/**
 	 * Salva uma categoria.

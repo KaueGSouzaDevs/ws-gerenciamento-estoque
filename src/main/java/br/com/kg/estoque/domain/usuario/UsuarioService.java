@@ -3,7 +3,6 @@ package br.com.kg.estoque.domain.usuario;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
@@ -14,18 +13,29 @@ import br.com.kg.estoque.custom.DataTableResult;
 
 @Service
 public class UsuarioService {
-	
-	@Autowired
+
 	private UsuarioRepository usuarioRepository;
-	
-	@Autowired
 	private UsuarioCustomRepository customUsuarioRepository;
-	
-	
+
+	public UsuarioService(UsuarioRepository usuarioRepository, UsuarioCustomRepository customUsuarioRepository) {
+		this.usuarioRepository = usuarioRepository;
+		this.customUsuarioRepository = customUsuarioRepository;
+	}
+
+
+
+	/**
+	 * Salva um novo usuário no banco de dados.
+	 * 
+	 * @param usuario - objeto do tipo Usuario com os dados a serem salvos
+	 * @return - retorna o objeto salvo com o ID incluído
+	 */
 	public Usuario save(Usuario usuario) {
 		return usuarioRepository.save(usuario);
 	}
-	
+
+
+
 	/**
 	 * Método responsável por receber os parâmetros do jQuery Data Table e passar para o service
 	 * filtrar as informações no banco de dados
@@ -33,7 +43,7 @@ public class UsuarioService {
 	public DataTableResult dataTableUsuarios(DataTableParams params) {
 
 		// colunas a serem consultadas conforme modelos relacionais
-		String colunas[]={"nome","email","login","situacaoUsuario","id"};
+		String[] colunas={"nome", "email", "login", "situacaoUsuario", "id"};
 		
 		// varre a lista de registros no banco de dados e adiciona na lista de informações
 		List<Usuario> usuariosList = customUsuarioRepository.listEntitiesToDataTable(colunas, params, Usuario.class); 
@@ -48,12 +58,14 @@ public class UsuarioService {
 		return dataTable;
 	}
 
-	
+
+
 	public Optional<Usuario> findById(Long idPasta) {
 		return usuarioRepository.findById(idPasta);
 	}
 
-	
+
+
 	/*
 	 * Valida a inclusão de um novo usuário verificando se já existe um usuário com o mesmo e-mail
 	 */ 
@@ -64,6 +76,8 @@ public class UsuarioService {
 	}
 	
 
+
+
 	/**
 	 * Valida a edição de um usuário verificando se já existe um usuário com o mesmo e-mail
 	 */
@@ -73,6 +87,8 @@ public class UsuarioService {
 		}
 	}
 
+
+
     /**
 	 * Busca um usuário pelo login
 	 */
@@ -81,7 +97,8 @@ public class UsuarioService {
     }
 
 
-	 /**
+
+	/**
 	 * Busca um usuário pelo e-mail
 	 */
 	public Optional<Usuario> findByEmail(String email) {

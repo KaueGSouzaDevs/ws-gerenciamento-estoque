@@ -78,7 +78,7 @@ public class FornecedorCustomRepositoryImpl implements FornecedorCustomRepositor
 		var query = em.createQuery(jpql.toString(), Long.class);
 		query.setParameter("searchValue", "%"+sSearch.toLowerCase()+"%");
 		
-		return (Long) query.getSingleResult();
+		return query.getSingleResult();
 		
 	}
 

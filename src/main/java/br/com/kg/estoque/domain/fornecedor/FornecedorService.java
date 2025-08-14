@@ -3,7 +3,6 @@ package br.com.kg.estoque.domain.fornecedor;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
@@ -17,8 +16,13 @@ import br.com.kg.estoque.custom.DataTableResult;
 @Service
 public class FornecedorService {
 
-    @Autowired
     private FornecedorRepository fornecedorRepository;
+
+    public FornecedorService(FornecedorRepository fornecedorRepository) {
+        this.fornecedorRepository = fornecedorRepository;
+    }
+
+
 
     /**
      * Salva um fornecedor.
@@ -28,6 +32,8 @@ public class FornecedorService {
     public void salvar(Fornecedor fornecedor) {
         fornecedorRepository.save(fornecedor);
     }
+
+
 
     /**
      * Busca um fornecedor pelo ID.
@@ -39,6 +45,8 @@ public class FornecedorService {
         return fornecedorRepository.findById(id);
     }
 
+
+
     /**
      * Busca todos os fornecedores.
      * 
@@ -47,6 +55,8 @@ public class FornecedorService {
     public List<Fornecedor> buscarTodos() {
         return fornecedorRepository.findAll();
     }
+
+
 
     /**
      * Busca um fornecedor pelo CNPJ.
@@ -57,6 +67,8 @@ public class FornecedorService {
     public Optional<Fornecedor> buscaPorCnpj(String cnpj) {
         return fornecedorRepository.findByCnpj(cnpj);
     }
+
+
 
     /**
      * Busca um fornecedor pelo CNPJ, excluindo o fornecedor com o ID especificado.
@@ -69,6 +81,8 @@ public class FornecedorService {
         return fornecedorRepository.findByCnpjAndIdNot(cnpj, id);
     }
 
+
+
     /**
      * Exclui um fornecedor pelo ID.
      * 
@@ -78,6 +92,8 @@ public class FornecedorService {
         fornecedorRepository.deleteById(idFornecedor);
     }
 
+
+
     /**
      * Valida a alteração de um fornecedor.
      * 
@@ -86,12 +102,10 @@ public class FornecedorService {
      */
     public void validaAlteracao(Fornecedor fornecedor, BindingResult result) {
         // Validação de registros existentes (editar)
-        if (fornecedor.getId() != null) {
-            if (buscarPorCnpjEIdDiferenteDoMeu(fornecedor.getCnpj(), fornecedor.getId()).isPresent()) {
-                result.rejectValue("cnpj", "", "CNPJ já cadastrado");
-            }
-        }
+        if (fornecedor.getId() != null && (buscarPorCnpjEIdDiferenteDoMeu(fornecedor.getCnpj(), fornecedor.getId()).isPresent())) result.rejectValue("cnpj", "", "CNPJ já cadastrado");
     }
+
+
 
     /**
      * Valida a inclusão de um fornecedor.
@@ -101,13 +115,18 @@ public class FornecedorService {
      */
     public void validaInclusao(Fornecedor fornecedor, BindingResult result) {
         // Validação de registros existentes (novos)
-        if (fornecedor.getId() == null) {
-            if (buscaPorCnpj(fornecedor.getCnpj()).isPresent()) {
-                result.rejectValue("cnpj", "null", "CNPJ já cadastrado");
-            }
-        }
+        if (fornecedor.getId() == null && (buscaPorCnpj(fornecedor.getCnpj()).isPresent())) result.rejectValue("cnpj", "null", "CNPJ já cadastrado");
     }
 
+
+
+    /**
+     * Gera um DataTableResult para o CRUD de fornecedores, com base nos parâmetros
+     * de configuração do DataTable.
+     * 
+     * @param params Os parâmetros de configuração do DataTable.
+     * @return Um DataTableResult contendo as informações para o CRUD de fornecedores.
+     */
     public DataTableResult dataTableFornecedores(DataTableParams params)  {
 
 		// colunas a serem consultadas conforme modelos relacionais

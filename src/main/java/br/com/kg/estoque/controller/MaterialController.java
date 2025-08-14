@@ -1,6 +1,5 @@
 package br.com.kg.estoque.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -30,15 +29,18 @@ import jakarta.validation.Valid;
 @RequestMapping("/materiais")
 // @PreAuthorize("hasAuthority('ROLE_MATERIAIS')")
 public class MaterialController {
-
-    @Autowired
+    
     private MaterialService materialService;
-
-    @Autowired
     private CategoriaService categoriaService;
-
-    @Autowired
     private FornecedorService fornecedorService;
+
+    public MaterialController(MaterialService materialService, CategoriaService categoriaService, FornecedorService fornecedorService) {
+        this.materialService = materialService;
+        this.categoriaService = categoriaService;
+        this.fornecedorService = fornecedorService;
+    }
+
+
 
     /**
 	 * Gera json dinâmico para Data Table (CRUD)
@@ -57,15 +59,18 @@ public class MaterialController {
 		return materialService.dataTableMaterial(params);
 	}
 
+
+
     /**
      * Retorna a página inicial dos materiais, exibindo a lista de materiais cadastrados.
      * @return O ModelAndView contendo a página inicial dos materiais.
      */
     @GetMapping("")
     public ModelAndView index(){
-        ModelAndView model = new ModelAndView("materiais/index");
-        return model;
+        return new ModelAndView("materiais/index");
     }
+
+
 
     /**
      * Retorna a página de criação de um novo material.
@@ -81,6 +86,8 @@ public class MaterialController {
         return model;
     }
 
+
+
     /**
      * Retorna a página de edição de um material existente.
      * @param idMaterial O ID do material a ser editado.
@@ -89,12 +96,14 @@ public class MaterialController {
     @GetMapping("/{idMaterial}/editar")
     public ModelAndView editar(@PathVariable Long idMaterial){
         ModelAndView model = new ModelAndView("materiais/modal-form");
-        model.addObject("material", materialService.buscarPorId(idMaterial).get());
+        model.addObject("material", materialService.buscarPorId(idMaterial).orElse(null));
         model.addObject("unidadeMedidaList", UnidadeMedida.values());
         model.addObject("categoriaList", categoriaService.buscarTodos());
         model.addObject("fornecedorList", fornecedorService.buscarTodos());
         return model;
     }
+
+
 
     /**
      * Salva um novo material ou atualiza um material existente.
@@ -112,13 +121,15 @@ public class MaterialController {
         return new ModelAndView("materiais/close-modal");
     }
 
+
+
     /**
      * Exclui um material existente.
      * @param idMaterial O ID do material a ser excluído.
      * @return A ResponseEntity contendo a resposta da exclusão.
      */
     @DeleteMapping("/{idMaterial}/excluir")
-    public ResponseEntity<?> excluir(@PathVariable Long idMaterial){
+    public ResponseEntity<String> excluir(@PathVariable Long idMaterial){
         if(materialService.buscarPorId(idMaterial).isEmpty()){
             return ResponseEntity.notFound().build();
         }

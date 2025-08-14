@@ -1,4 +1,4 @@
-package br.com.kg.estoque.domain.grupoAcesso;
+package br.com.kg.estoque.domain.grupo_acesso;
 
 import java.util.List;
 

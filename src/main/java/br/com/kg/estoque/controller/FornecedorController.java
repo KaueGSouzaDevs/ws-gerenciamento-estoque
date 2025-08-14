@@ -2,7 +2,6 @@ package br.com.kg.estoque.controller;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -30,8 +29,13 @@ import jakarta.validation.Valid;
 // @PreAuthorize("hasAuthority('ROLE_FORNECEDORES')")
 public class FornecedorController {
 
-    @Autowired
     private FornecedorService fornecedorService;
+
+    public FornecedorController(FornecedorService fornecedorService) {
+        this.fornecedorService = fornecedorService;
+    }
+
+
 
     /**
      * Gera json dinâmico para Data Table (CRUD)
@@ -49,17 +53,18 @@ public class FornecedorController {
         DataTableParams params = new DataTableParams(draw, start, length, searchValue, orderCol, orderDir);
         return fornecedorService.dataTableFornecedores(params);
     }
-    
-    
+
+
+
     /**
      * Retorna a página inicial dos fornecedores, exibindo a lista de todos os fornecedores cadastrados.
      * @return O ModelAndView contendo a página inicial dos fornecedores.
      */
     @GetMapping("")
     public ModelAndView index(){
-        ModelAndView model = new ModelAndView("fornecedores/index");
-        return model;
+        return new ModelAndView("fornecedores/index");
     }
+
 
 
     /**
@@ -69,9 +74,9 @@ public class FornecedorController {
      */
     @GetMapping("/novo")
     public ModelAndView novo(@ModelAttribute("fornecedor") Fornecedor fornecedor){
-        ModelAndView model = new ModelAndView("fornecedores/form");
-        return model;
+        return new ModelAndView("fornecedores/form");
     }
+
 
 
     /**
@@ -93,6 +98,7 @@ public class FornecedorController {
     }
 
 
+
     /**
      * Retorna a página de edição de um fornecedor existente.
      * @param idFornecedor O ID do fornecedor a ser editado.
@@ -103,11 +109,12 @@ public class FornecedorController {
         Optional<Fornecedor> fornecedor = fornecedorService.buscarPorId(idFornecedor);
         if(fornecedor.isEmpty()){
             return new ModelAndView("fornecedores/erro404");
-        }        
+        }
         ModelAndView model = new ModelAndView("fornecedores/form");
         model.addObject("fornecedor", fornecedor.get());
         return model;
     }
+
 
 
     /**
@@ -116,12 +123,11 @@ public class FornecedorController {
      * @return A ResponseEntity com o status OK em caso de sucesso, ou o status Not Found caso o fornecedor não seja encontrado.
      */
     @DeleteMapping("/{idFornecedor}/excluir")
-    public ResponseEntity<?> excluir(@PathVariable Long idFornecedor){
+    public ResponseEntity<String> excluir(@PathVariable Long idFornecedor){
         if(fornecedorService.buscarPorId(idFornecedor).isEmpty()){
             return ResponseEntity.notFound().build();
         }
         fornecedorService.excluir(idFornecedor);
         return ResponseEntity.ok("OK");
     }
-
 }

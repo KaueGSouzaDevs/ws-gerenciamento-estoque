@@ -1,20 +1,19 @@
 package br.com.kg.estoque.domain.categoria;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.springframework.stereotype.Repository;
 
 import br.com.kg.estoque.custom.Auxiliar;
 import br.com.kg.estoque.custom.DataTableParams;
 import br.com.kg.estoque.repository.CustomRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 
 @Repository
 public class CategoriaCustomRepository extends CustomRepository<Categoria>{
 
-    @PersistenceContext
-    protected EntityManager em;
+    private Logger logger = Logger.getLogger(CategoriaCustomRepository.class.getName());
     
 
 
@@ -22,7 +21,7 @@ public class CategoriaCustomRepository extends CustomRepository<Categoria>{
     public List<Categoria> listEntitiesToDataTableCategoria(String[] colunas, DataTableParams params) {
 
 
-        System.out.println("params: " + params);
+        logger.log(Level.ALL ,() -> "params: " + params);
 
         StringBuilder jpql = new StringBuilder();
 
@@ -81,8 +80,8 @@ public class CategoriaCustomRepository extends CustomRepository<Categoria>{
 
         var query = em.createQuery(jpql.toString(), Long.class);
         query.setParameter("searchValue", "%"+Auxiliar.removeAcentos(searchValue.toLowerCase())+"%");
-        return (Long) query.getSingleResult();
-    };
+        return query.getSingleResult();
+    }
 
 
 }

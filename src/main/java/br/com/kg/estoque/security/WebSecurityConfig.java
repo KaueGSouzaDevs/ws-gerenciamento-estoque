@@ -1,6 +1,5 @@
 package br.com.kg.estoque.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,9 +18,41 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig {
 
-	@Autowired
 	private ApplicationContext applicationContext;
 
+	public WebSecurityConfig(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
+	}
+
+
+
+	/**
+	 * Configura a cadeia de filtros de segurança para o aplicativo.
+	 * <p>
+	 * Define as autorizações de requisição HTTP, permitindo acesso irrestrito
+	 * a URLs específicas e exigindo autenticação para outras. Configura CSRF, 
+	 * login baseado em formulário, e manipulação de exceções de segurança.
+	 * <p>
+	 * URLs permitidas sem autenticação:
+	 * - "/assets/**" 
+	 * - "/login/**"
+	 * 
+	 * URLs comentadas que requerem permissões de função específicas:
+	 * - "/fornecedores**" exige papel "FORNECEDORES"
+	 * - "/materiais**" exige papel "MATERIAIS"
+	 * - "/categorias**" exige papel "CATEGORIAS"
+	 * - "/movimentos**" exige papel "MOVIMENTACAO"
+	 * 
+	 * O login é configurado para usar uma página personalizada e handlers
+	 * de sucesso e falha personalizados.
+	 * <p>
+	 * Logout é configurado para invalidar a sessão HTTP. Exceções de acesso
+	 * negado redirecionam para uma página específica.
+	 * 
+	 * @param http Configuração de segurança HTTP.
+	 * @return A cadeia de filtros de segurança configurada.
+	 * @throws Exception Se ocorrer um erro na configuração de segurança.
+	 */
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -34,9 +65,9 @@ public class WebSecurityConfig {
 			auth.requestMatchers("/materiais**").hasRole("MATERIAIS");
 			auth.requestMatchers("/categorias**").hasRole("CATEGORIAS");
 			auth.requestMatchers("/movimentos**").hasRole("MOVIMENTACAO");
+			auth.requestMatchers("/movimentos**").hasAnyRole("MOVIMENTACAO", "DEL_MOVIMENTACAO");
+			auth.requestMatchers(HttpMethod.DELETE, "/movimentos**").hasRole("DEL_MOVIMENTACAO");
 			*/
-			// auth.requestMatchers("/movimentos**").hasAnyRole("MOVIMENTACAO", "DEL_MOVIMENTACAO");
-			// auth.requestMatchers(HttpMethod.DELETE, "/movimentos**").hasRole("DEL_MOVIMENTACAO");
 
 			auth.anyRequest().authenticated();
 
@@ -56,12 +87,12 @@ public class WebSecurityConfig {
 			logout.invalidateHttpSession(true);
 		});
 
-		http.exceptionHandling(exception -> {
-			exception.accessDeniedPage("/acessoNegado");
-		});
+		http.exceptionHandling(exception -> exception.accessDeniedPage("/acessoNegado"));
 
 		return http.build();
 	}
+
+
 
 	/**
 	 * Configura o método de autenticação
@@ -70,6 +101,8 @@ public class WebSecurityConfig {
 	AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
 		return configuration.getAuthenticationManager();
 	}
+
+
 
 	@Bean
 	/**

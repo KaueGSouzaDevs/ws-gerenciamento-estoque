@@ -1,6 +1,5 @@
 package br.com.kg.estoque.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -27,8 +26,13 @@ import jakarta.validation.Valid;
 @RequestMapping("/categorias")
 public class CategoriaController {
 
-    @Autowired
     private CategoriaService categoriaService;
+
+    public CategoriaController(CategoriaService categoriaService) {
+        this.categoriaService = categoriaService;
+    }
+
+
 
     /**
 	 * Gera json dinâmico para Data Table (CRUD)
@@ -47,15 +51,18 @@ public class CategoriaController {
 		return categoriaService.dataTableCategoria(params);
 	}
 
+
+
     /**
      * Retorna a página inicial das categorias.
      * @return o modelo e a visualização da página inicial das categorias.
      */
     @GetMapping("")
     public ModelAndView index(){
-        ModelAndView model = new ModelAndView("categorias/index");
-        return model;
+        return new ModelAndView("categorias/index");
     }
+
+
 
     /**
      * Retorna a página de criação de uma nova categoria.
@@ -64,9 +71,10 @@ public class CategoriaController {
      */
     @GetMapping("/novo")
     public ModelAndView novo(@ModelAttribute("categoria") Categoria categoria){
-        ModelAndView model = new ModelAndView("categorias/modal-form");
-        return model;
+        return new ModelAndView("categorias/modal-form");
     }
+
+
 
     /**
      * Retorna a página de edição de uma categoria existente.
@@ -76,9 +84,12 @@ public class CategoriaController {
     @GetMapping("/{idCategoria}/editar")
     public ModelAndView editar(@PathVariable Long idCategoria){
         ModelAndView model = new ModelAndView("categorias/modal-form");
-        model.addObject("categoria", categoriaService.buscarPorId(idCategoria).get());
+        Categoria categoria = categoriaService.buscarPorId(idCategoria).orElse(null);
+        model.addObject("categoria", categoria);
         return model;
     }
+
+
 
     /**
      * Salva uma categoria.
@@ -92,9 +103,10 @@ public class CategoriaController {
             return novo(categoria);
         }
         categoriaService.salvar(categoria);
-        ModelAndView model = new ModelAndView("categorias/close-modal");
-        return model;
+        return new ModelAndView("categorias/close-modal");
     }
+
+
 
     /**
      * Exclui uma categoria.
@@ -102,9 +114,9 @@ public class CategoriaController {
      * @return uma resposta HTTP indicando o sucesso ou a falha da exclusão.
      */
     @DeleteMapping("/{idCategoria}/excluir")
-    public ResponseEntity<?> excluir(@PathVariable Long idCategoria){
+    public ResponseEntity<String> excluir(@PathVariable Long idCategoria){
         if(categoriaService.buscarPorId(idCategoria).isEmpty()){
-            return ResponseEntity.notFound().build();            
+            return ResponseEntity.notFound().build();
         }
         categoriaService.excluir(idCategoria);
         return ResponseEntity.ok("OK");

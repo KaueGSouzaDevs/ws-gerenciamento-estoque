@@ -4,6 +4,10 @@ import java.text.Normalizer;
 
 public class Auxiliar {
 
+	private Auxiliar() {
+		throw new IllegalStateException("Utility class");
+	}
+
     /**
 	 * Remove os acentos de uma String utilizando Normalizer
 	 */

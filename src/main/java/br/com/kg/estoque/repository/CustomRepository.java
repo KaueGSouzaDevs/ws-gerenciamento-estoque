@@ -73,6 +73,6 @@ public abstract class CustomRepository<T> {
         var query = em.createQuery(jpql.toString(), Long.class);
         query.setParameter("searchValue", "%" + sSearch.toLowerCase() + "%");
 
-        return (Long) query.getSingleResult();
+        return query.getSingleResult();
     }
 }
