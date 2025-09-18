@@ -85,7 +85,7 @@
             </li>
 
             <!-- Grupos de Acessos -->
-            <li class="menu-item">
+            <li class="menu-item" th:classappend="${menu=='acessos'} ? 'active open' : ''">
                 <a href="#" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons bx bx-street-view"></i>
                     
@@ -93,8 +93,8 @@
                 </a>
 
                 <ul class="menu-sub">
-                    <li class="menu-item">
-                        <a href="#" class="menu-link">
+                    <li class="menu-item" th:classappend="${submenu=='usuarios'} ? 'active' : ''">
+                        <a href="/usuarios" class="menu-link">
                             <div data-i18n="Without navbar">Usuários</div>
                         </a>
                     </li>
