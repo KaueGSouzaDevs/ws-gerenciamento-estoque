@@ -14,7 +14,7 @@ public class StartupLogger {
     @EventListener(ApplicationReadyEvent.class)
     public void logAfterStartup() {
         logger.info("""
-                    ===================================
+                    \n===================================
                     🚀 Aplicação iniciada com sucesso!
                     ===================================
                     """);

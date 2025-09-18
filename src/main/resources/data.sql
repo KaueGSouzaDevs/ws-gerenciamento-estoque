@@ -1,6 +1,6 @@
 CREATE EXTENSION IF NOT EXISTS unaccent;
 
-INSERT INTO usuarios (login, nome, email, senha, situacao_usuario) VALUES ('Admin', 'Admin Silva', 'admin@hotmail.com','$2a$10$LEZIiyN4Vtf08JuiBBdnF./4ov1wyMwHN7B07EzgTLea0hIjlsLKe','Ativo');
+INSERT INTO usuarios (login, nome, email, senha, situacao_usuario) VALUES ('Admin', 'Admin Silva', 'admin@hotmail.com','$2a$10$LEZIiyN4Vtf08JuiBBdnF./4ov1wyMwHN7B07EzgTLea0hIjlsLKe','ATIVO');
 
 INSERT INTO public.fornecedores (cnpj, contato, email, nome, situacao, telefone) VALUES
 ('12345678000195', 'Carlos Silva', 'carlos.silva@example.com', 'Fornecedor A', 'Ativo', '11987654321'),
