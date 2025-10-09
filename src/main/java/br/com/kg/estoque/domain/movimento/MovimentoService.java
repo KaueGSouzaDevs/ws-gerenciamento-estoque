@@ -13,13 +13,25 @@ import br.com.kg.estoque.custom.DataTableResult;
 import br.com.kg.estoque.domain.material.Material;
 import br.com.kg.estoque.domain.material.MaterialService;
 
+/**
+ * Serviço de negócios para a entidade {@link Movimento}.
+ * Esta classe encapsula a lógica de negócios para registrar movimentos de estoque,
+ * atualizar saldos de materiais e interagir com os repositórios.
+ */
 @Service
 public class MovimentoService {
 
-    private MovimentoRepository movimentoRepository;
-    private MaterialService materialService; 
-    private MovimentoCustomRepository movimentoCustomRepository;
+    private final MovimentoRepository movimentoRepository;
+    private final MaterialService materialService;
+    private final MovimentoCustomRepository movimentoCustomRepository;
 
+    /**
+     * Constrói o serviço com as dependências necessárias.
+     *
+     * @param movimentoRepository       O repositório para operações CRUD em Movimento.
+     * @param materialService           O serviço para acessar e modificar dados de Material.
+     * @param movimentoCustomRepository O repositório customizado para consultas dinâmicas de Movimento.
+     */
     public MovimentoService(MovimentoRepository movimentoRepository, MaterialService materialService,
             MovimentoCustomRepository movimentoCustomRepository) {
         this.movimentoRepository = movimentoRepository;
@@ -27,11 +39,13 @@ public class MovimentoService {
         this.movimentoCustomRepository = movimentoCustomRepository;
     }
 
-
-
     /**
-     * Função para salvar o movimento cadastrado
-     * @param movimento
+     * Salva um movimento e atualiza o saldo do material correspondente.
+     * Se o tipo de movimento for "entrada", o saldo é incrementado.
+     * Se for "saída", o saldo é decrementado.
+     * Alertas de sistema são impressos se o estoque exceder o máximo ou cair abaixo do mínimo.
+     *
+     * @param movimento O objeto {@link Movimento} a ser salvo.
      */
     public void salvarMovimento(Movimento movimento) {
         movimentoRepository.save(movimento);
@@ -59,97 +73,87 @@ public class MovimentoService {
         }
     }
 
-
-
     /**
-     * Retorna uma lista de todos os movimentos cadastrados.
+     * Busca todos os movimentos cadastrados.
      * 
-     * @return Uma lista de movimentos.
+     * @return Uma {@link List} de todas as entidades {@link Movimento}.
      */
     public List<Movimento> buscarTodos() {
         return movimentoRepository.findAll();
     }
 
-
-
     /**
-     * Retorna um movimento com base no id.
+     * Busca um movimento específico pelo seu ID.
      * 
-     * @param id O id do movimento a ser encontrado.
-     * @return Um movimento com o id informado, ou null se o movimento não for encontrado.
+     * @param id O ID do movimento a ser buscado.
+     * @return O {@link Movimento} encontrado, ou `null` se não existir.
      */
     public Movimento buscarPorId(Long id) {
         return movimentoRepository.findById(id).orElse(null);
     }
 
-
-
     /**
-     * Retorna um Optional contendo um movimento com base no id,
-     * ou um Optional vazio se o movimento não for encontrado.
+     * Busca um movimento específico pelo seu ID, retornando um {@link Optional}.
      * 
-     * @param idMovimento O id do movimento a ser encontrado.
-     * @return Um Optional contendo um movimento com o id informado, ou um Optional vazio
-     *         se o movimento não for encontrado.
+     * @param idMovimento O ID do movimento a ser buscado.
+     * @return Um {@link Optional} contendo o {@link Movimento} se encontrado, ou vazio caso contrário.
      */
-        public Optional<Movimento> buscarPorIdOptional(Long idMovimento) {
+    public Optional<Movimento> buscarPorIdOptional(Long idMovimento) {
         return movimentoRepository.findById(idMovimento);
     }
 
-
-
     /**
-     * Realiza a exclusão da movimentação fazendo a atualização do saldo de material
-     * @param id
+     * Exclui um movimento e reverte a alteração no saldo do material correspondente.
+     * Se o movimento era uma entrada, a quantidade é subtraída do saldo.
+     * Se era uma saída, a quantidade é adicionada de volta ao saldo.
+     *
+     * @param id O ID do movimento a ser excluído.
      */
     public void excluir(Long id) {
 
         Movimento movimento = buscarPorId(id);
-        Material material = materialService.buscarPorId(movimento.getMaterial().getId()).get();
-        if (movimento.getTipo().equalsIgnoreCase("Entrada")) {
-            material.setSaldo(material.getSaldo() - movimento.getQuantidade());
-        } else if(movimento.getTipo().equalsIgnoreCase("Saida")) {
-            material.setSaldo(material.getSaldo() + movimento.getQuantidade());
+        if (movimento != null && movimento.getMaterial() != null) {
+            materialService.buscarPorId(movimento.getMaterial().getId()).ifPresent(material -> {
+                if (movimento.getTipo().equalsIgnoreCase("Entrada")) {
+                    material.setSaldo(material.getSaldo() - movimento.getQuantidade());
+                } else if(movimento.getTipo().equalsIgnoreCase("Saida")) {
+                    material.setSaldo(material.getSaldo() + movimento.getQuantidade());
+                }
+                materialService.salvar(material);
+                movimentoRepository.deleteById(id);
+            });
         }
-        materialService.salvar(material);
-        movimentoRepository.deleteById(id);
     }
 
-
-
     /**
-     * !Validação de CADASTRO
-     * 
-     * !Valida pelo tipo de movimentação (Entrada) os campos "Nota Fiscal" e "Fornecedor"
-     * @param movimento
-     * @param result
+     * Valida os campos obrigatórios para um movimento de entrada.
+     * Verifica se o fornecedor e a nota fiscal foram preenchidos.
+     *
+     * @param movimento O movimento a ser validado.
+     * @param result O objeto {@link BindingResult} para registrar erros de validação.
      */
     public void validaEntradaMaterial(Movimento movimento, BindingResult result) {
         if (movimento.getFornecedor() == null) {
             result.rejectValue("fornecedor", "","Fornecedor é obrigatório!");
         }
         if (movimento.getNotaFiscal() == null || movimento.getNotaFiscal().isEmpty()) {
-            result.rejectValue("notaFiscal","" , "Fornecedor é obrigatório!");
+            result.rejectValue("notaFiscal","" , "Nota Fiscal é obrigatória!");
         }
     }
 
-
-
     /**
-     * Gera um DataTableResult para o CRUD de movimentações, com base nos parâmetros
-     * de configuração do DataTable.
-     * 
-     * @param params Os parâmetros de configuração do DataTable.
-     * @return Um DataTableResult contendo as informações para o CRUD de movimentações.
+     * Prepara os dados do movimento para serem exibidos em um componente DataTables.
+     *
+     * @param params Os parâmetros da requisição do DataTables.
+     * @return Um objeto {@link DataTableResult} pronto para ser serializado em JSON.
      */
     public DataTableResult dataTableMovimento(DataTableParams params){
 
         String[] colunas={"id", "data", "tipo", "material.nome", "quantidade", "responsavel"};
-        var movimentoList = movimentoCustomRepository.listMovimentosToDataTable(colunas, params);
-        List<Object[]> listaObjects = new ArrayList<Object[]>();
+        List<Movimento> movimentoList = movimentoCustomRepository.listMovimentosToDataTable(colunas, params);
+        List<Object[]> listaObjects = new ArrayList<>();
 
         movimentoList.forEach( movimento -> {
-            
             Object[] linha = {
                 movimento.getId(),
                 movimento.getData(),
@@ -164,14 +168,10 @@ public class MovimentoService {
 
         Long registrosFiltrados = movimentoCustomRepository.totalMovimentosToDataTable(colunas, Auxiliar.removeAcentos(params.getSearchValue()));
         DataTableResult dataTable = new DataTableResult();
-        dataTable.setDraw(String.valueOf(System.currentTimeMillis()));
-        dataTable.setRecordsTotal(movimentoList.size());
+        dataTable.setDraw(params.getDraw());
+        dataTable.setRecordsTotal((int) movimentoRepository.count());
         dataTable.setRecordsFiltered(registrosFiltrados);
-        dataTable.setData(listaObjects.stream().toList());
+        dataTable.setData(listaObjects);
         return dataTable;
     }
-
-
-
-
 }

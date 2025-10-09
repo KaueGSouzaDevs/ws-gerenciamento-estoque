@@ -34,6 +34,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Representa a entidade Usuário no banco de dados.
+ * Esta classe implementa a interface {@link UserDetails} do Spring Security,
+ * o que a torna a principal fonte de informações do usuário para fins de autenticação e autorização.
+ */
 @ToString
 @Entity
 @Table(name = "usuarios", indexes = {
@@ -42,18 +47,27 @@ import lombok.ToString;
 }, uniqueConstraints = {
 		@UniqueConstraint(name = "login_unique", columnNames = { "login" }),
 		@UniqueConstraint(name = "email_unique", columnNames = { "email" }) })
-
 public class Usuario implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+     * Construtor padrão.
+     */
 	public Usuario() {
 	}
 
+	/**
+     * Construtor que inicializa o usuário com um login.
+     * @param login O nome de usuário (login).
+     */
 	public Usuario(String login) {
 		this.login = login;
 	}
 
+	/**
+     * Identificador único do usuário.
+     */
 	@Getter
 	@Setter
 	@Id
@@ -61,43 +75,70 @@ public class Usuario implements UserDetails {
 	@Column(name = "id_usuario")
 	private Long id;
 
+	/**
+     * O nome de usuário (login) usado para autenticação.
+     */
 	@Getter
 	@Setter
 	@Size(min = 3, max = 20)
 	@Column(length = 20)
 	private String login;
 
+	/**
+     * O nome completo do usuário.
+     */
 	@Getter
 	@Setter
 	@Size(min = 3, max = 30)
 	@Column(length = 30)
 	private String nome;
 
+	/**
+     * O endereço de e-mail do usuário. É obrigatório e deve ser único.
+     */
 	@Getter
 	@Setter
 	@NotEmpty(message = "* Informe o e-mail do usuário")
-	@Size(max = 700, message = "* Limite de 100 caracteres")
+	@Size(max = 70, message = "* Limite de 70 caracteres")
 	@Column(length = 70)
 	@Email(message = "* E-mail inválido")
 	private String email;
 
+	/**
+     * A senha do usuário, armazenada de forma criptografada.
+     */
 	@Getter
 	@Setter
 	private String senha;
 
+	/**
+     * Verifica se a conta do usuário está com o status "RESETADO".
+     * @return {@code true} se a situação for RESETADO, {@code false} caso contrário.
+     */
 	public boolean isContaResetada() {
 		return this.getSituacaoUsuario() == SituacaoUsuario.RESETADO;
 	}
 
+	/**
+     * Verifica se a conta do usuário é uma nova conta (status "NOVO").
+     * @return {@code true} se a situação for NOVO, {@code false} caso contrário.
+     */
 	public boolean isNovaConta() {
 		return this.getSituacaoUsuario() == SituacaoUsuario.NOVO;
 	}
 
+	/**
+     * Campo transiente para armazenar a representação da imagem do usuário em Base64.
+     * Não é persistido no banco de dados.
+     */
 	@Getter
 	@Setter
 	@Transient
 	private String image64;
 
+	/**
+     * A situação atual da conta do usuário (ex: ATIVO, INATIVO, RESETADO).
+     */
 	@Getter
 	@Setter
 	@NotNull(message = "Selecione uma opção")
@@ -105,21 +146,31 @@ public class Usuario implements UserDetails {
 	@Enumerated(EnumType.STRING)
 	private SituacaoUsuario situacaoUsuario;
 
+	/**
+     * A data e hora da última atualização dos dados do usuário.
+     */
 	@Getter
 	@Setter
 	private LocalDateTime dataAtualizacao;
 
+	/**
+     * A lista de grupos de acesso aos quais o usuário pertence.
+     * O relacionamento é Muitos-para-Muitos e é carregado de forma EAGER.
+     */
 	@Getter
 	@Setter
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "rel_usuarios_grupos_acessos", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "grupo_acesso_id"))
 	private List<GrupoAcesso> gruposAcessos;
 
+	/**
+     * Retorna as permissões (autoridades) concedidas ao usuário.
+     * Este método agrega todas as permissões de todos os grupos de acesso do usuário.
+     * @return Uma coleção de {@link GrantedAuthority}.
+     */
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-
 		List<GrantedAuthority> authorities = new ArrayList<>();
-
 		this.gruposAcessos.forEach(grupo ->
 			grupo.getPermissoes().forEach(p -> {
 				var role = new SimpleGrantedAuthority(p);
@@ -127,38 +178,60 @@ public class Usuario implements UserDetails {
 					authorities.add(role);
 			})
 		);
-
 		return authorities;
 	}
 
+	/**
+     * Retorna a senha usada para autenticar o usuário.
+     * @return A senha criptografada.
+     */
 	@Override
 	public String getPassword() {
 		return this.getSenha();
 	}
 
+	/**
+     * Retorna o nome de usuário usado para autenticar o usuário.
+     * @return O login do usuário.
+     */
 	@Override
 	public String getUsername() {
 		return this.getLogin();
 	}
 
+	/**
+     * Indica se a conta do usuário expirou. Uma conta expirada não pode ser autenticada.
+     * @return {@code true} se a conta for válida (não expirada).
+     */
 	@Override
 	public boolean isAccountNonExpired() {
 		return true;
 	}
 
+	/**
+     * Indica se o usuário está bloqueado ou desbloqueado. Um usuário bloqueado não pode ser autenticado.
+     * @return {@code true} se a conta não estiver bloqueada.
+     */
 	@Override
 	public boolean isAccountNonLocked() {
 		return true;
 	}
 
+	/**
+     * Indica se as credenciais do usuário (senha) expiraram. Credenciais expiradas impedem a autenticação.
+     * @return {@code true} se as credenciais forem válidas (não expiradas).
+     */
 	@Override
 	public boolean isCredentialsNonExpired() {
 		return true;
 	}
 
+	/**
+     * Indica se o usuário está habilitado ou desabilitado. Um usuário desabilitado não pode ser autenticado.
+     * @return {@code true} se o usuário estiver habilitado.
+     */
 	@Override
 	public boolean isEnabled() {
 		return true;
 	}
-
 }

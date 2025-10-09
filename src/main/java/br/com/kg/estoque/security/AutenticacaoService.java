@@ -10,25 +10,32 @@ import org.springframework.stereotype.Repository;
 import br.com.kg.estoque.domain.usuario.UsuarioRepository;
 import jakarta.transaction.Transactional;
 
+/**
+ * Serviço de autenticação que implementa a interface {@link UserDetailsService} do Spring Security.
+ * É responsável por carregar os detalhes de um usuário a partir do banco de dados durante o processo de autenticação.
+ */
 @Repository
 @Transactional
 public class AutenticacaoService implements UserDetailsService{
 
-	private UsuarioRepository userRepository;
+	private final UsuarioRepository userRepository;
 
+	/**
+     * Constrói o serviço com a dependência do repositório de usuário.
+     *
+     * @param userRepository O repositório para acesso aos dados dos usuários.
+     */
 	public AutenticacaoService(UsuarioRepository userRepository) {
 		this.userRepository = userRepository;
 	}
 
-
-
 	/**
-	 * Busca um usuário pelo login informado.
+	 * Localiza um usuário com base no seu nome de login (ignorando maiúsculas/minúsculas).
+	 * Este é o método principal usado pelo Spring Security para obter os detalhes do usuário.
 	 * 
-	 * @param login - login do usuário
-	 * @return - retorna o objeto do tipo UserDetails com as informações do
-	 *         usuário
-	 * @throws UsernameNotFoundException - caso o usuário não seja encontrado
+	 * @param login O nome de usuário (login) cuja informação está sendo solicitada.
+	 * @return Um objeto {@link UserDetails} contendo as informações do usuário (nunca {@code null}).
+	 * @throws UsernameNotFoundException se o usuário não puder ser encontrado.
 	 */
 	@Override
 	public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
@@ -39,5 +46,4 @@ public class AutenticacaoService implements UserDetailsService{
         }
         return user.get();
 	}
-
 }

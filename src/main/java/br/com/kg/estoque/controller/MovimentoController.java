@@ -26,28 +26,44 @@ import br.com.kg.estoque.domain.movimento.Movimento;
 import br.com.kg.estoque.domain.movimento.MovimentoService;
 import jakarta.validation.Valid;
 
+/**
+ * Controlador responsável por gerenciar as requisições relacionadas aos movimentos de estoque (entrada e saída).
+ * Lida com o registro, edição, exclusão e listagem de movimentos.
+ */
 @Controller
 @RequestMapping("/movimentos")
-// @PreAuthorize("hasAuthority('ROLE_MOVIMENTACAO')")
 public class MovimentoController {
     
-    Logger logger = Logger.getLogger(MovimentoController.class.getName());
+    private final Logger logger = Logger.getLogger(MovimentoController.class.getName());
 
-    private MovimentoService movimentoService;
-    private MaterialService materialService;
-    private FornecedorService fornecedorService;
+    private final MovimentoService movimentoService;
+    private final MaterialService materialService;
+    private final FornecedorService fornecedorService;
 
+    /**
+     * Constrói um novo MovimentoController com os serviços especificados.
+     *
+     * @param movimentoService  O serviço para lidar com a lógica de negócios de movimento.
+     * @param materialService   O serviço para buscar dados de materiais.
+     * @param fornecedorService O serviço para buscar dados de fornecedores.
+     */
     public MovimentoController(MovimentoService movimentoService, MaterialService materialService, FornecedorService fornecedorService) {
         this.movimentoService = movimentoService;
         this.materialService = materialService;
         this.fornecedorService = fornecedorService;
     }
 
-
-
     /**
-	 * Gera json dinâmico para Data Table (CRUD)
-	 */
+     * Fornece dados para o componente DataTables na página de listagem de movimentos.
+     *
+     * @param draw        O contador de sorteio do DataTables.
+     * @param start       O índice do registro inicial.
+     * @param length      O número de registros por página.
+     * @param searchValue O valor de busca.
+     * @param orderCol    O índice da coluna para ordenação.
+     * @param orderDir    A direção da ordenação (asc/desc).
+     * @return Um {@link DataTableResult} com os dados para a tabela.
+     */
 	@GetMapping("jsonDataTable")
     @ResponseBody
 	public DataTableResult jsonDataTable(
@@ -62,24 +78,22 @@ public class MovimentoController {
 		return movimentoService.dataTableMovimento(params);
 	}
 
-
-
     /**
-     * !Tela inicial contendo a lista de movimentações, tanto entrada como saída.
-     * @return
+     * Exibe a página principal que lista todos os movimentos de estoque.
+     *
+     * @return Um {@link ModelAndView} para a página de índice de movimentos.
      */
     @GetMapping("")
     public ModelAndView listarAllMovimentos() {
         return new ModelAndView("movimentos/index");
     }
 
-
-
     /**
-     * !Abre uma tela para realizar um cadastro de movimento.
-     * @param movimento
-     * @param erro
-     * @return
+     * Exibe o formulário para registrar um novo movimento de estoque.
+     *
+     * @param movimento O objeto {@link Movimento} para vincular ao formulário.
+     * @param erro      Um booleano que indica se ocorreu um erro na submissão anterior.
+     * @return Um {@link ModelAndView} para o formulário de movimento.
      */
     @GetMapping("/novo")
     public ModelAndView novo(Movimento movimento, Boolean erro) {
@@ -90,14 +104,14 @@ public class MovimentoController {
         return model; 
     }
 
-
-
     /**
-     * !Salva a movimentação utilizando uma validação para entrada.
-     * @param movimento
-     * @param result
-     * @param attributes
-     * @return
+     * Salva um novo movimento de estoque após validação.
+     * Valida as regras de negócio para movimentos de entrada e saída.
+     *
+     * @param movimento  O objeto {@link Movimento} preenchido a partir do formulário.
+     * @param result     O resultado da validação dos dados.
+     * @param attributes Atributos para passar mensagens para a view de redirecionamento.
+     * @return Um {@link ModelAndView} redirecionando para o formulário em caso de sucesso, ou de volta ao formulário em caso de erro.
      */
     @PostMapping("/salvar")
     public ModelAndView salvar(@Valid @ModelAttribute("movimento") Movimento movimento, BindingResult result, RedirectAttributes attributes) {
@@ -121,10 +135,11 @@ public class MovimentoController {
     }
 
     /**
-     * !Realiza a edição de um movimento utilizando o ID.
-     * @param id
-     * @param model
-     * @return
+     * Exibe o formulário para editar um movimento existente.
+     *
+     * @param id    O ID do movimento a ser editado.
+     * @param model O modelo para adicionar atributos para a view.
+     * @return Um {@link ModelAndView} para o formulário de movimento preenchido, ou redireciona para a lista se não encontrado.
      */
     @GetMapping("/{id}/editar")
     public ModelAndView getMovimentoById(@PathVariable Long id, Model model) {
@@ -139,9 +154,10 @@ public class MovimentoController {
     }
 
     /**
-     * !Realiza a exclusão de um movimento utilizando o ID.
-     * @param id
-     * @return
+     * Exclui um movimento de estoque pelo seu ID.
+     *
+     * @param idMovimento O ID do movimento a ser excluído.
+     * @return Um {@link ResponseEntity} com status 200 (OK) em caso de sucesso ou 404 (Não Encontrado) se o movimento não existir.
      */
     @DeleteMapping("/{idMovimento}/excluir")
     public ResponseEntity<String> excluir(@PathVariable Long idMovimento){

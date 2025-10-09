@@ -24,27 +24,41 @@ import jakarta.validation.Valid;
 
 /**
  * Controlador responsável por gerenciar as requisições relacionadas aos materiais.
+ * Lida com as operações de CRUD e listagem de dados para a entidade de material.
  */
 @Controller
 @RequestMapping("/materiais")
-// @PreAuthorize("hasAuthority('ROLE_MATERIAIS')")
 public class MaterialController {
     
-    private MaterialService materialService;
-    private CategoriaService categoriaService;
-    private FornecedorService fornecedorService;
+    private final MaterialService materialService;
+    private final CategoriaService categoriaService;
+    private final FornecedorService fornecedorService;
 
+    /**
+     * Constrói um novo MaterialController com os serviços especificados.
+     *
+     * @param materialService   O serviço para lidar com a lógica de negócios de material.
+     * @param categoriaService  O serviço para buscar dados de categorias.
+     * @param fornecedorService O serviço para buscar dados de fornecedores.
+     */
     public MaterialController(MaterialService materialService, CategoriaService categoriaService, FornecedorService fornecedorService) {
         this.materialService = materialService;
         this.categoriaService = categoriaService;
         this.fornecedorService = fornecedorService;
     }
 
-
-
     /**
-	 * Gera json dinâmico para Data Table (CRUD)
-	 */
+     * Fornece dados para o componente DataTables na página de listagem de materiais.
+     * Este endpoint é chamado via AJAX pela biblioteca DataTables para popular a tabela.
+     *
+     * @param draw        O contador de sorteio ao qual esta solicitação está respondendo.
+     * @param start       O índice do registro inicial (para paginação).
+     * @param length      O número de registros a serem exibidos (para paginação).
+     * @param searchValue O valor de pesquisa global.
+     * @param orderCol    O índice da coluna a ser ordenada.
+     * @param orderDir    A direção da ordenação (asc ou desc).
+     * @return Um objeto {@link DataTableResult} contendo os dados para a tabela.
+     */
 	@GetMapping("jsonDataTable")
     @ResponseBody
 	public DataTableResult jsonDataTable(
@@ -59,23 +73,22 @@ public class MaterialController {
 		return materialService.dataTableMaterial(params);
 	}
 
-
-
     /**
-     * Retorna a página inicial dos materiais, exibindo a lista de materiais cadastrados.
-     * @return O ModelAndView contendo a página inicial dos materiais.
+     * Exibe a página principal para gerenciamento de materiais.
+     *
+     * @return Um objeto {@link ModelAndView} para a página de índice de materiais.
      */
     @GetMapping("")
     public ModelAndView index(){
         return new ModelAndView("materiais/index");
     }
 
-
-
     /**
-     * Retorna a página de criação de um novo material.
-     * @param material O objeto Material a ser preenchido no formulário.
-     * @return O ModelAndView contendo a página de criação de um novo material.
+     * Exibe o formulário para criar um novo material.
+     * Popula o modelo com listas de unidades de medida, categorias e fornecedores.
+     *
+     * @param material Um objeto {@link Material} vazio para vincular ao formulário.
+     * @return Um objeto {@link ModelAndView} para o formulário modal de criação de material.
      */
     @GetMapping("/novo")
     public ModelAndView novo(@ModelAttribute("material") Material material){
@@ -86,12 +99,12 @@ public class MaterialController {
         return model;
     }
 
-
-
     /**
-     * Retorna a página de edição de um material existente.
+     * Exibe o formulário para editar um material existente.
+     * Popula o modelo com os dados do material e listas de unidades de medida, categorias e fornecedores.
+     *
      * @param idMaterial O ID do material a ser editado.
-     * @return O ModelAndView contendo a página de edição de um material existente.
+     * @return Um objeto {@link ModelAndView} para o formulário modal de edição de material.
      */
     @GetMapping("/{idMaterial}/editar")
     public ModelAndView editar(@PathVariable Long idMaterial){
@@ -103,14 +116,12 @@ public class MaterialController {
         return model;
     }
 
-
-
     /**
-     * Salva um novo material ou atualiza um material existente.
-     * @param material O objeto Material a ser salvo ou atualizado.
-     * @param result O BindingResult contendo os erros de validação.
-     * @return O ModelAndView contendo a página de criação de um novo material em caso de erros de validação,
-     *         ou o ModelAndView para fechar o modal em caso de sucesso.
+     * Salva um novo material ou atualiza um existente.
+     *
+     * @param material O objeto {@link Material} a ser salvo, preenchido a partir dos dados do formulário.
+     * @param result   O resultado do processo de validação.
+     * @return Um {@link ModelAndView} para o formulário se houver erros, ou para fechar o modal em caso de sucesso.
      */
     @PostMapping("/salvar")
     public ModelAndView salvar(@Valid Material material, BindingResult result){
@@ -121,12 +132,11 @@ public class MaterialController {
         return new ModelAndView("materiais/close-modal");
     }
 
-
-
     /**
-     * Exclui um material existente.
+     * Exclui um material pelo seu ID.
+     *
      * @param idMaterial O ID do material a ser excluído.
-     * @return A ResponseEntity contendo a resposta da exclusão.
+     * @return Um {@link ResponseEntity} com status 200 (OK) em caso de sucesso ou 404 (Não Encontrado) se o material não existir.
      */
     @DeleteMapping("/{idMaterial}/excluir")
     public ResponseEntity<String> excluir(@PathVariable Long idMaterial){

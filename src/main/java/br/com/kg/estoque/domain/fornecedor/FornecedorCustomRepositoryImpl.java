@@ -11,9 +11,10 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 
 /**
- * Essa classe contém métodos customizados de acesso ao banco de dados.
- * Os recursos aqui descritos não são suportados por default pelo Spring Data
- * e dão maior controle as transações e filtros dinâmicos
+ * Implementação do repositório customizado para a entidade {@link Fornecedor}.
+ * Esta classe utiliza o {@link EntityManager} para construir e executar consultas JPQL dinâmicas,
+ * fornecendo a funcionalidade necessária para a integração com o DataTables.
+ *
  * @author Ailton
  * @version 2.0.1
  */
@@ -24,7 +25,7 @@ public class FornecedorCustomRepositoryImpl implements FornecedorCustomRepositor
 	private EntityManager em;
 
 	/**
-	 * lista os contatos para o CRUD dinâmico com Json do Data Table com base no cliente selecionado
+	 * {@inheritDoc}
 	 */
 	@Override
 	public List<Fornecedor> listFornecedoresToDataTable(String[] colunas, DataTableParams params) {
@@ -43,7 +44,7 @@ public class FornecedorCustomRepositoryImpl implements FornecedorCustomRepositor
         }
 		
 		jpql.append(" ) ");
-		jpql.append(" ORDER BY "+ colunas[params.getOrderCol()]+ " " +  params.getOrderDir());
+		jpql.append(" ORDER BY ").append(colunas[params.getOrderCol()]).append(" ").append(params.getOrderDir());
 		
 		TypedQuery<Fornecedor> query = em.createQuery(jpql.toString(), Fornecedor.class);
 		query.setParameter("searchValue", "%"+Auxiliar.removeAcentos(params.getSearchValue().toLowerCase())+"%");
@@ -51,11 +52,10 @@ public class FornecedorCustomRepositoryImpl implements FornecedorCustomRepositor
 		query.setMaxResults(params.getLength());
 		
 		return query.getResultList();
-
 	}
 	
 	/**
-	 * retorna o total de registros com paginação para o Json do DataTable
+	 * {@inheritDoc}
 	 */
 	@Override
 	public Long totalFornecedoresToDataTable(String[] colunas, String sSearch) {
@@ -76,10 +76,8 @@ public class FornecedorCustomRepositoryImpl implements FornecedorCustomRepositor
 		jpql.append(" ) ");
 		
 		var query = em.createQuery(jpql.toString(), Long.class);
-		query.setParameter("searchValue", "%"+sSearch.toLowerCase()+"%");
+		query.setParameter("searchValue", "%"+Auxiliar.removeAcentos(sSearch.toLowerCase())+"%");
 		
 		return query.getSingleResult();
-		
 	}
-
 }
