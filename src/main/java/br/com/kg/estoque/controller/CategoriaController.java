@@ -21,22 +21,35 @@ import jakarta.validation.Valid;
 
 /**
  * Controlador responsável por gerenciar as requisições relacionadas às categorias.
+ * Lida com as operações de CRUD e listagem de dados para a entidade de categoria.
  */
 @Controller
 @RequestMapping("/categorias")
 public class CategoriaController {
 
-    private CategoriaService categoriaService;
+    private final CategoriaService categoriaService;
 
+    /**
+     * Constrói um novo CategoriaController com o CategoriaService especificado.
+     *
+     * @param categoriaService O serviço para lidar com a lógica de negócios da categoria.
+     */
     public CategoriaController(CategoriaService categoriaService) {
         this.categoriaService = categoriaService;
     }
 
-
-
     /**
-	 * Gera json dinâmico para Data Table (CRUD)
-	 */
+     * Fornece dados para o componente DataTables na página de listagem de categorias.
+     * Este endpoint é chamado via AJAX pela biblioteca DataTables para popular a tabela.
+     *
+     * @param draw        O contador de sorteio ao qual esta solicitação está respondendo.
+     * @param start       O índice do registro inicial (para paginação).
+     * @param length      O número de registros a serem exibidos (para paginação).
+     * @param searchValue O valor de pesquisa global.
+     * @param orderCol    O índice da coluna a ser ordenada.
+     * @param orderDir    A direção da ordenação (asc ou desc).
+     * @return Um objeto {@link DataTableResult} contendo os dados para a tabela.
+     */
 	@GetMapping("/dataTable")
     @ResponseBody
 	public DataTableResult jsonDataTable(
@@ -51,35 +64,32 @@ public class CategoriaController {
 		return categoriaService.dataTableCategoria(params);
 	}
 
-
-
     /**
-     * Retorna a página inicial das categorias.
-     * @return o modelo e a visualização da página inicial das categorias.
+     * Exibe a página principal para gerenciamento de categorias.
+     *
+     * @return Um objeto {@link ModelAndView} para a página de índice de categorias.
      */
     @GetMapping("")
     public ModelAndView index(){
         return new ModelAndView("categorias/index");
     }
 
-
-
     /**
-     * Retorna a página de criação de uma nova categoria.
-     * @param categoria a categoria a ser criada.
-     * @return o modelo e a visualização da página de criação de uma nova categoria.
+     * Exibe o formulário para criar uma nova categoria.
+     *
+     * @param categoria Um objeto {@link Categoria} vazio para vincular ao formulário.
+     * @return Um objeto {@link ModelAndView} para o formulário modal de criação de categoria.
      */
     @GetMapping("/novo")
     public ModelAndView novo(@ModelAttribute("categoria") Categoria categoria){
         return new ModelAndView("categorias/modal-form");
     }
 
-
-
     /**
-     * Retorna a página de edição de uma categoria existente.
-     * @param idCategoria o ID da categoria a ser editada.
-     * @return o modelo e a visualização da página de edição de uma categoria existente.
+     * Exibe o formulário para editar uma categoria existente.
+     *
+     * @param idCategoria O ID da categoria a ser editada.
+     * @return Um objeto {@link ModelAndView} para o formulário modal de edição de categoria, preenchido com os dados da categoria.
      */
     @GetMapping("/{idCategoria}/editar")
     public ModelAndView editar(@PathVariable Long idCategoria){
@@ -89,13 +99,12 @@ public class CategoriaController {
         return model;
     }
 
-
-
     /**
-     * Salva uma categoria.
-     * @param categoria a categoria a ser salva.
-     * @param result o resultado da validação da categoria.
-     * @return o modelo e a visualização da página de fechamento do modal.
+     * Salva uma nova categoria ou atualiza uma existente.
+     *
+     * @param categoria O objeto {@link Categoria} a ser salvo, preenchido a partir dos dados do formulário.
+     * @param result    O resultado do processo de validação.
+     * @return Um {@link ModelAndView} para fechar o modal em caso de sucesso, ou de volta ao formulário em caso de erro de validação.
      */
     @PostMapping("/salvar")
     public ModelAndView salvar(@Valid Categoria categoria, BindingResult result){
@@ -106,12 +115,11 @@ public class CategoriaController {
         return new ModelAndView("categorias/close-modal");
     }
 
-
-
     /**
-     * Exclui uma categoria.
-     * @param idCategoria o ID da categoria a ser excluída.
-     * @return uma resposta HTTP indicando o sucesso ou a falha da exclusão.
+     * Exclui uma categoria pelo seu ID.
+     *
+     * @param idCategoria O ID da categoria a ser excluída.
+     * @return Um {@link ResponseEntity} com status 200 (OK) em caso de sucesso ou 404 (Não Encontrado) se a categoria não existir.
      */
     @DeleteMapping("/{idCategoria}/excluir")
     public ResponseEntity<String> excluir(@PathVariable Long idCategoria){

@@ -12,19 +12,30 @@ import org.springframework.web.servlet.ModelAndView;
 
 import br.com.kg.estoque.session.SessionParameters;
 
-
+/**
+ * Controlador principal que gerencia as páginas iniciais e de utilidades da aplicação.
+ * Lida com a navegação para a página inicial, página de acesso negado e funcionalidades da interface do usuário.
+ */
 @Controller
 public class HomeController {
 
-    Logger logger = Logger.getLogger(HomeController.class.getName());
-    private SessionParameters sessionParameters;
+    private final Logger logger = Logger.getLogger(HomeController.class.getName());
+    private final SessionParameters sessionParameters;
 
-
+    /**
+     * Constrói um novo HomeController com os parâmetros de sessão especificados.
+     *
+     * @param sessionParameters Os parâmetros de sessão para gerenciar o estado da interface do usuário.
+     */
+    public HomeController(SessionParameters sessionParameters) {
+        this.sessionParameters = sessionParameters;
+    }
 
     /**
      * Retorna a página inicial da aplicação.
-     * 
-     * @return View da página inicial
+     * Realiza o log das informações de autenticação do usuário.
+     *
+     * @return Um {@link ModelAndView} para a página inicial.
      */
     @GetMapping("/")
     public ModelAndView index() {
@@ -35,31 +46,26 @@ public class HomeController {
         return new ModelAndView("home/index");
     }
 
-
-
     /**
-     * Retorna a página de acesso negado.
+     * Retorna a página de "acesso negado".
      * <p>
-     * Essa página é retornada quando o usuário tenta acessar uma URL que
-     * ele não tem permissão.
-     * 
-     * @return View da página de acesso negado
+     * Essa página é exibida quando um usuário tenta acessar um recurso
+     * para o qual não possui permissão.
+     *
+     * @return Um {@link ModelAndView} para a página de acesso negado.
      */
     @GetMapping("/acessoNegado")
     public ModelAndView acessoNegado() {
         return new ModelAndView("home/acesso-negado");
     }
-    
-
-
 
     /**
-     * Alterna o estado de abertura da barra lateral.
+     * Alterna a visibilidade da barra lateral (sidebar).
      * <p>
-     * Este método é chamado para alternar entre os estados aberto e fechado da barra lateral
-     * da interface do usuário. Ele modifica o estado atual e retorna uma resposta HTTP 200 (OK).
+     * Este método é chamado via AJAX para alternar entre os estados "aberto" e "fechado"
+     * da barra lateral da interface do usuário. O estado é persistido nos parâmetros da sessão.
      *
-     * @return Resposta HTTP 200 (OK) indicando que a operação foi bem-sucedida.
+     * @return Uma {@link ResponseEntity} com status 200 (OK) para indicar que a operação foi bem-sucedida.
      */
     @GetMapping("/funcaoMenu")
     public ResponseEntity<String> funcaoMenu(){

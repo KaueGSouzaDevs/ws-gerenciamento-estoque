@@ -23,22 +23,34 @@ import jakarta.validation.Valid;
 
 /**
  * Controlador responsável por gerenciar as requisições relacionadas aos fornecedores.
+ * Lida com as operações de CRUD e listagem de dados para a entidade de fornecedor.
  */
 @Controller
 @RequestMapping("/fornecedores")
-// @PreAuthorize("hasAuthority('ROLE_FORNECEDORES')")
 public class FornecedorController {
 
-    private FornecedorService fornecedorService;
+    private final FornecedorService fornecedorService;
 
+    /**
+     * Constrói um novo FornecedorController com o FornecedorService especificado.
+     *
+     * @param fornecedorService O serviço para lidar com a lógica de negócios do fornecedor.
+     */
     public FornecedorController(FornecedorService fornecedorService) {
         this.fornecedorService = fornecedorService;
     }
 
-
-
     /**
-     * Gera json dinâmico para Data Table (CRUD)
+     * Fornece dados para o componente DataTables na página de listagem de fornecedores.
+     * Este endpoint é chamado via AJAX pela biblioteca DataTables para popular a tabela.
+     *
+     * @param draw        O contador de sorteio ao qual esta solicitação está respondendo.
+     * @param start       O índice do registro inicial (para paginação).
+     * @param length      O número de registros a serem exibidos (para paginação).
+     * @param searchValue O valor de pesquisa global.
+     * @param orderCol    O índice da coluna a ser ordenada.
+     * @param orderDir    A direção da ordenação (asc ou desc).
+     * @return Um objeto {@link DataTableResult} contendo os dados para a tabela.
      */
     @GetMapping("jsonDataTable")
     @ResponseBody
@@ -54,36 +66,34 @@ public class FornecedorController {
         return fornecedorService.dataTableFornecedores(params);
     }
 
-
-
     /**
-     * Retorna a página inicial dos fornecedores, exibindo a lista de todos os fornecedores cadastrados.
-     * @return O ModelAndView contendo a página inicial dos fornecedores.
+     * Exibe a página principal para gerenciamento de fornecedores.
+     *
+     * @return Um objeto {@link ModelAndView} para a página de índice de fornecedores.
      */
     @GetMapping("")
     public ModelAndView index(){
         return new ModelAndView("fornecedores/index");
     }
 
-
-
     /**
-     * Retorna a página de cadastro de um novo fornecedor.
-     * @param fornecedor O objeto Fornecedor a ser preenchido no formulário.
-     * @return O ModelAndView contendo a página de cadastro de fornecedor.
+     * Exibe o formulário para criar um novo fornecedor.
+     *
+     * @param fornecedor Um objeto {@link Fornecedor} vazio para vincular ao formulário.
+     * @return Um objeto {@link ModelAndView} para o formulário de criação de fornecedor.
      */
     @GetMapping("/novo")
     public ModelAndView novo(@ModelAttribute("fornecedor") Fornecedor fornecedor){
         return new ModelAndView("fornecedores/form");
     }
 
-
-
     /**
-     * Salva um fornecedor no banco de dados.
-     * @param fornecedor O objeto Fornecedor a ser salvo.
-     * @param result O objeto BindingResult contendo os resultados da validação do formulário.
-     * @return O ModelAndView redirecionando para a página inicial dos fornecedores em caso de sucesso, ou para a página de cadastro em caso de erro.
+     * Salva um novo fornecedor ou atualiza um existente.
+     * Realiza a validação antes de salvar.
+     *
+     * @param fornecedor O objeto {@link Fornecedor} a ser salvo, preenchido a partir dos dados do formulário.
+     * @param result     O resultado do processo de validação.
+     * @return Um {@link ModelAndView} redirecionando para a lista de fornecedores em caso de sucesso, ou de volta ao formulário em caso de erro de validação.
      */
     @PostMapping("/salvar")
     public ModelAndView salvar(@Valid Fornecedor fornecedor, BindingResult result){
@@ -97,12 +107,11 @@ public class FornecedorController {
         return new ModelAndView("redirect:/fornecedores");
     }
 
-
-
     /**
-     * Retorna a página de edição de um fornecedor existente.
+     * Exibe o formulário para editar um fornecedor existente.
+     *
      * @param idFornecedor O ID do fornecedor a ser editado.
-     * @return O ModelAndView contendo a página de edição de fornecedor, ou a página de erro 404 caso o fornecedor não seja encontrado.
+     * @return Um {@link ModelAndView} para o formulário de edição de fornecedor, preenchido com os dados do fornecedor, ou uma página de erro 404 se não for encontrado.
      */
     @GetMapping("{idFornecedor}/editar")
     public ModelAndView editar(@PathVariable Long idFornecedor){
@@ -115,12 +124,11 @@ public class FornecedorController {
         return model;
     }
 
-
-
     /**
-     * Exclui um fornecedor do banco de dados.
+     * Exclui um fornecedor pelo seu ID.
+     *
      * @param idFornecedor O ID do fornecedor a ser excluído.
-     * @return A ResponseEntity com o status OK em caso de sucesso, ou o status Not Found caso o fornecedor não seja encontrado.
+     * @return Um {@link ResponseEntity} com status 200 (OK) em caso de sucesso ou 404 (Não Encontrado) se o fornecedor não existir.
      */
     @DeleteMapping("/{idFornecedor}/excluir")
     public ResponseEntity<String> excluir(@PathVariable Long idFornecedor){

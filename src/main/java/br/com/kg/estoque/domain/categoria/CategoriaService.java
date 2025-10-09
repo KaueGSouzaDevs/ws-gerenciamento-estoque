@@ -11,100 +11,91 @@ import br.com.kg.estoque.custom.DataTableParams;
 import br.com.kg.estoque.custom.DataTableResult;
 
 /**
- * Classe de serviço para a entidade Categoria.
+ * Serviço de negócios para a entidade {@link Categoria}.
+ * Esta classe encapsula a lógica de negócios e a interação com os repositórios
+ * relacionados à entidade Categoria.
  */
 @Service
 public class CategoriaService {
 
-	private CategoriaRepository categoriaRepository;
-	private CategoriaCustomRepository categoriaCustomRepository;
+	private final CategoriaRepository categoriaRepository;
+	private final CategoriaCustomRepository categoriaCustomRepository;
 
+	/**
+	 * Constrói o serviço com as dependências de repositório necessárias.
+	 *
+	 * @param categoriaRepository       O repositório JPA padrão para operações CRUD.
+	 * @param categoriaCustomRepository O repositório customizado para consultas dinâmicas.
+	 */
 	public CategoriaService(CategoriaRepository categoriaRepository, CategoriaCustomRepository categoriaCustomRepository) {
 		this.categoriaRepository = categoriaRepository;
 		this.categoriaCustomRepository = categoriaCustomRepository;
 	}
 
 	/**
-	 * Salva uma categoria.
+	 * Salva ou atualiza uma entidade de categoria no banco de dados.
 	 * 
-	 * @param categoria a categoria a ser salva
+	 * @param categoria A entidade {@link Categoria} a ser salva.
 	 */
 	public void salvar(Categoria categoria) {
 		categoriaRepository.save(categoria);
 	}
 
 	/**
-	 * Retorna uma lista de todas as categorias.
+	 * Busca todas as categorias cadastradas, ordenadas pelo nome em ordem ascendente.
 	 * 
-	 * @return a lista de categorias
+	 * @return Uma {@link List} de todas as entidades {@link Categoria}.
 	 */
 	public List<Categoria> buscarTodos() {
 		return categoriaRepository.findAll(Sort.by(Sort.Direction.ASC, "nome"));
 	}
 
 	/**
-	 * Retorna uma categoria pelo seu ID.
+	 * Busca uma categoria específica pelo seu identificador único.
 	 * 
-	 * @param idCategoria o ID da categoria
-	 * @return a categoria encontrada, ou vazio se não encontrada
+	 * @param idCategoria O ID da categoria a ser buscada.
+	 * @return Um {@link Optional} contendo a {@link Categoria} se encontrada, ou vazio caso contrário.
 	 */
 	public Optional<Categoria> buscarPorId(Long idCategoria) {
 		return categoriaRepository.findById(idCategoria);
 	}
 
 	/**
-	 * Exclui uma categoria pelo seu ID.
+	 * Exclui uma categoria do banco de dados com base no seu ID.
 	 * 
-	 * @param idCategoria o ID da categoria a ser excluída
+	 * @param idCategoria O ID da categoria a ser excluída.
 	 */
 	public void excluir(Long idCategoria) {
 		categoriaRepository.deleteById(idCategoria);
 	}
 
-
-
 	/**
-	 * Gera json dinâmico para Data Table (CRUD)
+	 * Prepara os dados da categoria para serem exibidos em um componente DataTables.
+	 * Este método lida com a busca, paginação e formatação dos dados conforme
+	 * os parâmetros recebidos do DataTables.
 	 * 
-	 * @param draw        o valor do draw do DataTable
-	 * @param start       o valor do start do DataTable
-	 * @param length      o valor do length do DataTable
-	 * @param searchValue o valor do searchValue do DataTable
-	 * @param orderCol    o valor do orderCol do DataTable
-	 * @param orderDir    o valor do orderDir do DataTable
-	 * @return o objeto DataTableResult com os dados para o DataTable
+	 * @param params Os parâmetros da requisição do DataTables, contendo informações de busca, paginação e ordenação.
+	 * @return Um objeto {@link DataTableResult} pronto para ser serializado em JSON e enviado ao cliente.
 	 */
-
 	public DataTableResult dataTableCategoria(DataTableParams params) {
 		
-		// colunas a serem consultadas conforme modelos relacionais
-		String[] colunas={"id","nome","situacao"};
+		String[] colunas = {"id", "nome", "situacao"};
 
-		var categoriasList = categoriaCustomRepository.listEntitiesToDataTableCategoria(colunas, params);
+		List<Categoria> categoriasList = categoriaCustomRepository.listEntitiesToDataTableCategoria(colunas, params);
 		long totalFiltrado = categoriaCustomRepository.totalEntitiesToDataTableCategoria(colunas, Auxiliar.removeAcentos(params.getSearchValue()));
-
 		
-		// gera o DataTable e popula com as informações da lista de objetos
 		DataTableResult dataTable = new DataTableResult();
-
-		// Gera o draw do DataTable
-		dataTable.setDraw(String.valueOf(System.currentTimeMillis()));
-
-		// Gera a quantidade de registros totais no DataTable
-		dataTable.setRecordsTotal(categoriasList.size());
-
-		// Gera a quantidade de registros filtrados no DataTable
+		dataTable.setDraw(params.getDraw());
+		dataTable.setRecordsTotal((int) categoriaRepository.count());
 		dataTable.setRecordsFiltered(totalFiltrado);
-		
-		//Gera a lista de dados para serem populados no DataTable
 		dataTable.setData(categoriasList.stream()
-							.map(c -> new Object[]{
-								c.getId(), 
-								c.getNome(), 
-								c.getSituacao(), 
-								c.getId()
-							}).toList());
+				.map(c -> new Object[]{
+						c.getId(),
+						c.getNome(),
+						c.getSituacao(),
+						c.getId()
+				}).toList());
+
 		return dataTable;
 	}
-
 }

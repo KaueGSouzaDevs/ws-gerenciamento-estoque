@@ -11,80 +11,76 @@ import br.com.kg.estoque.custom.DataTableParams;
 import br.com.kg.estoque.custom.DataTableResult;
 
 /**
- * Classe de serviço para manipulação de fornecedores.
+ * Serviço de negócios para a entidade {@link Fornecedor}.
+ * Esta classe encapsula a lógica de negócios, validações e interação com o repositório
+ * para a entidade Fornecedor.
  */
 @Service
 public class FornecedorService {
 
-    private FornecedorRepository fornecedorRepository;
+    private final FornecedorRepository fornecedorRepository;
 
+    /**
+     * Constrói o serviço com a dependência do repositório de fornecedor.
+     *
+     * @param fornecedorRepository O repositório para acesso aos dados de fornecedores.
+     */
     public FornecedorService(FornecedorRepository fornecedorRepository) {
         this.fornecedorRepository = fornecedorRepository;
     }
 
-
-
     /**
-     * Salva um fornecedor.
+     * Salva ou atualiza uma entidade de fornecedor no banco de dados.
      * 
-     * @param fornecedor O fornecedor a ser salvo.
+     * @param fornecedor A entidade {@link Fornecedor} a ser salva.
      */
     public void salvar(Fornecedor fornecedor) {
         fornecedorRepository.save(fornecedor);
     }
 
-
-
     /**
-     * Busca um fornecedor pelo ID.
+     * Busca um fornecedor específico pelo seu identificador único.
      * 
-     * @param id O ID do fornecedor.
-     * @return Um Optional contendo o fornecedor, se encontrado.
+     * @param id O ID do fornecedor a ser buscado.
+     * @return Um {@link Optional} contendo o {@link Fornecedor} se encontrado, ou vazio caso contrário.
      */
     public Optional<Fornecedor> buscarPorId(Long id) {
         return fornecedorRepository.findById(id);
     }
 
-
-
     /**
-     * Busca todos os fornecedores.
+     * Busca todos os fornecedores cadastrados.
      * 
-     * @return Uma lista contendo todos os fornecedores.
+     * @return Uma {@link List} de todas as entidades {@link Fornecedor}.
      */
     public List<Fornecedor> buscarTodos() {
         return fornecedorRepository.findAll();
     }
 
-
-
     /**
-     * Busca um fornecedor pelo CNPJ.
+     * Busca um fornecedor pelo seu número de CNPJ.
      * 
-     * @param cnpj O CNPJ do fornecedor.
-     * @return Um Optional contendo o fornecedor, se encontrado.
+     * @param cnpj O CNPJ do fornecedor a ser buscado.
+     * @return Um {@link Optional} contendo o {@link Fornecedor} se encontrado.
      */
     public Optional<Fornecedor> buscaPorCnpj(String cnpj) {
         return fornecedorRepository.findByCnpj(cnpj);
     }
 
-
-
     /**
-     * Busca um fornecedor pelo CNPJ, excluindo o fornecedor com o ID especificado.
+     * Busca um fornecedor por CNPJ, garantindo que não seja o mesmo fornecedor (pelo ID).
+     * Útil para validações de unicidade ao editar um fornecedor existente.
      * 
-     * @param cnpj O CNPJ do fornecedor.
-     * @param id O ID do fornecedor a ser excluído.
-     * @return Um Optional contendo o fornecedor, se encontrado.
+     * @param cnpj O CNPJ a ser buscado.
+     * @param id O ID do fornecedor a ser ignorado na busca.
+     * @return Um {@link Optional} contendo um fornecedor com o mesmo CNPJ, mas ID diferente, se houver.
      */
     public Optional<Fornecedor> buscarPorCnpjEIdDiferenteDoMeu(String cnpj, Long id) {
         return fornecedorRepository.findByCnpjAndIdNot(cnpj, id);
     }
 
-
-
     /**
-     * Exclui um fornecedor pelo ID.
+     * Exclui um fornecedor do banco de dados com base no seu ID.
      * 
      * @param idFornecedor O ID do fornecedor a ser excluído.
      */
@@ -92,71 +88,59 @@ public class FornecedorService {
         fornecedorRepository.deleteById(idFornecedor);
     }
 
-
-
     /**
-     * Valida a alteração de um fornecedor.
+     * Valida se o CNPJ de um fornecedor sendo alterado já existe em outro cadastro.
+     * Adiciona um erro ao {@link BindingResult} se a validação falhar.
      * 
-     * @param fornecedor O fornecedor a ser validado.
-     * @param result O BindingResult contendo os erros de validação.
+     * @param fornecedor O fornecedor com os dados atualizados.
+     * @param result O objeto BindingResult para registrar erros de validação.
      */
     public void validaAlteracao(Fornecedor fornecedor, BindingResult result) {
-        // Validação de registros existentes (editar)
-        if (fornecedor.getId() != null && (buscarPorCnpjEIdDiferenteDoMeu(fornecedor.getCnpj(), fornecedor.getId()).isPresent())) result.rejectValue("cnpj", "", "CNPJ já cadastrado");
+        if (fornecedor.getId() != null && (buscarPorCnpjEIdDiferenteDoMeu(fornecedor.getCnpj(), fornecedor.getId()).isPresent())) {
+            result.rejectValue("cnpj", "", "CNPJ já cadastrado");
+        }
     }
 
-
-
     /**
-     * Valida a inclusão de um fornecedor.
+     * Valida se o CNPJ de um novo fornecedor já existe.
+     * Adiciona um erro ao {@link BindingResult} se a validação falhar.
      * 
-     * @param fornecedor O fornecedor a ser validado.
-     * @param result O BindingResult contendo os erros de validação.
+     * @param fornecedor O novo fornecedor a ser validado.
+     * @param result O objeto BindingResult para registrar erros de validação.
      */
     public void validaInclusao(Fornecedor fornecedor, BindingResult result) {
-        // Validação de registros existentes (novos)
-        if (fornecedor.getId() == null && (buscaPorCnpj(fornecedor.getCnpj()).isPresent())) result.rejectValue("cnpj", "null", "CNPJ já cadastrado");
+        if (fornecedor.getId() == null && (buscaPorCnpj(fornecedor.getCnpj()).isPresent())) {
+            result.rejectValue("cnpj", "null", "CNPJ já cadastrado");
+        }
     }
 
-
-
     /**
-     * Gera um DataTableResult para o CRUD de fornecedores, com base nos parâmetros
-     * de configuração do DataTable.
+     * Prepara os dados do fornecedor para serem exibidos em um componente DataTables.
      * 
-     * @param params Os parâmetros de configuração do DataTable.
-     * @return Um DataTableResult contendo as informações para o CRUD de fornecedores.
+     * @param params Os parâmetros da requisição do DataTables.
+     * @return Um objeto {@link DataTableResult} pronto para ser serializado em JSON.
      */
     public DataTableResult dataTableFornecedores(DataTableParams params)  {
 
-		// colunas a serem consultadas conforme modelos relacionais
-		String[] colunas={"id","nome","telefone","email","contato","situacao"};
+		String[] colunas = {"id", "nome", "telefone", "email", "contato", "situacao"};
 				
-		// varre a lista de registros no banco de dados e adiciona na lista de informações
-		var fornecedoresList = fornecedorRepository.listFornecedoresToDataTable(colunas, params);
+		List<Fornecedor> fornecedoresList = fornecedorRepository.listFornecedoresToDataTable(colunas, params);
         long registrosFiltrados = fornecedorRepository.totalFornecedoresToDataTable(colunas, Auxiliar.removeAcentos(params.getSearchValue()));
 		
-		// gera o DataTable e popula com as informações da lista de objetos
 		DataTableResult dataTable = new DataTableResult();
-		// Gera o draw do DataTable
-		dataTable.setDraw(String.valueOf(System.currentTimeMillis()));
-
-		// Gera a quantidade de registros totais no DataTable
-		dataTable.setRecordsTotal(fornecedoresList.size());
-
-		// Gera a quantidade de registros filtrados no DataTable
+		dataTable.setDraw(params.getDraw());
+		dataTable.setRecordsTotal((int) fornecedorRepository.count());
 		dataTable.setRecordsFiltered(registrosFiltrados);
-		
-		//Gera a lista de dados para serem populados no DataTable
 		dataTable.setData(fornecedoresList.stream()
-							.map(c -> new Object[]{
-								c.getId(),
-								c.getNome(),
-                                c.getTelefone(),
-                                c.getEmail(),
-                                c.getContato(),
-								c.getSituacao()
-							}).toList());
+				.map(c -> new Object[]{
+						c.getId(),
+						c.getNome(),
+                        c.getTelefone(),
+                        c.getEmail(),
+                        c.getContato(),
+						c.getSituacao()
+				}).toList());
+
 		return dataTable;
 	}
 }
