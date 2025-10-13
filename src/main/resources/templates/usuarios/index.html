@@ -8,12 +8,12 @@ th:with= "menu='acessos', submenu='usuarios'"
 </head>
 <body>
     <th:block layout:fragment="pagetitle">
-        <div th:replace="~{partials/title-meta :: title-meta('Movimentos')}"></div>
+        <div th:replace="~{partials/title-meta :: title-meta('Usuários')}"></div>
     </th:block>
 
     <th:block layout:fragment="conteudo">
         
-        <div th:replace="~{partials/page-title :: page-title('Movimentações de Estoque','Movimentos')}"></div>
+        <div th:replace="~{partials/page-title :: page-title('Usuários','Gerenciamento')}"></div>
 
         <div class="row">
             <div class="col-12">
@@ -35,7 +35,7 @@ th:with= "menu='acessos', submenu='usuarios'"
                         
                             <div class="d-flex align-items-center">
                                 <div class="ms-auto">
-                                    <a th:href="@{/movimentos/novo}" class="btn btn-primary d-flex align-items-center me-2">
+                                    <a th:href="@{/usuarios/novo}" class="btn btn-primary d-flex align-items-center me-2">
                                         <i class="mdi mdi-plus me-1"></i> Adicionar
                                     </a>
                                 </div>
@@ -48,11 +48,9 @@ th:with= "menu='acessos', submenu='usuarios'"
                             <thead>
                                 <tr>
                                     <th>Id</th>
-                                    <th>Data</th>
-                                    <th>Tipo</th>
-                                    <th>Material</th>
-                                    <th>Quantidade</th>
-                                    <th>Responsável</th>
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th>Status</th>
                                     <th class="text-center coluna-acoes">Ações</th>
                                 </tr>
                             </thead>

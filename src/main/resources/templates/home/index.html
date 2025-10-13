@@ -13,8 +13,25 @@ th:with= "menu='dashboards'">
     <th:block layout:fragment="conteudo">
         <div th:replace= "~{partials/page-title :: page-title('Página Inicial','Home')}"> </div>
 
-        <div th:text="${#authentication.principal}"></div>
-        
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Bem vindo ao Sistema de Controle de Estoque</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="div">
+                            <p>
+                                Dados do Usuário:
+                            </p>
+
+                            <span>Usuário:</span> <span th:text="${#authentication.principal}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </th:block>
 
 </html>
