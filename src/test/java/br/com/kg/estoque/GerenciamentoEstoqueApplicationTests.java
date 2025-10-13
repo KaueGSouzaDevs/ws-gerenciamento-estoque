@@ -1,4 +1,4 @@
-package br.com.kg.gerenciamento.estoque.gerenciamento_estoque;
+package br.com.kg.estoque;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

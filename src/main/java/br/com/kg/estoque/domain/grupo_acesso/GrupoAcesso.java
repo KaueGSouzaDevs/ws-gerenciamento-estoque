@@ -19,6 +19,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Representa a entidade Grupo de Acesso no banco de dados.
+ * Um grupo de acesso define um conjunto de permissões que podem ser atribuídas a usuários.
+ */
 @Entity
 @Table(name = "grupos_acessos")
 @ToString
@@ -26,25 +30,45 @@ public class GrupoAcesso implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+     * Identificador único do grupo de acesso.
+     * Gerado automaticamente pelo banco de dados.
+     */
 	@Getter @Setter
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	/**
+     * O nome do grupo de acesso (ex: "ADMINISTRADORES", "USUARIOS").
+     * É um campo obrigatório.
+     */
 	@Getter @Setter
 	@NotEmpty(message = "* Informe o nome do Grupo")
 	@Column(nullable = false)
 	private String grupo;
 	
+	/**
+     * Lista de permissões (roles) associadas a este grupo.
+     * Mapeado para uma tabela separada `permissao_grupo`.
+     * As permissões são carregadas de forma EAGER.
+     */
 	@Getter	@Setter
 	@ElementCollection(fetch=FetchType.EAGER)
 	@CollectionTable (name ="permissao_grupo",joinColumns = @JoinColumn (name="id_grupo"), foreignKey = @ForeignKey(name="fk_id_grupo"))
 	@Column(name ="permissoes")
 	private List<String> permissoes;
 	
+	/**
+     * Descrição textual do propósito do grupo de acesso.
+     */
 	@Getter	@Setter
 	private String descricao;
 	
+	/**
+     * A situação do grupo de acesso (ex: "Ativo", "Inativo").
+     * É um campo obrigatório.
+     */
 	@Getter	@Setter
 	@NotEmpty(message = "* Selecione uma opção")
 	@Column(name="situacao", length=10)

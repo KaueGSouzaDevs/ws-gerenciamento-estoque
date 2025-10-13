@@ -12,76 +12,79 @@ import br.com.kg.estoque.custom.DataTableParams;
 import br.com.kg.estoque.custom.DataTableResult;
 
 /**
- * Classe de serviço para manipulação de materiais.
+ * Serviço de negócios para a entidade {@link Material}.
+ * Esta classe encapsula a lógica de negócios e a interação com os repositórios
+ * para a entidade Material.
  */
 @Service
 public class MaterialService {
 
-    private MaterialRepository materialRepository;
-    private MaterialCustomRepository materialCustomRepository;
+    private final MaterialRepository materialRepository;
+    private final MaterialCustomRepository materialCustomRepository;
 
+    /**
+     * Constrói o serviço com as dependências de repositório necessárias.
+     *
+     * @param materialRepository       O repositório JPA padrão para operações CRUD.
+     * @param materialCustomRepository O repositório customizado para consultas dinâmicas.
+     */
     public MaterialService(MaterialRepository materialRepository, MaterialCustomRepository materialCustomRepository) {
         this.materialRepository = materialRepository;
         this.materialCustomRepository = materialCustomRepository;
     }
 
-
-
     /**
-     * Salva um material.
+     * Salva ou atualiza uma entidade de material no banco de dados.
      * 
-     * @param material O material a ser salvo.
+     * @param material A entidade {@link Material} a ser salva.
      */
     public void salvar(Material material) {
         materialRepository.save(material);
     }
 
-
-
     /**
-     * Retorna uma lista de todos os materiais ordenados pelo nome.
+     * Busca todos os materiais cadastrados, ordenados pelo nome em ordem ascendente.
      * 
-     * @return Uma lista de materiais.
+     * @return Uma {@link List} de todas as entidades {@link Material}.
      */
     public List<Material> buscarTodos() {
         return materialRepository.findAll(Sort.by(Sort.Direction.ASC, "nome"));
     }
 
-
-
     /**
-     * Busca um material pelo seu ID.
+     * Busca um material específico pelo seu identificador único.
      * 
-     * @param idCategoria O ID do material a ser buscado.
-     * @return Um Optional contendo o material, se encontrado.
+     * @param idMaterial O ID do material a ser buscado.
+     * @return Um {@link Optional} contendo o {@link Material} se encontrado, ou vazio caso contrário.
      */
-    public Optional<Material> buscarPorId(Long idCategoria) {
-        return materialRepository.findById(idCategoria);
+    public Optional<Material> buscarPorId(Long idMaterial) {
+        return materialRepository.findById(idMaterial);
     }
 
-
-
     /**
-     * Exclui um material pelo seu ID.
+     * Exclui um material do banco de dados com base no seu ID.
      * 
-     * @param idCategoria O ID do material a ser excluído.
+     * @param idMaterial O ID do material a ser excluído.
      */
-    public void excluir(Long idCategoria) {
-        materialRepository.deleteById(idCategoria);
+    public void excluir(Long idMaterial) {
+        materialRepository.deleteById(idMaterial);
     }
 
+    /**
+     * Prepara os dados do material para serem exibidos em um componente DataTables.
+     *
+     * @param params Os parâmetros da requisição do DataTables.
+     * @return Um objeto {@link DataTableResult} pronto para ser serializado em JSON.
+     */
     public DataTableResult dataTableMaterial(DataTableParams params) {
         
-        // colunas a serem consultadas conforme modelos relacionais
         String[] colunas={"id", "nome", "categoria.nome", "fabricante", "fornecedor.nome", "valor", "saldo", "situacao"};
 
-        // varre a lista de registros no banco de dados e adiciona na lista de informações
-        var materiaisList = materialCustomRepository.listEntitiesToDataTable(colunas, params);
+        List<Material> materiaisList = materialCustomRepository.listEntitiesToDataTable(colunas, params);
         
         List<Object[]> listaObjects = new ArrayList<>();
 
         materiaisList.forEach( material -> {
-
             Object[] linha = {
                 material.getId(),
                 material.getNome(),
@@ -98,12 +101,11 @@ public class MaterialService {
 
         Long registrosFiltrados = materialCustomRepository.totalEntitiesToDataTable(colunas, Auxiliar.removeAcentos(params.getSearchValue()));
 
-        // gera o DataTable e popula com as informações da lista de objetos
         DataTableResult dataTable = new DataTableResult();
-        dataTable.setDraw(String.valueOf(System.currentTimeMillis()));
-        dataTable.setRecordsTotal(materiaisList.size());
+        dataTable.setDraw(params.getDraw());
+        dataTable.setRecordsTotal((int) materialRepository.count());
         dataTable.setRecordsFiltered(registrosFiltrados);
-        dataTable.setData(listaObjects.stream().toList());
+        dataTable.setData(listaObjects);
         return dataTable;
     }
 }
