@@ -120,4 +120,13 @@ public class UsuarioService {
 	public Optional<Usuario> findByEmail(String email) {
 		return usuarioRepository.findByEmail(email);
 	}
+
+	/**
+	 * Exclui um usuário pelo seu ID.
+	 *
+	 * @param id O ID do usuário a ser excluído.
+	 */
+	public void deleteById(Long id) {
+		usuarioRepository.deleteById(id);
+	}
 }
