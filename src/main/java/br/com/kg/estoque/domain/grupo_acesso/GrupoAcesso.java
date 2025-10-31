@@ -3,10 +3,13 @@ package br.com.kg.estoque.domain.grupo_acesso;
 import java.io.Serializable;
 import java.util.List;
 
+import br.com.kg.estoque.enuns.SituacaoGrupoAcesso;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
@@ -15,6 +18,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -45,7 +50,8 @@ public class GrupoAcesso implements Serializable {
      */
 	@Getter @Setter
 	@NotEmpty(message = "* Informe o nome do Grupo")
-	@Column(nullable = false)
+	@Size(max = 40, message = "Máximo de 40 caracteres")
+	@Column(name="grupo", length=40)
 	private String grupo;
 	
 	/**
@@ -63,6 +69,8 @@ public class GrupoAcesso implements Serializable {
      * Descrição textual do propósito do grupo de acesso.
      */
 	@Getter	@Setter
+	@Size(max = 100, message = "Máximo de 100 caracteres")
+	@Column(name="descricao", length=100)
 	private String descricao;
 	
 	/**
@@ -70,8 +78,9 @@ public class GrupoAcesso implements Serializable {
      * É um campo obrigatório.
      */
 	@Getter	@Setter
-	@NotEmpty(message = "* Selecione uma opção")
+	@NotNull(message = "* Selecione uma opção")
 	@Column(name="situacao", length=10)
-	private String situacao;
+	@Enumerated(EnumType.STRING)
+	private SituacaoGrupoAcesso situacao;
 	
 }
