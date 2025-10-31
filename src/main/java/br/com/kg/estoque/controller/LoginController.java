@@ -27,4 +27,12 @@ public class LoginController {
         session.invalidate();
         return new ModelAndView("login/form-login");
     }
+
+
+
+    @GetMapping("/logout")
+    public ModelAndView logout(HttpSession session){
+        session.invalidate();
+        return new ModelAndView("login/form-login");
+    }
 }

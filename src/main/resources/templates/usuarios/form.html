@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="pt-br" xmlns:th="http://thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}"
-      th:with="menu='cadastro', submenu='usuarios'">
+      th:with="menu='acessos', submenu='usuarios'">
 
 <head>
     <!-- Conteúdo adicional pode ser inserido aqui -->
@@ -11,14 +11,15 @@
 </th:block>
 
 <th:block layout:fragment="conteudo">
-    <div th:replace="~{partials/page-title :: page-title(${usuario.id == null ? 'Novo Usuário' : 'Editar Usuário'},'Cadastro')}"></div>
+    <div th:replace="~{partials/page-title :: page-title(${usuario.id == null ? 'Novo Usuário' : 'Editar Usuário'},'Gerenciamento de Usuários')}"></div>
 
     <div class="row">
         <div class="col-12">
-            <div class="card">
+            <div class="card">  
                 <div class="card-body">
                     <form th:action="@{/usuarios/salvar}" th:object="${usuario}" method="post">
                         <input type="hidden" th:field="*{id}">
+                        <input type="hidden" th:field="*{senha}">
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
