@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt-br" xmlns:th="http://thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}"
+      th:with="menu='acessos', submenu='grupo-acessos'">
+
+<head>
+    <!-- Conteúdo adicional pode ser inserido aqui -->
+</head>
+
+<th:block layout:fragment="pagetitle">
+    <div th:replace="~{partials/title-meta :: title-meta('Grupos de Acesso')}"></div>
+</th:block>
+
+<th:block layout:fragment="conteudo">
+    <div th:replace="~{partials/page-title :: page-title(${grupoAcesso.id == null ? 'Novo Grupo de Acesso' : 'Editar Grupo de Acesso'},'Gerenciamento de Grupos de Acesso')}"></div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">  
+                <div class="card-body">
+                    <form th:action="@{/usuarios/salvar}" th:object="${grupoAcesso}" method="post">
+                        <input type="hidden" th:field="*{id}">
+
+                        <div class="row">
+
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="grupo" class="form-label">Nome do Grupo</label>
+                                        <input type="text" th:field="*{grupo}" th:errorclass="is-invalid" class="form-control" id="grupo" placeholder="Informe o nome do grupo" maxlength="40">
+                                        <span class="error" th:if="${#fields.hasErrors('grupo')}" th:errors="*{grupo}"></span>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="situacao" class="form-label">Situação</label>
+                                        <select name="situacao" th:field="*{situacao}" class="form-select" id="situacao">
+                                            <option th:value="'ATIVO'">Ativo</option>
+                                            <option th:value="'INATIVO'">Inativo</option>
+                                        </select>
+                                        <span class="error" th:if="${#fields.hasErrors('situacao')}" th:errors="*{situacao}"></span>
+                                    </div>
+
+                                    <div class="col-md-12 mb-3">
+                                        <label for="descricao" class="form-label">Descrição</label>
+                                        <textarea th:field="*{descricao}" th:errorclass="is-invalid" class="form-control" id="descricao" placeholder="Informe uma descricao" maxlength="100" rows="5" ></textarea>
+                                        <span class="error" th:if="${#fields.hasErrors('descricao')}" th:errors="*{descricao}"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-12">
+
+                                        <table class="table table-bordered table-striped overflow-scroll" id="tabela-permissoes" style="max-height: 15rem;">
+                                            <thead>
+                                                <tr>
+                                                    <th>Controle de Acesso</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="text-black fw-semibold">
+                                                        <input class="form-check-input" type="checkbox" id="gerenciamento-usuarios" name="gerenciamento-usuarios" th:value="${GERENCIAMENTO_USUARIOS}" th:field="*{permissoes}">
+                                                        <label class="form-check-label" for="gerenciamento-usuarios"> Gerenciamento de Usuários</label>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-black fw-semibold">
+                                                        <input class="form-check-input" type="checkbox" id="gerenciamento-grupos-acessos" name="gerenciamento-grupos-acessos" th:value="${GERENCIAMENTO_GRUPOS_ACESSOS}" th:field="*{permissoes}">
+                                                        <label class="form-check-label" for="gerenciamento-grupos-acessos"> Gerenciamento de Grupos de Acesso</label>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                            <thead>
+                                                <tr>
+                                                    <th>Controle de Acesso</th>
+                                                </tr>
+                                            </thead>
+
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="d-flex justify-content-end mt-3">
+                            <button type="submit" class="btn btn-primary me-2">Salvar</button>
+                            <a th:href="@{/usuarios}" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+</html>

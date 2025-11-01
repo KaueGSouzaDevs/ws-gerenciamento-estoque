@@ -60,7 +60,7 @@ public class UsuarioService {
 		dataTable.setDraw(params.getDraw());
 		dataTable.setRecordsTotal((int) usuarioRepository.count());
 		dataTable.setRecordsFiltered(registrosFiltrados);
-		dataTable.setData(usuariosList.stream().map(c -> new Object[]{c.getId(), c.getNome(), c.getLogin(), c.getEmail(), c.getSituacaoUsuario().toString(), c.getId()}).toList());
+		dataTable.setData(usuariosList.stream().map(c -> new Object[]{c.getId(), c.getNome(), c.getLogin(), c.getEmail(), c.getSituacaoUsuario().getDescricao(), c.getId()}).toList());
 
 		return dataTable;
 	}

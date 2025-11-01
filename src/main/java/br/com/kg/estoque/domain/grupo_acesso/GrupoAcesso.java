@@ -49,7 +49,7 @@ public class GrupoAcesso implements Serializable {
      * É um campo obrigatório.
      */
 	@Getter @Setter
-	@NotEmpty(message = "* Informe o nome do Grupo")
+	@NotEmpty(message = "* Informe o nome do grupo")
 	@Size(max = 40, message = "Máximo de 40 caracteres")
 	@Column(name="grupo", length=40)
 	private String grupo;

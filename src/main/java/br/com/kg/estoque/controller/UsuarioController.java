@@ -1,5 +1,6 @@
 package br.com.kg.estoque.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -126,7 +127,13 @@ public class UsuarioController {
         if (result.hasErrors()) {
             return novo(usuario);
         }
+
+        if (usuario.getId() != null) {
+            usuario.setDataAtualizacao(LocalDateTime.now());
+        }
+
         usuarioService.save(usuario);
+
         return new ModelAndView("redirect:/usuarios");
     }
 
