@@ -44,7 +44,7 @@
 
                             <div class="col-md-6 mb-3">
                                 <label for="situacaoUsuario" class="form-label">Situação</label>
-                                <select th:field="*{situacaoUsuario}" id="situacaoUsuario" th:errorclass="is-invalid" class="form-select">
+                                <select th:field="*{situacaoUsuario}" id="situacaoUsuario" th:errorclass="is-invalid" class="form-select select2">
                                     <option value="">Selecione...</option>
                                     <option th:each="situacao : ${T(br.com.kg.estoque.enuns.SituacaoUsuario).values()}"
                                             th:value="${situacao}" th:text="${situacao.descricao}"></option>
@@ -56,7 +56,7 @@
                         <div class="row">
                             <div class="col-md-12 mb-3">
                                 <label for="gruposAcessos" class="form-label">Grupos de Acesso</label>
-                                <select th:field="*{gruposAcessos}" id="gruposAcessos" class="form-select" multiple>
+                                <select th:field="*{gruposAcessos}" id="gruposAcessos" class="form-select select2Multiple" multiple="multiple">
                                     <option th:each="grupo : ${gruposAcessos}"
                                             th:value="${grupo.id}" th:text="${grupo.grupo}"></option>
                                 </select>
@@ -72,6 +72,10 @@
             </div>
         </div>
     </div>
+</th:block>
+
+<th:block layout:fragment="pageJs">
+    <script th:src="@{/pages/usuarios.js}"></script>
 </th:block>
 
 </html>
