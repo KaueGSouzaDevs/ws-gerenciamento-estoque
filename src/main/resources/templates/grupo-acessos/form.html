@@ -17,7 +17,7 @@
         <div class="col-12">
             <div class="card">  
                 <div class="card-body">
-                    <form th:action="@{/usuarios/salvar}" th:object="${grupoAcesso}" method="post">
+                    <form th:action="@{/grupos-acessos/salvar}" th:object="${grupoAcesso}" method="post">
                         <input type="hidden" th:field="*{id}">
 
                         <div class="row">
@@ -50,34 +50,98 @@
                             <div class="col-6">
                                 <div class="row">
                                     <div class="col-12">
-
-                                        <table class="table table-bordered table-striped overflow-scroll" id="tabela-permissoes" style="max-height: 15rem;">
-                                            <thead>
-                                                <tr>
-                                                    <th>Controle de Acesso</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td class="text-black fw-semibold">
-                                                        <input class="form-check-input" type="checkbox" id="gerenciamento-usuarios" name="gerenciamento-usuarios" th:value="${GERENCIAMENTO_USUARIOS}" th:field="*{permissoes}">
-                                                        <label class="form-check-label" for="gerenciamento-usuarios"> Gerenciamento de Usuários</label>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-black fw-semibold">
-                                                        <input class="form-check-input" type="checkbox" id="gerenciamento-grupos-acessos" name="gerenciamento-grupos-acessos" th:value="${GERENCIAMENTO_GRUPOS_ACESSOS}" th:field="*{permissoes}">
-                                                        <label class="form-check-label" for="gerenciamento-grupos-acessos"> Gerenciamento de Grupos de Acesso</label>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                            <thead>
-                                                <tr>
-                                                    <th>Controle de Acesso</th>
-                                                </tr>
-                                            </thead>
-
-                                        </table>
+                                        <div class="overflow-scroll" style="max-height: 15rem;">
+                                            <div class="d-flex justify-content-between">
+                                                <h4>Permissões</h4>
+                                                <div class="me-3">
+                                                    <input class="form-check-input" type="checkbox" id="selecionar-todas-permissoes"/>
+                                                    <label class="form-check-label" for="selecionar-todas-permissoes"> Selecionar todas</label>
+                                                </div>
+                                            </div>
+                                            <table class="table table-bordered" id="tabela-permissoes">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="table-header-permissoes text-black fw-semibold">Controle de Acesso</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="text-black">
+                                                            <input class="form-check-input" 
+                                                                type="checkbox" 
+                                                                id="gerenciamento-usuarios"
+                                                                th:field="*{permissoes}" 
+                                                                th:value="'ROLE_GERENCIAMENTO_USUARIOS'" />
+                                                            <label class="form-check-label" for="gerenciamento-usuarios"> Gerenciamento de Usuários</label>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-black">
+                                                            <input class="form-check-input" 
+                                                                type="checkbox" 
+                                                                id="gerenciamento-grupos-acessos"
+                                                                th:field="*{permissoes}" 
+                                                                th:value="'ROLE_GERENCIAMENTO_GRUPOS_ACESSOS'" />
+                                                            <label class="form-check-label" for="gerenciamento-grupos-acessos"> Gerenciamento de Grupos de Acesso</label>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                                <thead>
+                                                    <tr>
+                                                        <th class="table-header-permissoes text-black fw-semibold">Cadastros</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="text-black">
+                                                            <input class="form-check-input" 
+                                                                type="checkbox" 
+                                                                id="gerenciamento-fornecedores"
+                                                                th:field="*{permissoes}" 
+                                                                th:value="'ROLE_GERENCIAMENTO_FORNECEDORES'" />
+                                                            <label class="form-check-label" for="gerenciamento-fornecedores"> Gerenciamento de Fornecedores</label>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-black">
+                                                            <input class="form-check-input" 
+                                                                type="checkbox" 
+                                                                id="gerenciamento-categorias"
+                                                                th:field="*{permissoes}" 
+                                                                th:value="'ROLE_GERENCIAMENTO_CATEGORIAS'" />
+                                                            <label class="form-check-label" for="gerenciamento-categorias"> Gerenciamento de Categorias</label>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-black">
+                                                            <input class="form-check-input" 
+                                                                type="checkbox" 
+                                                                id="gerenciamento-materiais"
+                                                                th:field="*{permissoes}" 
+                                                                th:value="'ROLE_GERENCIAMENTO_MATERIAIS'" />
+                                                            <label class="form-check-label" for="gerenciamento-materiais"> Gerenciamento de Materiais</label>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                                <thead>
+                                                    <tr>
+                                                        <th class="table-header-permissoes text-black fw-semibold">Movimentações</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="text-black">
+                                                            <input class="form-check-input" 
+                                                                type="checkbox" 
+                                                                id="gerenciamento-movimentacoes"
+                                                                th:field="*{permissoes}" 
+                                                                th:value="'ROLE_GERENCIAMENTO_MOVIMENTACOES'" />
+                                                            <label class="form-check-label" for="gerenciamento-movimentacoes"> Gerenciamento de Movimentações</label>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -88,13 +152,17 @@
 
                         <div class="d-flex justify-content-end mt-3">
                             <button type="submit" class="btn btn-primary me-2">Salvar</button>
-                            <a th:href="@{/usuarios}" class="btn btn-secondary">Cancelar</a>
+                            <a th:href="@{/grupos-acessos}" class="btn btn-secondary">Cancelar</a>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+</th:block>
+
+<th:block layout:fragment="pageJs">
+    <script th:src="@{/pages/grupo-acessos.js}"></script>
 </th:block>
 
 </html>

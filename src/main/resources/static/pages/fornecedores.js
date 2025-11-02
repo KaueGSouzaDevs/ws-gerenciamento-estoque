@@ -56,8 +56,8 @@ document.addEventListener("DOMContentLoaded", function () {
 function excluir(idFornecedor) {
 
     Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
+        title: "Tem certeza que deseja excluir o fornecedor?",
+        text: "Voce não poderá reverter isso!",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",

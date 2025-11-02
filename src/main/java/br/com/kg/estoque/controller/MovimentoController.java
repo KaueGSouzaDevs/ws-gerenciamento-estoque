@@ -4,6 +4,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,6 +33,7 @@ import jakarta.validation.Valid;
  */
 @Controller
 @RequestMapping("/movimentos")
+@PreAuthorize("hasRole('GERENCIAMENTO_MOVIMENTACOES')")
 public class MovimentoController {
     
     private final Logger logger = Logger.getLogger(MovimentoController.class.getName());

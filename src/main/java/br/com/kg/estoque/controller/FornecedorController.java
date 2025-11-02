@@ -3,6 +3,7 @@ package br.com.kg.estoque.controller;
 import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,6 +28,7 @@ import jakarta.validation.Valid;
  */
 @Controller
 @RequestMapping("/fornecedores")
+@PreAuthorize("hasRole('GERENCIAMENTO_FORNECEDORES')")
 public class FornecedorController {
 
     private final FornecedorService fornecedorService;
