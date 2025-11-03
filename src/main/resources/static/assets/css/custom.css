@@ -33,3 +33,7 @@ th,
 td {
   text-align: start !important;
 }
+
+.table-header-permissoes {
+  background-color: rgba(230, 230, 230, 0.519) !important;
+}

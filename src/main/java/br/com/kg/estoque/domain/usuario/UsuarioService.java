@@ -60,7 +60,7 @@ public class UsuarioService {
 		dataTable.setDraw(params.getDraw());
 		dataTable.setRecordsTotal((int) usuarioRepository.count());
 		dataTable.setRecordsFiltered(registrosFiltrados);
-		dataTable.setData(usuariosList.stream().map(c -> new Object[]{c.getId(), c.getNome(), c.getLogin(), c.getEmail(), c.getSituacaoUsuario().toString(), c.getId()}).toList());
+		dataTable.setData(usuariosList.stream().map(c -> new Object[]{c.getId(), c.getNome(), c.getLogin(), c.getEmail(), c.getSituacaoUsuario().getDescricao(), c.getId()}).toList());
 
 		return dataTable;
 	}
@@ -119,5 +119,35 @@ public class UsuarioService {
      */
 	public Optional<Usuario> findByEmail(String email) {
 		return usuarioRepository.findByEmail(email);
+	}
+
+	/**
+	 * Exclui um usuário pelo seu ID.
+	 *
+	 * @param id O ID do usuário a ser excluído.
+	 */
+	public void deleteById(Long id) {
+		usuarioRepository.deleteById(id);
+	}
+
+    public void gerarLogin(Usuario usuario) {
+		String nomeCompleto = Auxiliar.removeAcentos(usuario.getNome().trim());
+		String[] nomes = nomeCompleto.split(" ");
+
+		String loginBase = nomes[0].toLowerCase() + "_" + nomes[nomes.length - 1].toLowerCase();
+		String loginFinal =  loginBase;
+
+		int i = 1;
+
+		while (findByLogin(loginFinal).isPresent()) {
+			loginFinal = loginBase + i;
+			i++;
+		}
+
+		usuario.setLogin(loginFinal);
+    }
+
+	public Optional<Usuario> findByEmailAndIdNot(String email, Long id) {
+		return usuarioRepository.findByEmailAndIdIsNot(email, id);
 	}
 }

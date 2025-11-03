@@ -86,4 +86,12 @@ public class GrupoAcessoService {
 		}
 		return grupoAcessoRepository.findAll(); 
 	}
+
+    public Optional<GrupoAcesso> buscarPorId(Long id) {
+		return grupoAcessoRepository.findById(id);
+    }
+
+    public void excluir(Long id) {
+        grupoAcessoRepository.deleteById(id);
+    }
 }

@@ -54,7 +54,7 @@ public class HomeController {
      *
      * @return Um {@link ModelAndView} para a página de acesso negado.
      */
-    @GetMapping("/acessoNegado")
+    @GetMapping("/acesso-negado")
     public ModelAndView acessoNegado() {
         return new ModelAndView("home/acesso-negado");
     }

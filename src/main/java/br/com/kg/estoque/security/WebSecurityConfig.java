@@ -74,7 +74,7 @@ public class WebSecurityConfig {
 			logout.invalidateHttpSession(true);
 		});
 
-		http.exceptionHandling(exception -> exception.accessDeniedPage("/acessoNegado"));
+		http.exceptionHandling(exception -> exception.accessDeniedPage("/acesso-negado"));
 
 		return http.build();
 	}

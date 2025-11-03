@@ -98,8 +98,8 @@
                             <div data-i18n="Without navbar">Usuários</div>
                         </a>
                     </li>
-                    <li class="menu-item">
-                        <a href="#" class="menu-link">
+                    <li class="menu-item" th:classappend="${submenu=='grupo-acessos'} ? 'active' : ''">
+                        <a href="/grupos-acessos" class="menu-link">
                             <div data-i18n="Without menu">Grupos de acesso</div>
                         </a>
                     </li>

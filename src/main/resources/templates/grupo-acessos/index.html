@@ -1,17 +1,17 @@
 <!doctype html>
 <html lang="pt-br" xmlns:th="http://thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}"
-      th:with="menu='acessos', submenu='usuarios'">
+      th:with="menu='acessos', submenu='grupo-acessos'">
 
 <head>
     <!-- Conteúdo adicional pode ser inserido aqui -->
 </head>
 
 <th:block layout:fragment="pagetitle">
-    <div th:replace="~{partials/title-meta :: title-meta('Usuários')}"></div>
+    <div th:replace="~{partials/title-meta :: title-meta('Grupos de Acesso')}"></div>
 </th:block>
 
 <th:block layout:fragment="conteudo">
-    <div th:replace="~{partials/page-title :: page-title('Listagem','Gerenciamento de Usuários')}"></div>
+    <div th:replace="~{partials/page-title :: page-title('Listagem','Gerenciamento de Grupos de Acesso')}"></div>
 
     <div class="row">
         <div class="col-12">
@@ -31,7 +31,7 @@
 
                         <div class="d-flex align-items-center">
                             <div class="ms-auto">
-                                <a th:href="@{/usuarios/novo}" class="btn btn-primary d-flex align-items-center me-2">
+                                <a th:href="@{/grupos-acessos/novo}" class="btn btn-primary d-flex align-items-center me-2">
                                     <i class="mdi mdi-plus me-1"></i> Adicionar
                                 </a>
                             </div>
@@ -41,14 +41,12 @@
 
                     <table id="datatable" class="table table-striped align-middle nowrap w-100">
                         <thead>
-                        <tr>
-                            <th class="text-start">Id</th>
-                            <th>Nome</th>
-                            <th>Login</th>
-                            <th>Email</th>
-                            <th>Situação</th>
-                            <th class="text-center coluna-acoes">Ações</th>
-                        </tr>
+                            <tr>
+                                <th class="text-start">Id</th>
+                                <th>Nome</th>
+                                <th>Situação</th>
+                                <th class="text-center coluna-acoes">Ações</th>
+                            </tr>
                         </thead>
                     </table>
                 </div>
@@ -58,7 +56,7 @@
 </th:block>
 
 <th:block layout:fragment="pageJs">
-    <script th:src="@{/pages/usuarios.js}"></script>
+    <script th:src="@{/pages/grupo-acessos.js}"></script>
 </th:block>
 
 </html>

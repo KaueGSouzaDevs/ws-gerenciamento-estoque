@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="pt-br" xmlns:th="http://thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}"
+      th:with="menu='acessos', submenu='usuarios'">
+
+<head>
+    <!-- Conteúdo adicional pode ser inserido aqui -->
+</head>
+
+<th:block layout:fragment="pagetitle">
+    <div th:replace="~{partials/title-meta :: title-meta('Usuários')}"></div>
+</th:block>
+
+<th:block layout:fragment="conteudo">
+    <div th:replace="~{partials/page-title :: page-title(${usuario.id == null ? 'Novo Usuário' : 'Editar Usuário'},'Gerenciamento de Usuários')}"></div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">  
+                <div class="card-body">
+                    <form th:action="@{/usuarios/salvar}" th:object="${usuario}" method="post">
+                        <input type="hidden" th:field="*{id}">
+                        <input type="hidden" th:field="*{senha}">
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="nome" class="form-label">Nome</label>
+                                <input type="text" th:field="*{nome}" th:errorclass="is-invalid" class="form-control" id="nome" placeholder="Informe o nome do usuário">
+                                <span class="error" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="login" class="form-label">Login</label>
+                                <input type="text" th:field="*{login}" th:errorclass="is-invalid" class="form-control" id="login" placeholder="Login gerado automaticamente pelo sistema" readonly>
+                                <span class="error" th:if="${#fields.hasErrors('login')}" th:errors="*{login}"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" th:field="*{email}" th:errorclass="is-invalid" class="form-control" id="email" placeholder="Informe o email do usuário">
+                                <span class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="situacaoUsuario" class="form-label">Situação</label>
+                                <select th:field="*{situacaoUsuario}" id="situacaoUsuario" th:errorclass="is-invalid" class="form-select select2">
+                                    <option th:value="''">Selecione...</option>
+                                    <option th:each="situacao : ${situacaoList}" th:value="${situacao}" th:text="${situacao.descricao}"></option>
+                                </select>
+                                <span class="error" th:if="${#fields.hasErrors('situacaoUsuario')}" th:errors="*{situacaoUsuario}"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="gruposAcessos" class="form-label">Grupos de Acesso</label>
+                                <select th:field="*{gruposAcessos}" id="gruposAcessos" class="form-select select2Multiple" multiple="multiple">
+                                    <option th:each="grupo : ${gruposAcessos}"
+                                            th:value="${grupo.id}" th:text="${grupo.grupo}"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary me-2">Salvar</button>
+                            <a th:href="@{/usuarios}" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="pageJs">
+    <script th:src="@{/pages/usuarios.js}"></script>
+</th:block>
+
+</html>

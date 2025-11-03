@@ -1,11 +1,10 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener('DOMContentLoaded', function () {
 
-    $("#datatable").DataTable({
+    let table = new DataTable('#datatable', {
         language: { url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json' },
-        processing: true,
         ajax: {
-            url: `/fornecedores/jsonDataTable`,
-            type: 'GET' // ou 'POST'
+            url: `/usuarios/dataTable`,
+            type: 'GET'
         },
         serverSide: true,
         columns: [
@@ -14,20 +13,18 @@ document.addEventListener("DOMContentLoaded", function () {
             { data: 2 },
             { data: 3 },
             { data: 4 },
-            { data: 5 },
             {
-                data: 0, class: "text-center coluna-acoes", orderable: false, width: "100px",
+                data: 5, class: "text-center coluna-acoes", orderable: false, width: "100px",
                 render: function (data, type, row, meta) {
                     return `
                         <div class="dropdown">
                             <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown" aria-expanded="false"><i class="icon-base bx bx-dots-vertical-rounded"></i></button>
                             <div class="dropdown-menu" style="">
-                                <a class="dropdown-item" href="/fornecedores/${data}/editar"><i class="icon-base bx bx-pencil"></i> Editar</a>
-
+                                <a class="dropdown-item" href="/usuarios/${data}/editar"><i class="icon-base bx bx-pencil"></i> Editar</a>
                                 <a class="dropdown-item" href="javascript:excluir(${data});"><i class="icon-base bx bx-trash"></i> Excluir</a>
                             </div>
                         </div>
-                        `;
+                    `;
                 }
             },
         ],
@@ -35,46 +32,39 @@ document.addEventListener("DOMContentLoaded", function () {
             '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
     });
 
-    //? Campo de busca customizado
     if (document.getElementById('customSearchBox')) {
         document.getElementById('customSearchBox').addEventListener('input', function () {
             table.search(this.value).draw();
         });
-    };
+    }
 
-
-    //? Seletor de registros por página customizado
     if (document.getElementById('customPageLength')) {
         document.getElementById('customPageLength').addEventListener('change', function () {
             table.page.len(this.value).draw();
         });
-    };
-
+    }
 });
 
-// Função para excluir um fornecedor
-function excluir(idFornecedor) {
-
+function excluir(id) {
     Swal.fire({
-        title: "Tem certeza que deseja excluir o fornecedor?",
-        text: "Voce não poderá reverter isso!",
+        title: "Deseja realmente deletar o usuário?",
+        text: "Essa ação não poderá ser desfeita!",
         icon: "warning",
         showCancelButton: true,
+        cancelButtonText: "Cancelar",
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!"
+        confirmButtonText: "Sim, deletar!"
     }).then((result) => {
         if (result.isConfirmed) {
-
-            fetch("/fornecedores/" + idFornecedor + "/excluir", { method: 'DELETE' })
-                .then(response => response.text())
-                .then(retorno => {
-                    if (retorno == 'OK') {
+            fetch('/usuarios/' + id + '/excluir', { method: 'DELETE' })
+                .then(response => {
+                    if (response.ok) {
                         Swal.fire({
                             title: "Sucesso!",
-                            text: "Seu fornecedor foi deletado com sucesso!",
+                            text: "Registro excluído com sucesso!",
                             icon: "success"
-                        }).then((result) => {
+                        }).then(() => {
                             window.location.reload();
                         });
                     } else {
@@ -87,5 +77,4 @@ function excluir(idFornecedor) {
                 });
         }
     });
-
 }

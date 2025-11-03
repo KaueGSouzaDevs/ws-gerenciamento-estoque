@@ -1,6 +1,7 @@
 package br.com.kg.estoque.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,6 +29,7 @@ import jakarta.validation.Valid;
  */
 @Controller
 @RequestMapping("/materiais")
+@PreAuthorize("hasRole('GERENCIAMENTO_MATERIAIS')")
 public class MaterialController {
     
     private final MaterialService materialService;
