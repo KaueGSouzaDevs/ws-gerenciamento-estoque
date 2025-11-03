@@ -30,7 +30,7 @@
 
                             <div class="col-md-6 mb-3">
                                 <label for="login" class="form-label">Login</label>
-                                <input type="text" th:field="*{login}" th:errorclass="is-invalid" class="form-control" id="login" placeholder="Informe o login do usuário">
+                                <input type="text" th:field="*{login}" th:errorclass="is-invalid" class="form-control" id="login" placeholder="Login gerado automaticamente pelo sistema" readonly>
                                 <span class="error" th:if="${#fields.hasErrors('login')}" th:errors="*{login}"></span>
                             </div>
                         </div>
@@ -45,9 +45,8 @@
                             <div class="col-md-6 mb-3">
                                 <label for="situacaoUsuario" class="form-label">Situação</label>
                                 <select th:field="*{situacaoUsuario}" id="situacaoUsuario" th:errorclass="is-invalid" class="form-select select2">
-                                    <option value="">Selecione...</option>
-                                    <option th:each="situacao : ${T(br.com.kg.estoque.enuns.SituacaoUsuario).values()}"
-                                            th:value="${situacao}" th:text="${situacao.descricao}"></option>
+                                    <option th:value="''">Selecione...</option>
+                                    <option th:each="situacao : ${situacaoList}" th:value="${situacao}" th:text="${situacao.descricao}"></option>
                                 </select>
                                 <span class="error" th:if="${#fields.hasErrors('situacaoUsuario')}" th:errors="*{situacaoUsuario}"></span>
                             </div>

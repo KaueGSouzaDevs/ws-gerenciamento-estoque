@@ -129,4 +129,25 @@ public class UsuarioService {
 	public void deleteById(Long id) {
 		usuarioRepository.deleteById(id);
 	}
+
+    public void gerarLogin(Usuario usuario) {
+		String nomeCompleto = Auxiliar.removeAcentos(usuario.getNome().trim());
+		String[] nomes = nomeCompleto.split(" ");
+
+		String loginBase = nomes[0].toLowerCase() + "_" + nomes[nomes.length - 1].toLowerCase();
+		String loginFinal =  loginBase;
+
+		int i = 1;
+
+		while (findByLogin(loginFinal).isPresent()) {
+			loginFinal = loginBase + i;
+			i++;
+		}
+
+		usuario.setLogin(loginFinal);
+    }
+
+	public Optional<Usuario> findByEmailAndIdNot(String email, Long id) {
+		return usuarioRepository.findByEmailAndIdIsNot(email, id);
+	}
 }

@@ -23,6 +23,8 @@ import br.com.kg.estoque.domain.grupo_acesso.GrupoAcesso;
 import br.com.kg.estoque.domain.grupo_acesso.GrupoAcessoService;
 import br.com.kg.estoque.domain.usuario.Usuario;
 import br.com.kg.estoque.domain.usuario.UsuarioService;
+import br.com.kg.estoque.domain.usuario.UsuarioValidation;
+import br.com.kg.estoque.enuns.SituacaoUsuario;
 import jakarta.validation.Valid;
 
 /**
@@ -35,6 +37,7 @@ import jakarta.validation.Valid;
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
+    private final UsuarioValidation usuarioValidation;
     private final GrupoAcessoService grupoAcessoService;
 
     /**
@@ -43,8 +46,9 @@ public class UsuarioController {
      * @param usuarioService     O serviço para lidar com a lógica de negócios do usuário.
      * @param grupoAcessoService O serviço para lidar com a lógica de negócios do grupo de acesso.
      */
-    public UsuarioController(UsuarioService usuarioService, GrupoAcessoService grupoAcessoService) {
+    public UsuarioController(UsuarioService usuarioService, UsuarioValidation usuarioValidation, GrupoAcessoService grupoAcessoService) {
         this.usuarioService = usuarioService;
+        this.usuarioValidation = usuarioValidation;
         this.grupoAcessoService = grupoAcessoService;
     }
 
@@ -101,7 +105,9 @@ public class UsuarioController {
      */
     @GetMapping("/novo")
     public ModelAndView novo(@ModelAttribute("usuario") Usuario usuario) {
-        return new ModelAndView("usuarios/form");
+        ModelAndView model = new ModelAndView("usuarios/form");
+        model.addObject("situacaoList", SituacaoUsuario.values());
+        return model;
     }
 
     /**
@@ -114,6 +120,7 @@ public class UsuarioController {
     public ModelAndView editar(@PathVariable("id") Long id) {
         ModelAndView model = new ModelAndView("usuarios/form");
         usuarioService.findById(id).ifPresent(usuario -> model.addObject("usuario", usuario));
+        model.addObject("situacaoList", SituacaoUsuario.values());
         return model;
     }
 
@@ -126,16 +133,22 @@ public class UsuarioController {
      */
     @PostMapping("/salvar")
     public ModelAndView salvar(@Valid Usuario usuario, BindingResult result) {
+
+        usuarioValidation.validarNome(usuario, result);
+        usuarioValidation.validarEmail(usuario, result);
+
         if (result.hasErrors()) {
             return novo(usuario);
         }
 
         if (usuario.getId() != null) {
             usuario.setDataAtualizacao(LocalDateTime.now());
+        } else {
+            usuarioService.gerarLogin(usuario);
+            usuario.setSituacaoUsuario(SituacaoUsuario.NOVO);
         }
 
         usuarioService.save(usuario);
-
         return new ModelAndView("redirect:/usuarios");
     }
 

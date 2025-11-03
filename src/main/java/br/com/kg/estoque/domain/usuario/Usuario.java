@@ -80,8 +80,7 @@ public class Usuario implements UserDetails {
      */
 	@Getter
 	@Setter
-	@Size(min = 3, max = 20)
-	@Column(length = 20)
+	@Column(length = 35)
 	private String login;
 
 	/**
