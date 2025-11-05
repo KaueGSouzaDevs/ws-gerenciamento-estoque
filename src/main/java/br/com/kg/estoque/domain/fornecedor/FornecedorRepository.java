@@ -21,7 +21,7 @@ public interface FornecedorRepository extends JpaRepository<Fornecedor, Long>, F
      * @param cnpj O CNPJ do fornecedor a ser buscado.
      * @return Um {@link Optional} contendo o {@link Fornecedor} se encontrado, ou vazio caso contrário.
      */
-    Optional<Fornecedor> findByCnpj(String cnpj);
+    Optional<Fornecedor> findByCnpjCpf(String cnpj);
 
     /**
      * Busca um fornecedor pelo CNPJ, ignorando um fornecedor com um ID específico.
@@ -33,6 +33,6 @@ public interface FornecedorRepository extends JpaRepository<Fornecedor, Long>, F
      * @param id   O ID do fornecedor a ser excluído da busca.
      * @return Um {@link Optional} contendo o {@link Fornecedor} se um com o mesmo CNPJ e ID diferente for encontrado.
      */
-    Optional<Fornecedor> findByCnpjAndIdNot(String cnpj, Long id);
+    Optional<Fornecedor> findByCnpjCpfAndIdNot(String cnpj, Long id);
     
 }

@@ -6,8 +6,11 @@ import org.springframework.format.annotation.NumberFormat;
 
 import br.com.kg.estoque.domain.categoria.Categoria;
 import br.com.kg.estoque.domain.fornecedor.Fornecedor;
+import br.com.kg.estoque.enuns.SituacaoMaterial;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
@@ -37,6 +40,7 @@ public class Material {
     @Getter @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     /**
@@ -46,7 +50,7 @@ public class Material {
     @Getter	@Setter
 	@NotNull(message = "* Categoria obrigatória")
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="categoria_id", foreignKey = @ForeignKey(name="fk_categoria"))
+	@JoinColumn(name="id_categoria", foreignKey = @ForeignKey(name="fk_categoria"))
 	private Categoria categoria;
 
     /**
@@ -54,23 +58,23 @@ public class Material {
      * É um campo obrigatório com no máximo 100 caracteres.
      */
     @Getter @Setter
-    @Column(length = 100)
     @NotBlank(message = "* Nome é obrigatório")
     @Size(max = 100, message = "Máximo de 100 caracteres")
+    @Column(name = "nome", length = 100)
     private String nome;
 
     /**
      * O código de barras do material, se aplicável.
      */
     @Getter @Setter
-    @Column(length = 13)
+    @Column(name = "codigo_barras", length = 13)
     private String codigoBarras;
 
     /**
      * O nome do fabricante do material.
      */
     @Getter @Setter
-    @Column(length = 30)
+    @Column(name = "fabricante", length = 30)
     private String fabricante;
 
     /**
@@ -78,8 +82,8 @@ public class Material {
      * É um campo obrigatório.
      */
     @Getter @Setter
-    @Column(length = 20)
-    @NotBlank(message = "* UM obrigatória")
+    @NotBlank(message = "* U.M obrigatória")
+    @Column(name = "unidade_medida", length = 20)
     private String unidadeMedida;
 
     /**
@@ -87,28 +91,38 @@ public class Material {
      * Relacionamento Muitos-para-Um com a entidade {@link Fornecedor}.
      */
     @Getter	@Setter
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="fornecedor_id", foreignKey = @ForeignKey(name="fk_fornecedor"))
     @NotNull(message="* Fornecedor obrigatório")
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="id_fornecedor", foreignKey = @ForeignKey(name="fk_fornecedor"))
 	private Fornecedor fornecedor;
 
     /**
-     * O valor monetário do material.
+     * O preço de custo monetário do material.
      * Armazenado com precisão de 11 dígitos, sendo 2 para casas decimais.
      */
     @Getter @Setter
-	@NotNull(message="* Valor obrigatório")
+    @NumberFormat(pattern = "#,###,###,###.##")
+    @NotNull(message="* Preço de custo é obrigatório")
+    @Column(name = "preco_custo", precision = 11, scale = 2, columnDefinition = "Decimal(11,2)")
+    private BigDecimal precoCusto;
+
+    /**
+     * O preço de venda monetário do material.
+     * Armazenado com precisão de 11 dígitos, sendo 2 para casas decimais.
+     */
+    @Getter @Setter
+	@NotNull(message="* Preço de venda é obrigatório")
 	@NumberFormat(pattern = "#,###,###,###.##")
-	@Column(precision = 11, scale = 2, columnDefinition = "Decimal(11,2)")
-	private BigDecimal valor;
+	@Column(name = "preco_venda", precision = 11, scale = 2, columnDefinition = "Decimal(11,2)")
+	private BigDecimal precoVenda;
 
     /**
      * A localização física do material no estoque.
      * É um campo obrigatório.
      */
     @Getter @Setter
-    @Column(length = 30)
     @NotBlank(message = "* Local obrigatório")
+    @Column(name = "local_armazenagem", length = 30)
     private String localArmazenagem;
     
     /**
@@ -116,6 +130,7 @@ public class Material {
      */
     @Getter @Setter
     @NotNull(message = "* Qtd obrigatória")
+    @Column(name = "estoque_maximo")
     private Integer estoqueMaximo;
 
     /**
@@ -124,6 +139,7 @@ public class Material {
      */
     @Getter @Setter
     @NotNull(message = "* Qtd obrigatória")
+    @Column(name = "estoque_minimo")
     private Integer estoqueMinimo;
 
     /**
@@ -132,7 +148,7 @@ public class Material {
      */
     @Getter @Setter
     @NotNull(message = "* Saldo obrigatório")
-    @Column(nullable = false, columnDefinition = "int default 0")
+    @Column(name = "saldo", nullable = false, columnDefinition = "int default 0")
     private Integer saldo = 0;
 
     /**
@@ -140,7 +156,8 @@ public class Material {
      * É um campo obrigatório.
      */
     @Getter @Setter
-    @Column(length = 10)
-    @NotBlank(message = "* Situação obrigatória")
-    private String situacao;
+    @NotNull(message = "* Situação obrigatória")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "situacao", length = 10)
+    private SituacaoMaterial situacao;
 }

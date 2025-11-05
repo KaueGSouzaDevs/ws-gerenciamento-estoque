@@ -1,7 +1,10 @@
 package br.com.kg.estoque.domain.fornecedor;
 
+import br.com.kg.estoque.enuns.SituacaoFornecedor;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -9,6 +12,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +23,7 @@ import lombok.Setter;
  * O CNPJ é definido como uma chave única para evitar duplicidade.
  */
 @Entity
-@Table(name = "fornecedores", uniqueConstraints = {@UniqueConstraint(columnNames="cnpj")})
+@Table(name = "fornecedores", uniqueConstraints = {@UniqueConstraint(columnNames="cnpj_cpf")})
 public class Fornecedor {
 
     /**
@@ -29,6 +33,7 @@ public class Fornecedor {
     @Getter @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     /**
@@ -36,25 +41,25 @@ public class Fornecedor {
      * É um campo obrigatório e único.
      */
     @Getter @Setter
-    @Column(length = 14)
-    @NotBlank(message = "* O CNPJ é obrigatório")
-    private String cnpj;
+    @NotBlank(message = "* O CNPJ ou CPF é obrigatório")
+    @Column(name = "cnpj_cpf", length = 18)
+    private String cnpjCpf;
 
     /**
      * Nome ou razão social do fornecedor.
      * É um campo obrigatório e não pode exceder 50 caracteres.
      */
     @Getter @Setter
-    @Column(length = 50)
-    @NotBlank(message = "* O nome é obrigatório")
     @Size(max = 50, message = "Máximo de 50 caracteres")
+    @NotBlank(message = "* O nome é obrigatório")
+    @Column(name = "nome", length = 50)
     private String nome;
 
     /**
      * Número de telefone de contato do fornecedor.
      */
     @Getter @Setter
-    @Column(length = 14)
+    @Column(length = 15)
     private String telefone;
 
     /**
@@ -62,9 +67,9 @@ public class Fornecedor {
      * Deve ser um e-mail válido e é um campo obrigatório.
      */
     @Getter @Setter
-    @Column(length = 50)
-    @NotBlank(message = "* O e-mail é obrigatório")
     @Email(message = "E-mail inválido")
+    @NotBlank(message = "* O e-mail é obrigatório")
+    @Column(name = "email", length = 75)
     private String email;
 
     /**
@@ -72,8 +77,8 @@ public class Fornecedor {
      * É um campo obrigatório.
      */
     @Getter @Setter
-    @Column(length = 30)
     @NotBlank(message = "* O contato é obrigatório")
+    @Column(name = "contato", length = 50)
     private String contato;
 
     /**
@@ -81,8 +86,9 @@ public class Fornecedor {
      * É um campo obrigatório.
      */
     @Getter @Setter
-    @Column(length = 10)
-    @NotBlank(message = "* A situação é obrigatória")
-    private String situacao;
+    @Enumerated(EnumType.STRING)
+    @NotNull(message = "* A situação é obrigatória")
+    @Column(name = "situacao", length = 10)
+    private SituacaoFornecedor situacao;
     
 }

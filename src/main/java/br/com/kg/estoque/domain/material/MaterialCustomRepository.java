@@ -36,7 +36,7 @@ public class MaterialCustomRepository{
 		jpql.append(" FROM Material f WHERE f.id > 0 AND ( 1=0  ");
 		
         for (String coluna : colunas) {
-            if (coluna.equals("id") || coluna.equals("valor") || coluna.equals("saldo")) {
+            if (coluna.equals("id") || coluna.equals("precoVenda") || coluna.equals("saldo")) {
                 // Faz CAST de campos numéricos para string para a busca
                 jpql.append(" OR CAST(f.").append(coluna).append(" AS string) LIKE :searchValue ");
             } else {
@@ -70,7 +70,7 @@ public class MaterialCustomRepository{
 		jpql.append("SELECT COUNT(*) FROM Material f WHERE f.id > 0 AND ( 1=0  ");
 		
         for (String coluna : colunas) {
-            if (coluna.equals("id") || coluna.equals("valor") || coluna.equals("saldo")) {
+            if (coluna.equals("id") || coluna.equals("precoVenda") || coluna.equals("saldo")) {
                 // Faz CAST de campos numéricos para string para a busca
                 jpql.append(" OR CAST(f.").append(coluna).append(" AS string) LIKE :searchValue ");
             } else {

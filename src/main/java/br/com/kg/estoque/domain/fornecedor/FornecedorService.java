@@ -64,7 +64,7 @@ public class FornecedorService {
      * @return Um {@link Optional} contendo o {@link Fornecedor} se encontrado.
      */
     public Optional<Fornecedor> buscaPorCnpj(String cnpj) {
-        return fornecedorRepository.findByCnpj(cnpj);
+        return fornecedorRepository.findByCnpjCpf(cnpj);
     }
 
     /**
@@ -76,7 +76,7 @@ public class FornecedorService {
      * @return Um {@link Optional} contendo um fornecedor com o mesmo CNPJ, mas ID diferente, se houver.
      */
     public Optional<Fornecedor> buscarPorCnpjEIdDiferenteDoMeu(String cnpj, Long id) {
-        return fornecedorRepository.findByCnpjAndIdNot(cnpj, id);
+        return fornecedorRepository.findByCnpjCpfAndIdNot(cnpj, id);
     }
 
     /**
@@ -96,7 +96,7 @@ public class FornecedorService {
      * @param result O objeto BindingResult para registrar erros de validação.
      */
     public void validaAlteracao(Fornecedor fornecedor, BindingResult result) {
-        if (fornecedor.getId() != null && (buscarPorCnpjEIdDiferenteDoMeu(fornecedor.getCnpj(), fornecedor.getId()).isPresent())) {
+        if (fornecedor.getId() != null && (buscarPorCnpjEIdDiferenteDoMeu(fornecedor.getCnpjCpf(), fornecedor.getId()).isPresent())) {
             result.rejectValue("cnpj", "", "CNPJ já cadastrado");
         }
     }
@@ -109,7 +109,7 @@ public class FornecedorService {
      * @param result O objeto BindingResult para registrar erros de validação.
      */
     public void validaInclusao(Fornecedor fornecedor, BindingResult result) {
-        if (fornecedor.getId() == null && (buscaPorCnpj(fornecedor.getCnpj()).isPresent())) {
+        if (fornecedor.getId() == null && (buscaPorCnpj(fornecedor.getCnpjCpf()).isPresent())) {
             result.rejectValue("cnpj", "null", "CNPJ já cadastrado");
         }
     }
@@ -138,7 +138,7 @@ public class FornecedorService {
                         c.getTelefone(),
                         c.getEmail(),
                         c.getContato(),
-						c.getSituacao()
+						c.getSituacao().getDescricao()
 				}).toList());
 
 		return dataTable;

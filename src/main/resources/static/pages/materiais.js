@@ -13,7 +13,12 @@ document.addEventListener('DOMContentLoaded', function () {
             { data: 2 }, // categoria
             { data: 3 }, // fabricante
             { data: 4 }, // fornecedor
-            { data: 5 }, // preco
+            {
+                data: 5,
+                render: function (data, type, row, meta) {
+                    return `R$ ${Intl.NumberFormat('pt-BR').format(data)}`;
+                }
+            }, // preco
             { data: 6 }, // saldo
             { data: 7 }, // status
             {

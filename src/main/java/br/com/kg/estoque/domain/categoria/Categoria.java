@@ -1,12 +1,16 @@
 package br.com.kg.estoque.domain.categoria;
 
+import br.com.kg.estoque.enuns.SituacaoCategoria;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,9 +37,9 @@ public class Categoria {
      * É um campo obrigatório e não pode exceder 20 caracteres.
      */
     @Getter @Setter
-    @Column(length = 20)
-    @NotBlank(message = "* O nome é obrigatório")
     @Size(max = 20, message = "Máximo de 20 caracteres")
+    @NotBlank(message = "* O nome é obrigatório")
+    @Column(name = "nome", length = 50)
     private String nome;
 
     /**
@@ -43,8 +47,9 @@ public class Categoria {
      * É um campo obrigatório.
      */
     @Getter @Setter
-    @Column(length = 10)
-    @NotBlank(message = "* Obrigatório")
-    private String situacao;
+    @Enumerated(EnumType.STRING)
+    @NotNull(message = "* Obrigatório")
+    @Column(name = "situacao", length = 10)
+    private SituacaoCategoria situacao;
     
 }

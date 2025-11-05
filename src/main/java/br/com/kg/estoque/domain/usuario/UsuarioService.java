@@ -134,7 +134,7 @@ public class UsuarioService {
 		String nomeCompleto = Auxiliar.removeAcentos(usuario.getNome().trim());
 		String[] nomes = nomeCompleto.split(" ");
 
-		String loginBase = nomes[0].toLowerCase() + "_" + nomes[nomes.length - 1].toLowerCase();
+		String loginBase = nomes[0].toLowerCase() + "." + nomes[nomes.length - 1].toLowerCase();
 		String loginFinal =  loginBase;
 
 		int i = 1;
