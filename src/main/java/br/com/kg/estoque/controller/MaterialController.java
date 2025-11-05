@@ -127,6 +127,9 @@ public class MaterialController {
      */
     @PostMapping("/salvar")
     public ModelAndView salvar(@Valid Material material, BindingResult result){
+
+        System.out.println(result.getErrorCount());
+
         if(result.hasErrors()){
             return novo(material);
         }

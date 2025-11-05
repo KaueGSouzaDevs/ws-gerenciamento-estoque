@@ -57,3 +57,12 @@ td {
 .select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option.select2-results__option--selected {
   background-color: #696cff !important;
 }
+
+table thead tr {
+  border-bottom: 0.5px solid rgb(167, 167, 167) !important;
+}
+
+table thead tr th {
+  color: black !important;
+  font-weight: 600 !important;
+}

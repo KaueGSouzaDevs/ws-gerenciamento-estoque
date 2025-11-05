@@ -8,17 +8,23 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         serverSide: true,
         columns: [
-            { data: 0 }, // id
+            // { data: 0 }, // id
             { data: 1 }, // nome
             { data: 2 }, // categoria
             { data: 3 }, // fabricante
             { data: 4 }, // fornecedor
             {
-                data: 5,
+                data: 9, // preço de custo
                 render: function (data, type, row, meta) {
                     return `R$ ${Intl.NumberFormat('pt-BR').format(data)}`;
                 }
-            }, // preco
+            },
+            {
+                data: 5, // preço de venda
+                render: function (data, type, row, meta) {
+                    return `R$ ${Intl.NumberFormat('pt-BR').format(data)}`;
+                }
+            },
             { data: 6 }, // saldo
             { data: 7 }, // status
             {
@@ -39,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
         ],
         dom: 'rt' +
             '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        order: [[0, "desc"]],
     });
 
     //? Campo de busca customizado
@@ -59,34 +66,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-// executa os scripts que estão na página de retorno do formulário
-function executeScripts(element) {
-    Array.from(element.getElementsByTagName("script")).forEach((oldScript) => {
-        const newScript = document.createElement("script");
-        Array.from(oldScript.attributes)
-            .forEach(attr => newScript.setAttribute(attr.name, attr.value));
-        newScript.appendChild(document.createTextNode(oldScript.innerHTML));
-        oldScript.parentNode.replaceChild(newScript, oldScript);
-    });
-}
-
-// Escuta o click no botão para invocar o formulário de materiais na janela modal
-document.getElementById('btn-adicionar').addEventListener('click', function () {
-    fetch('/materiais/novo')//faz a requisição para o servidor para pegar o formulário
-        .then(response => response.text()) // pega o texto da resposta
-        .then(retorno => { // pega o texto e coloca em uma variável
-            var bodyModal = document.getElementById('corpo-modal'); // pega o corpo da modal
-            bodyModal.innerHTML = retorno; // Insere o formulário no corpo da modal
+function novoMaterial() {
+    fetch('/materiais/novo', { method: 'GET' })
+        .then(response => response.text())
+        .then(retorno => {
+            var bodyModal = document.getElementById('corpo-modal');
+            bodyModal.innerHTML = retorno;
+            iniciarSelects2('modal-material');
         });
 
-    document.getElementById('titulo-modal').innerHTML = 'Adicionar Material';//altera o título da modal
-    var modal = new bootstrap.Modal(document.getElementById('modal-material'));// pega a modal
-    modal.show();// mostra a modal
+    document.getElementById('titulo-modal').innerHTML = 'Adicionar Material';
+    var modal = new bootstrap.Modal(document.getElementById('modal-material'));
+    modal.show();
+}
 
-});
 
-// salva a material
-document.getElementById('btn-salvar').addEventListener('click', function () {
+
+function salvarMaterial() {
     fetch('/materiais/salvar', {
         method: 'POST',
         body: new FormData(document.getElementById('formulario'))
@@ -96,17 +92,20 @@ document.getElementById('btn-salvar').addEventListener('click', function () {
             var bodyModal = document.getElementById('corpo-modal');
             bodyModal.innerHTML = retorno;
             executeScripts(bodyModal);
+            iniciarSelects2('modal-material');
         });
-});
+}
 
 
-// chama a modal com formulário para alterar uma material
+
+
 function editar(idMaterial) {
     fetch('/materiais/' + idMaterial + '/editar')
         .then(response => response.text())
         .then(retorno => {
             var bodyModal = document.getElementById('corpo-modal');
             bodyModal.innerHTML = retorno;
+            iniciarSelects2('modal-material');
         });
 
     document.getElementById('titulo-modal').innerHTML = 'Editar Material';
@@ -114,6 +113,8 @@ function editar(idMaterial) {
 
     modal.show();
 }
+
+
 
 function excluir(idMaterial) {
     Swal.fire({

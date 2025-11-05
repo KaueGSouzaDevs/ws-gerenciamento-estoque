@@ -15,8 +15,8 @@
         <div class="col-md-4">
             <div class="mb-3">
                 <label for="catgoria" class="form-label">Categoria</label>
-                <select th:field="*{categoria}" id="categoria" th:errorclass="is-invalid" class="form-select">
-                    <option th:value="''">Selecione uma opção</option>                    
+                <select th:field="*{categoria}" id="categoria" th:errorclass="is-invalid" class="form-select select2">
+                    <option th:value="''">Selecione uma opção</option>
                     <option th:each= "categoria : ${categoriaList}" th:value="${categoria.id}" th:text="${categoria.nome}"></option>>opção</option> 
                 </select>
                 <span class="error" th:if="${#fields.hasErrors('categoria')}" th:errors="*{categoria}"></span>
@@ -38,7 +38,7 @@
         <div class="col-md-4">
             <div class="mb-3">
                 <label for="unidadeMedida" class="form-label">Unidade Medida</label>
-                <select th:field="*{unidadeMedida}" id="unidadeMedida" th:errorclass="is-invalid" class="form-select">
+                <select th:field="*{unidadeMedida}" id="unidadeMedida" th:errorclass="is-invalid" class="form-select select2">
                     <option th:value="''">Selecione uma opção</option>
                     <option th:each="unidadeMedida : ${unidadeMedidaList}" th:value="${unidadeMedida.descricao}" th:text="${unidadeMedida.descricao}"></option>
                 </select>
@@ -46,10 +46,10 @@
             </div>
         </div>
 
-        <div class="col-md-8">
+        <div class="col-md-6">
             <div class="mb-3">
                 <label for="situacao" class="form-label">Fornecedor</label>
-                <select th:field="*{fornecedor}" id="fornecedor" th:errorclass="is-invalid" class="form-select">
+                <select th:field="*{fornecedor}" id="fornecedor" th:errorclass="is-invalid" class="form-select select2">
                     <option th:value="''">Selecione uma opção</option>
                     <option th:each= "fornecedor : ${fornecedorList}" th:value="${fornecedor.id}" th:text="${fornecedor.nome}">opção</option>
                 </select>
@@ -57,13 +57,17 @@
             </div>
         </div>
 
-        <div class="col-md-4 mb-3">
-            <label for="valor" class="form-label">Valor</label>
-            <input type="text" th:field="*{valor}" th:errorclass="is-invalid" class="form-control" id="valor">
-            <span class="error" th:if="${#fields.hasErrors('valor')}" th:errors="*{valor}"></span>
+        <div class="col-md-3 mb-3">
+            <label for="precoCusto" class="form-label">Preço de Custo</label>
+            <input type="text" th:field="*{precoCusto}" th:errorclass="is-invalid" class="form-control" id="precoCusto">
+            <span class="error" th:if="${#fields.hasErrors('precoCusto')}" th:errors="*{precoCusto}"></span>
         </div>
 
-    
+        <div class="col-md-3 mb-3">
+            <label for="precoVenda" class="form-label">Preço de Venda</label>
+            <input type="text" th:field="*{precoVenda}" th:errorclass="is-invalid" class="form-control" id="precoVenda">
+            <span class="error" th:if="${#fields.hasErrors('precoVenda')}" th:errors="*{precoVenda}"></span>
+        </div>
 
         <div class="col-md-6 mb-3">
             <label for="localArmazenagem" class="form-label">Local de Armazenagem</label>
@@ -86,15 +90,15 @@
         <div class="col-md-12">
             <div class="mb-3">
                 <label for="situacao" class="form-label">Situação do Material</label>
-                <select th:field="*{situacao}" id="situacao" th:errorclass="is-invalid" class="form-select">
+                <select th:field="*{situacao}" id="situacao" th:errorclass="is-invalid" class="form-select select2">
                     <option th:value="''">Selecione ...</option>
-                    <option th:value="'Ativo'">Ativo</option>
-                    <option th:value="'Inativo'">Inativo</option>
+                    <option th:value="'ATIVO'">Ativo</option>
+                    <option th:value="'INATIVO'">Inativo</option>
                 </select>
                 <span class="error" th:if="${#fields.hasErrors('situacao')}" th:errors="*{situacao}"></span>
             </div>
         </div>
     
-    </div>                            
+    </div>
     
 </form>

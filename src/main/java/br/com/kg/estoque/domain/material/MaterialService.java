@@ -78,7 +78,7 @@ public class MaterialService {
      */
     public DataTableResult dataTableMaterial(DataTableParams params) {
         
-        String[] colunas={"id", "nome", "categoria.nome", "fabricante", "fornecedor.nome", "precoVenda", "saldo", "situacao"};
+        String[] colunas={"id", "nome", "categoria.nome", "fabricante", "fornecedor.nome", "precoVenda", "saldo", "situacao", "precoCusto"};
 
         List<Material> materiaisList = materialCustomRepository.listEntitiesToDataTable(colunas, params);
         
@@ -95,6 +95,7 @@ public class MaterialService {
                 material.getSaldo(),
                 material.getSituacao().getDescricao(),
                 material.getId(),
+                material.getPrecoCusto()
             };
             listaObjects.add(linha);
         });
