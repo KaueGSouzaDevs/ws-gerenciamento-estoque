@@ -37,3 +37,23 @@ td {
 .table-header-permissoes {
   background-color: rgba(230, 230, 230, 0.519) !important;
 }
+
+.select2-container--bootstrap-5.select2-container--focus .select2-selection {
+  border-color: #696cff !important;
+  box-shadow: 0 0 0 .05rem rgba(105, 108, 255, 0.541);
+}
+
+.select2-container--bootstrap-5 .select2-dropdown .select2-search .select2-search__field:focus {
+  border-color: #696cff !important;
+  box-shadow: 0 0 0 .05rem rgba(105, 108, 255, 0.541);
+}
+
+.select2-container--bootstrap-5.select2-container--open .select2-selection {
+  border-color: #696cff !important;
+  box-shadow: 0 0 0 .05rem rgba(105, 108, 255, 0.541);
+}
+
+
+.select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option.select2-results__option--selected {
+  background-color: #696cff !important;
+}
