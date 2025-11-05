@@ -122,7 +122,7 @@ public class FornecedorService {
      */
     public DataTableResult dataTableFornecedores(DataTableParams params)  {
 
-		String[] colunas = {"id", "nome", "telefone", "email", "contato", "situacao"};
+		String[] colunas = {"id", "nome", "telefone", "email", "contato", "situacao", "cnpjCpf"};
 				
 		List<Fornecedor> fornecedoresList = fornecedorRepository.listFornecedoresToDataTable(colunas, params);
         long registrosFiltrados = fornecedorRepository.totalFornecedoresToDataTable(colunas, Auxiliar.removeAcentos(params.getSearchValue()));
@@ -138,7 +138,8 @@ public class FornecedorService {
                         c.getTelefone(),
                         c.getEmail(),
                         c.getContato(),
-						c.getSituacao().getDescricao()
+						c.getSituacao().getDescricao(),
+                        c.getCnpjCpf()
 				}).toList());
 
 		return dataTable;

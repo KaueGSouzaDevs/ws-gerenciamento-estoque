@@ -9,14 +9,15 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         serverSide: true,
         columns: [
-            { data: 0 },
-            { data: 1 },
-            { data: 2 },
-            { data: 3 },
-            { data: 4 },
-            { data: 5 },
+            // { data: 0 }, // id
+            { data: 1 }, // nome
+            { data: 6 }, // cnpjCpf
+            { data: 2 }, // telefone
+            { data: 3 }, // email
+            { data: 4 }, // contato
+            { data: 5 }, // situação
             {
-                data: 0, class: "text-center coluna-acoes", orderable: false, width: "100px",
+                data: 0, class: "text-center coluna-acoes", orderable: false, width: "100px", // acoes
                 render: function (data, type, row, meta) {
                     return `
                         <div class="dropdown">
@@ -33,6 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
         ],
         dom: 'rt' +
             '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        order: [[0, "desc"]]
     });
 
     //? Campo de busca customizado

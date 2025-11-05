@@ -7,23 +7,27 @@ function iniciarSelects2(idModal) {
         $('.select2').select2({
             theme: "bootstrap-5",
             placeholder: "Selecione uma opção",
+            width: 'resolve',
             dropdownParent: $('#' + idModal)
         });
 
         $('.select2Multiple').select2({
             theme: "bootstrap-5",
             placeholder: "Selecione uma opção",
+            width: 'resolve',
             dropdownParent: $('#' + idModal)
         });
     } else {
         $('.select2').select2({
             theme: "bootstrap-5",
             placeholder: "Selecione uma opção",
+            width: 'resolve',
         });
 
         $('.select2Multiple').select2({
             theme: "bootstrap-5",
             placeholder: "Selecione uma opção",
+            width: 'resolve',
         });
     }
 }
