@@ -4,15 +4,15 @@ document.addEventListener('DOMContentLoaded', function () {
         language: { url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json' },
         ajax: {
             url: `/categorias/dataTable`,
-            type: 'GET' // ou 'POST'
+            type: 'GET'
         },
         serverSide: true,
         columns: [
-            { data: 0 },
-            { data: 1 },
-            { data: 2 },
+            //{ data: 0 }, // id
+            { data: 1 }, // nome
+            { data: 2, width: "200px" }, // situação
             {
-                data: 0, class: "text-center coluna-acoes", orderable: false, width: "100px",
+                data: 0, class: "text-center coluna-acoes", orderable: false, width: "100px", // ações
                 render: function (data, type, row, meta) {
                     return `
 
@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
         ],
         dom: 'rt' +
             '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        order: [[0, "desc"]],
     });
 
     //? Campo de busca customizado
@@ -49,33 +50,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
-// executa os scripts que estão na página de retorno do formulário
-function executeScripts(element) {
-    Array.from(element.getElementsByTagName("script")).forEach((oldScript) => {
-        const newScript = document.createElement("script");
-        Array.from(oldScript.attributes)
-            .forEach(attr => newScript.setAttribute(attr.name, attr.value));
-        newScript.appendChild(document.createTextNode(oldScript.innerHTML));
-        oldScript.parentNode.replaceChild(newScript, oldScript);
-    });
-}
 
-// Invoca o formulário de categorias na janela modal
-document.getElementById('btn-adicionar').addEventListener('click', function () {
+
+function novaCategoria() {
     fetch('/categorias/novo')
         .then(response => response.text())
         .then(retorno => {
             var bodyModal = document.getElementById('corpo-modal');
             bodyModal.innerHTML = retorno;
+            iniciarSelects2('modal-categoria');
         });
 
     document.getElementById('titulo-modal').innerHTML = 'Adicionar Categoria';
     var modal = new bootstrap.Modal(document.getElementById('modal-categoria'));
     modal.show();
-});
+}
 
-// salva a categoria
-document.getElementById('btn-salvar').addEventListener('click', function () {
+
+
+function salvarCategoria() {
     fetch('/categorias/salvar', {
         method: 'POST',
         body: new FormData(document.getElementById('formulario'))
@@ -84,17 +77,20 @@ document.getElementById('btn-salvar').addEventListener('click', function () {
         .then(retorno => {
             var bodyModal = document.getElementById('corpo-modal');
             bodyModal.innerHTML = retorno;
+            iniciarSelects2('modal-categoria');
             executeScripts(bodyModal);
         });
-});
+}
 
-// chama a modal com formulário para alterar uma categoria
+
+
 function editar(idCategoria) {
     fetch('/categorias/' + idCategoria + '/editar')
         .then(response => response.text())
         .then(retorno => {
             var bodyModal = document.getElementById('corpo-modal');
             bodyModal.innerHTML = retorno;
+            iniciarSelects2('modal-categoria');
         });
 
     document.getElementById('titulo-modal').innerHTML = 'Editar Categoria';
@@ -103,7 +99,8 @@ function editar(idCategoria) {
     modal.show();
 }
 
-// Exclui uma categoria
+
+
 function excluir(idCategoria) {
     Swal.fire({
         title: "Deseja realmente deletar a categoria?",

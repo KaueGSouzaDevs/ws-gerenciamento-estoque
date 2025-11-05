@@ -2,5 +2,5 @@
 	var myModalEl = document.getElementById('modal-categoria');
 	var modal = bootstrap.Modal.getInstance(myModalEl)	
 	modal.hide();
-    location.reload();
+    new DataTable(`#datatable`).ajax.reload();
 </script>
