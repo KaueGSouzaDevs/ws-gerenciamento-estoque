@@ -25,6 +25,7 @@ import br.com.kg.estoque.domain.fornecedor.FornecedorService;
 import br.com.kg.estoque.domain.material.MaterialService;
 import br.com.kg.estoque.domain.movimento.Movimento;
 import br.com.kg.estoque.domain.movimento.MovimentoService;
+import br.com.kg.estoque.enuns.TipoMovimento;
 import jakarta.validation.Valid;
 
 /**
@@ -100,8 +101,8 @@ public class MovimentoController {
     @GetMapping("/novo")
     public ModelAndView novo(Movimento movimento, Boolean erro) {
         ModelAndView model = new ModelAndView("movimentos/form");
-        model.addObject("materiaisList", materialService.buscarTodos());
-        model.addObject("fornecedoresList", fornecedorService.buscarTodos());
+        model.addObject("materiaisList", materialService.buscarTodosAtivos());
+        model.addObject("fornecedoresList", fornecedorService.buscarTodosAtivos());
         model.addObject("erro", erro);
         return model; 
     }
@@ -118,11 +119,11 @@ public class MovimentoController {
     @PostMapping("/salvar")
     public ModelAndView salvar(@Valid @ModelAttribute("movimento") Movimento movimento, BindingResult result, RedirectAttributes attributes) {
 
-        if (movimento.getTipo().equals("Entrada")) {
+        if (movimento.getTipoMovimento() == TipoMovimento.ENTRADA) {
             movimentoService.validaEntradaMaterial(movimento, result);
         }
 
-        if (movimento.getTipo().equalsIgnoreCase("Saida") && movimento.getMaterial() != null && movimento.getQuantidade() != null && movimento.getMaterial().getSaldo() != null && movimento.getMaterial().getSaldo() < movimento.getQuantidade()) {
+        if (movimento.getTipoMovimento() == TipoMovimento.SAIDA && movimento.getMaterial() != null && movimento.getQuantidade() != null && movimento.getMaterial().getSaldo() != null && movimento.getMaterial().getSaldo() < movimento.getQuantidade()) {
                 result.rejectValue("quantidade", "movimento-error", "* Quantidade insuficiente em estoque");
         }
 

@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import br.com.kg.estoque.custom.Auxiliar;
 import br.com.kg.estoque.custom.DataTableParams;
 import br.com.kg.estoque.custom.DataTableResult;
+import br.com.kg.estoque.enuns.SituacaoFornecedor;
 
 /**
  * Serviço de negócios para a entidade {@link Fornecedor}.
@@ -144,4 +145,8 @@ public class FornecedorService {
 
 		return dataTable;
 	}
+
+    public List<Fornecedor> buscarTodosAtivos() {
+        return fornecedorRepository.findAllBySituacao(SituacaoFornecedor.ATIVO);
+    }
 }

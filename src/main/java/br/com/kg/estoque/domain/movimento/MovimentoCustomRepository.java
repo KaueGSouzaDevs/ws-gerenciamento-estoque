@@ -31,7 +31,7 @@ public class MovimentoCustomRepository extends CustomRepository<Movimento>{
 		jpql.append(" FROM Movimento f WHERE f.id > 0 AND ( 1=0  ");
 		
         for (String coluna : colunas) {
-            if (coluna.equals("id") || coluna.equals("data") || coluna.equals("quantidade")) {
+            if (coluna.equals("id") || coluna.equals("dataMovimento") || coluna.equals("quantidade")) {
                 // Faz CAST de campos numéricos/data para string para a busca
                 jpql.append(" OR CAST(f.").append(coluna).append(" AS string) LIKE :searchValue ");
             } else {
@@ -64,7 +64,7 @@ public class MovimentoCustomRepository extends CustomRepository<Movimento>{
 		jpql.append("SELECT COUNT(*) FROM Movimento f WHERE f.id > 0 AND ( 1=0  ");
 		
         for (String coluna : colunas) {
-            if (coluna.equals("id") || coluna.equals("data") || coluna.equals("quantidade")) {
+            if (coluna.equals("id") || coluna.equals("dataMovimento") || coluna.equals("quantidade")) {
                 // Faz CAST de campos numéricos/data para string para a busca
                 jpql.append(" OR CAST(f.").append(coluna).append(" AS string) LIKE :searchValue ");
             } else {

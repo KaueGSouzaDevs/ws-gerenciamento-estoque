@@ -1,6 +1,18 @@
 CREATE EXTENSION IF NOT EXISTS unaccent;
 
-INSERT INTO usuarios (login, nome, email, senha, situacao_usuario) VALUES ('kaue_gallego', 'Kauê Gallego', 'kauegallego@hotmail.com','$2a$10$UOKqChxVt0sA12eDoMxWzO2rAjSAKg7bG9gVuUq/J82xiCk97Nt7a','ATIVO');
+INSERT INTO public.grupos_acessos (grupo, situacao) VALUES ('ADMINISTRADOR', 'ATIVO');
+
+INSERT INTO public.permissao_grupo (id_grupo, permissoes) VALUES 
+(1, 'ROLE_GERENCIAMENTO_USUARIOS'),
+(1, 'ROLE_GERENCIAMENTO_MOVIMENTACOES'),
+(1, 'ROLE_GERENCIAMENTO_MATERIAIS'),
+(1, 'ROLE_GERENCIAMENTO_GRUPOS_ACESSOS'),
+(1, 'ROLE_GERENCIAMENTO_FORNECEDORES'),
+(1, 'ROLE_GERENCIAMENTO_CATEGORIAS');
+
+INSERT INTO public.usuarios (login, nome, email, senha, situacao_usuario) VALUES ('kaue.souza', 'Kauê Gallego', 'kauegallego@hotmail.com','$2a$10$UOKqChxVt0sA12eDoMxWzO2rAjSAKg7bG9gVuUq/J82xiCk97Nt7a','ATIVO');
+
+INSERT INTO public.rel_usuarios_grupos_acessos (id_usuario, id_grupo_acesso) VALUES (1, 1);
 
 INSERT INTO public.fornecedores (cnpj_cpf, contato, email, nome, situacao, telefone) VALUES
 ('12345678000195', 'Carlos Silva', 'carlos.silva@example.com', 'Fornecedor A', 'ATIVO', '11987654321'),

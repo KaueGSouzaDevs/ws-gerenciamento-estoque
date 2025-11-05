@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import br.com.kg.estoque.custom.Auxiliar;
 import br.com.kg.estoque.custom.DataTableParams;
 import br.com.kg.estoque.custom.DataTableResult;
+import br.com.kg.estoque.enuns.SituacaoMaterial;
 
 /**
  * Serviço de negócios para a entidade {@link Material}.
@@ -108,5 +109,9 @@ public class MaterialService {
         dataTable.setRecordsFiltered(registrosFiltrados);
         dataTable.setData(listaObjects);
         return dataTable;
+    }
+
+    public List<Material> buscarTodosAtivos() {
+        return materialRepository.findAllBySituacao(SituacaoMaterial.ATIVO);
     }
 }

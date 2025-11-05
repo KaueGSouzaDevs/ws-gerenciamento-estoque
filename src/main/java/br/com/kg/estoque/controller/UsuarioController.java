@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,7 +33,7 @@ import jakarta.validation.Valid;
  */
 @Controller
 @RequestMapping("/usuarios")
-// @PreAuthorize("hasRole('GERENCIAMENTO_USUARIOS')")
+@PreAuthorize("hasRole('GERENCIAMENTO_USUARIOS')")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;

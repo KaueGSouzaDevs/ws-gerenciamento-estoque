@@ -12,6 +12,7 @@ import br.com.kg.estoque.custom.DataTableParams;
 import br.com.kg.estoque.custom.DataTableResult;
 import br.com.kg.estoque.domain.material.Material;
 import br.com.kg.estoque.domain.material.MaterialService;
+import br.com.kg.estoque.enuns.TipoMovimento;
 
 /**
  * Serviço de negócios para a entidade {@link Movimento}.
@@ -54,16 +55,16 @@ public class MovimentoService {
         if (materialOptional.isPresent()) {
             Material material = materialOptional.get();
 
-            if (movimento.getTipo().equalsIgnoreCase("entrada")) {
+            if (movimento.getTipoMovimento() == TipoMovimento.ENTRADA) {
                 material.setSaldo(material.getSaldo() + movimento.getQuantidade());
                 if (material.getSaldo() > material.getEstoqueMaximo()) {
-                    System.out.println("Disparo de e-mail: O estoque do material " + material.getNome() + " excedeu o máximo permitido.");                 
+                    System.out.println("Disparo de e-mail: O estoque do material " + material.getNome() + " excedeu o máximo permitido.");
                 }
                 material.setFornecedor(movimento.getFornecedor());
     
-            } else if (movimento.getTipo().equalsIgnoreCase("saida")) {
+            } else if (movimento.getTipoMovimento() == TipoMovimento.SAIDA) {
                 material.setSaldo(material.getSaldo() - movimento.getQuantidade());
-                if (material.getSaldo() < material.getEstoqueMinimo()) {                
+                if (material.getSaldo() < material.getEstoqueMinimo()) {
                     System.out.println("Disparo de e-mail: O estoque do material " + material.getNome() + " está abaixo do mínimo permitido.");
                 }
             }
@@ -114,9 +115,9 @@ public class MovimentoService {
         Movimento movimento = buscarPorId(id);
         if (movimento != null && movimento.getMaterial() != null) {
             materialService.buscarPorId(movimento.getMaterial().getId()).ifPresent(material -> {
-                if (movimento.getTipo().equalsIgnoreCase("Entrada")) {
+                if (movimento.getTipoMovimento() == TipoMovimento.ENTRADA) {
                     material.setSaldo(material.getSaldo() - movimento.getQuantidade());
-                } else if(movimento.getTipo().equalsIgnoreCase("Saida")) {
+                } else if(movimento.getTipoMovimento() == TipoMovimento.SAIDA) {
                     material.setSaldo(material.getSaldo() + movimento.getQuantidade());
                 }
                 materialService.salvar(material);
@@ -149,15 +150,15 @@ public class MovimentoService {
      */
     public DataTableResult dataTableMovimento(DataTableParams params){
 
-        String[] colunas={"id", "data", "tipo", "material.nome", "quantidade", "responsavel"};
+        String[] colunas={"id", "dataMovimento", "tipoMovimento", "material.nome", "quantidade", "responsavel"};
         List<Movimento> movimentoList = movimentoCustomRepository.listMovimentosToDataTable(colunas, params);
         List<Object[]> listaObjects = new ArrayList<>();
 
         movimentoList.forEach( movimento -> {
             Object[] linha = {
                 movimento.getId(),
-                movimento.getData(),
-                movimento.getTipo(),
+                movimento.getDataMovimento(),
+                movimento.getTipoMovimento().getDescricao(),
                 movimento.getMaterial().getNome(),
                 movimento.getQuantidade(),
                 movimento.getResponsavel(),

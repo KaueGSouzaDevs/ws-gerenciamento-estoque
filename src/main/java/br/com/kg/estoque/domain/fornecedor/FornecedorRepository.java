@@ -1,9 +1,12 @@
 package br.com.kg.estoque.domain.fornecedor;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import br.com.kg.estoque.enuns.SituacaoFornecedor;
 
 /**
  * Repositório Spring Data JPA para a entidade {@link Fornecedor}.
@@ -34,5 +37,7 @@ public interface FornecedorRepository extends JpaRepository<Fornecedor, Long>, F
      * @return Um {@link Optional} contendo o {@link Fornecedor} se um com o mesmo CNPJ e ID diferente for encontrado.
      */
     Optional<Fornecedor> findByCnpjCpfAndIdNot(String cnpj, Long id);
+
+    List<Fornecedor> findAllBySituacao(SituacaoFornecedor ativo);
     
 }

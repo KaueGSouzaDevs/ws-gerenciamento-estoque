@@ -4,7 +4,6 @@
 th:with= "menu='movimentos'">
 
 <head>
-    <!-- É possível adicionar conteúdo -->
 </head>
 
     <th:block layout:fragment="pagetitle">
@@ -13,7 +12,7 @@ th:with= "menu='movimentos'">
 
     <th:block layout:fragment="conteudo">
         
-        <div th:replace="~{partials/page-title :: page-title('Movimentação','Movimentos')}"> </div>
+        <div th:replace="~{partials/page-title :: page-title('Movimentação','Cadastro de Movimentos')}"> </div>
 
                     <div class="row">
                         <div class="col-12">
@@ -30,81 +29,68 @@ th:with= "menu='movimentos'">
                             </div>
 
                             <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">Cadastro de Movimentos</h5>
+                                </div>
+
                                 <div class="card-body">
-    
-                                    <h4 class="card-title mb-4">
-                                        Realizar Movimentação
-                                    </h4>
-
                                     <form th:action="@{/movimentos/salvar}" method="post" th:object="${movimento}">
-                                        
                                         <input type="hidden" th:field="*{id}">
-
-                                        <div class="row">
-
-                                            <div class="col-md-3">
-                                                <div class="mb-3">
-                                                    <label for="tipo" class="form-label">Tipo de Movimento</label>
-                                                    <select th:field="*{tipo}" id="tipo" th:errorclass="is-invalid" class="form-select" autofocus>
-                                                        <option th:value="''">Selecione...</option>
-                                                        <option th:value="'Entrada'">Entrada</option>
-                                                        <option th:value="'Saida'">Saída</option>
-                                                    </select>
-                                                    <span class="error" th:if="${#fields.hasErrors('tipo')}" th:errors="*{tipo}"></span>
-                                                </div>
+                                        <div class="row mb-3">
+                                            <div class="col-lg-6 col-xl-3 mb-3">
+                                                <label for="tipoMovimento" class="form-label">Tipo de Movimento</label>
+                                                <select th:field="*{tipoMovimento}" id="tipoMovimento" th:errorclass="is-invalid" class="form-select select2" onchange="camposPorTipoMovimento(this.value)" autofocus>
+                                                    <option th:value="''">Selecione...</option>
+                                                    <option th:value="'ENTRADA'">Entrada</option>
+                                                    <option th:value="'SAIDA'">Saída</option>
+                                                </select>
+                                                <span class="error" th:if="${#fields.hasErrors('tipoMovimento')}" th:errors="*{tipoMovimento}"></span>
                                             </div>
 
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label for="material" class="form-label">Material</label>
-                                                    <select th:field="*{material}" id="material" th:errorclass="is-invalid" class="form-select">
-                                                        <option th:value="''">Selecione ...</option>
-                                                        <option th:each="material : ${materiaisList}" th:value="${material.id}" th:text="${material.nome}"></option>
-                                                    </select>
-                                                    <span class="error" th:if="${#fields.hasErrors('material')}" th:errors="*{material}"></span>
-                                                </div>
+                                            <div class="col-lg-6 col-xl-6 mb-3">
+                                                <label for="material" class="form-label">Material</label>
+                                                <select th:field="*{material}" id="material" th:errorclass="is-invalid" class="form-select select2">
+                                                    <option th:value="''">Selecione ...</option>
+                                                    <option th:each="material : ${materiaisList}" th:value="${material.id}" th:text="${material.nome}"></option>
+                                                </select>
+                                                <span class="error" th:if="${#fields.hasErrors('material')}" th:errors="*{material}"></span>
                                             </div>
 
-                                            <div class="col-md-3 mb-3">
+                                            <div class="col-lg-6 col-xl-3 mb-3">
                                                 <label for="quantidade" class="form-label">Quantidade</label>
                                                 <input type="number" th:field="*{quantidade}" th:errorclass="is-invalid" class="form-control" id="quantidade">
                                                 <span class="error" th:if="${#fields.hasErrors('quantidade')}" th:errors="*{quantidade}"></span>
                                             </div>
 
-                                            <div class="col-md-3 mb-3">
+                                            <div class="col-lg-6 col-xl-3 mb-3">
                                                 <label for="notaFiscal" class="form-label">Nota Fiscal</label>
-                                                <input type="text" th:field="*{notaFiscal}" th:errorclass="is-invalid" class="form-control" id="notaFiscal">
+                                                <input type="text" th:field="*{notaFiscal}" th:errorclass="is-invalid" class="form-control" id="notaFiscal" maxlength="50">
                                                 <span class="error" th:if="${#fields.hasErrors('notaFiscal')}" th:errors="*{notaFiscal}"></span>
                                             </div>
 
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label for="fornecedor" class="form-label">Fornecedor</label>
-                                                    <select th:field="*{fornecedor}" id="fornecedor" th:errorclass="is-invalid" class="form-select" th:disabled="${tipo == 'Saida'}">
-                                                        <option th:value="''">Selecione...</option>
-                                                        <option th:each="fornecedor : ${fornecedoresList}" th:value="${fornecedor.id}" th:text="${fornecedor.nome}"></option>
-                                                    </select>
-                                                    <span class="error" th:if="${#fields.hasErrors('fornecedor')}" th:errors="*{fornecedor}"></span>
-                                                </div>
+                                            <div class="col-lg-6 col-xl-6 mb-3">
+                                                <label for="fornecedor" class="form-label">Fornecedor</label>
+                                                <select th:field="*{fornecedor}" id="fornecedor" th:errorclass="is-invalid" class="form-select select2">
+                                                    <option th:value="''">Selecione...</option>
+                                                    <option th:each="fornecedor : ${fornecedoresList}" th:value="${fornecedor.id}" th:text="${fornecedor.nome}"></option>
+                                                </select>
+                                                <span class="error" th:if="${#fields.hasErrors('fornecedor')}" th:errors="*{fornecedor}"></span>
                                             </div>
 
-                                            <div class="col-md-3 mb-3">
+                                            <div class="col-lg-6 col-xl-3 mb-3">
                                                 <label for="responsavel" class="form-label">Responsável</label>
-                                                <input type="text" th:field="*{responsavel}" th:errorclass="is-invalid" class="form-control" id="responsavel">
+                                                <input type="text" th:field="*{responsavel}" th:errorclass="is-invalid" class="form-control" id="responsavel" maxlength="50">
                                                 <span class="error" th:if="${#fields.hasErrors('responsavel')}" th:errors="*{responsavel}"></span>
                                             </div>
-
                                         </div>
 
-                                        <div class="text-center">
-                                            <button type="submit" class="btn btn-primary w-md"> <i class="fas fa-save"></i> Salvar</button>
-                                            <button onclick="window.location.href='/movimentos'" type="button" class="btn btn-secondary w-md">
-                                                <i class="fas fa-times"></i> Cancelar
+                                        <div class="text-end">
+                                            <button type="submit" class="btn btn-primary"><i class='bx bx-check'></i> Salvar</button>
+                                            <button onclick="window.location.href='/movimentos'" type="button" class="btn btn-secondary">
+                                                <i class='bx bx-x'></i> Cancelar
                                             </button>
                                         </div>
-
                                     </form>
-                                    
                                 </div>
                             </div>
                         </div> <!-- end col -->
@@ -114,16 +100,6 @@ th:with= "menu='movimentos'">
 
     <th:block layout:fragment="pageJs">
     <script th:src="@{/pages/movimentos.js}"></script>
-
-    <script>
-        if (document.getElementById("tipo").value === "Saida") {
-            document.getElementById("notaFiscal").setAttribute('disabled', 'disabled');
-            document.getElementById("fornecedor").setAttribute('disabled', 'disabled');
-        } else {
-            document.getElementById("notaFiscal").removeAttribute('disabled');
-            document.getElementById("fornecedor").removeAttribute('disabled');
-        }
-    </script>
     </th:block>
         
 

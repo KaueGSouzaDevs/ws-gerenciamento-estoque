@@ -1,11 +1,14 @@
 package br.com.kg.estoque.domain.movimento;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import br.com.kg.estoque.domain.fornecedor.Fornecedor;
 import br.com.kg.estoque.domain.material.Material;
+import br.com.kg.estoque.enuns.TipoMovimento;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
@@ -34,6 +37,7 @@ public class Movimento {
     @Getter @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     /**
@@ -42,8 +46,8 @@ public class Movimento {
      */
     @Getter @Setter
     @NotNull(message = "* Data é obrigatória")
-    @Column(nullable = false)
-    private LocalDate data = LocalDate.now();
+    @Column(name = "data_movimento", nullable = false)
+    private LocalDateTime dataMovimento = LocalDateTime.now();
 
     /**
      * O material que está sendo movimentado.
@@ -52,7 +56,7 @@ public class Movimento {
     @Getter @Setter
     @NotNull(message = "* Material é obrigatório")
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="material_id", foreignKey = @ForeignKey(name="fk_material"))
+    @JoinColumn(name="id_material", foreignKey = @ForeignKey(name="fk_material"))
     private Material material;
 
     /**
@@ -61,7 +65,7 @@ public class Movimento {
      */
     @Getter @Setter
     @NotNull(message = "* Quantidade é obrigatória")
-    @Column(nullable = false)
+    @Column(name = "quantidade", nullable = false)
     private Integer quantidade;
 
     /**
@@ -69,15 +73,16 @@ public class Movimento {
      * É um campo obrigatório.
      */
     @Getter @Setter
-    @NotBlank(message = "* Tipo de movimento é obrigatório")
-    @Column(length = 20)
-    private String tipo;
+    @Enumerated(EnumType.STRING)
+    @NotNull(message = "* Tipo de movimento é obrigatório")
+    @Column(name = "tipo_movimento", length = 10, nullable = false)
+    private TipoMovimento tipoMovimento;
 
     /**
      * O número da nota fiscal associada ao movimento, se aplicável (principalmente para entradas).
      */
     @Getter @Setter
-    @Column(length = 50)
+    @Column(name = "nota_fiscal", length = 50)
     private String notaFiscal;
 
     /**
@@ -86,7 +91,7 @@ public class Movimento {
      */
     @Getter @Setter
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="fornecedor_id", foreignKey = @ForeignKey(name="fk_fornecedor"))
+    @JoinColumn(name="id_fornecedor", foreignKey = @ForeignKey(name="fk_fornecedor"))
     private Fornecedor fornecedor;
 
     /**
@@ -95,6 +100,6 @@ public class Movimento {
      */
     @Getter @Setter
     @NotBlank(message = "* Responsável é obrigatório")
-    @Column(length = 50)
+    @Column(name = "responsavel", length = 50)
     private String responsavel;
 }

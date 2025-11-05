@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener('DOMContentLoaded', function () {
     let table = new DataTable('#datatable', {
         language: { url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json' },
         processing: true,
@@ -8,8 +8,13 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         serverSide: true,
         columns: [
-            { data: 0 }, // id
-            { data: 1 }, // data
+            //{ data: 0 }, // id
+            {
+                data: 1,
+                render: function (data, type, row, meta) {
+                    return `${Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(data))}`;
+                }
+            }, // data
             { data: 2 }, // tipo
             { data: 3 }, // material
             { data: 4 }, // quantidade
@@ -19,7 +24,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 render: function (data, type, row, meta) {
                     return `
                         <div class="dropdown">
-                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown" aria-expanded="false"><i class="icon-base bx bx-dots-vertical-rounded"></i></button>
+                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="icon-base bx bx-dots-vertical-rounded"></i>
+                            </button>
                             <div class="dropdown-menu" style="">
                                 <a class="dropdown-item" href="/movimentos/${data}/editar"><i class="icon-base bx bx-pencil"></i> Editar</a>
 
@@ -32,6 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
         ],
         dom: 'rt' +
             '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        order: [[0, "desc"]]
     });
 
     //? Campo de busca customizado
@@ -51,20 +59,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-if (document.getElementById("tipo")) {
-    document.getElementById("tipo").addEventListener("change", function () {
-
-        var tipo = this.value;
-
-        if (tipo === "Saida") {
-            document.getElementById("notaFiscal").setAttribute('disabled', 'disabled');
-            document.getElementById("fornecedor").setAttribute('disabled', 'disabled');
-        } else if (tipo === "Entrada") {
-            document.getElementById("notaFiscal").removeAttribute('disabled');
-            document.getElementById("fornecedor").removeAttribute('disabled');
-        }
-    });
-};
 
 function excluir(idMovimento) {
     Swal.fire({
@@ -99,4 +93,19 @@ function excluir(idMovimento) {
                 });
         }
     });
+}
+
+
+
+function camposPorTipoMovimento(value) {
+    let notaFiscal = document.getElementById("notaFiscal");
+    let fornecedor = document.getElementById("fornecedor");
+    console.log(value);
+    if (value === "SAIDA") {
+        notaFiscal.setAttribute('disabled', 'true');
+        fornecedor.setAttribute('disabled', 'true');
+    } else {
+        notaFiscal.removeAttribute('disabled');
+        fornecedor.removeAttribute('disabled');
+    }
 }

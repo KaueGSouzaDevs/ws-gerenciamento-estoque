@@ -159,7 +159,7 @@ public class Usuario implements UserDetails {
 	@Getter
 	@Setter
 	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "rel_usuarios_grupos_acessos", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "grupo_acesso_id"))
+	@JoinTable(name = "rel_usuarios_grupos_acessos", joinColumns = @JoinColumn(name = "id_usuario"), inverseJoinColumns = @JoinColumn(name = "id_grupo_acesso"))
 	private List<GrupoAcesso> gruposAcessos;
 
 	/**

@@ -19,7 +19,6 @@ th:with= "menu='movimentos'">
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">
-
                                         <div class="d-flex justify-content-between align-items-center mb-3">
                                             <div class="d-flex align-items-center">
                                                 <label for="customPageLength" class="me-2 mb-0">Exibir</label>
@@ -30,8 +29,7 @@ th:with= "menu='movimentos'">
                                                     <option value="100">100</option>
                                                 </select>
                                             </div>
-                                        
-                                        
+
                                             <div class="d-flex align-items-center">
                                                 <div class="ms-auto">
                                                     <a th:href="@{/movimentos/novo}" class="btn btn-primary d-flex align-items-center me-2">
@@ -41,22 +39,22 @@ th:with= "menu='movimentos'">
                                                 <input type="text" id="customSearchBox" placeholder="Buscar..." class="form-control">
                                             </div>
                                         </div>
-                                        
-                                        
-                                        <table id="datatable" class="table table-striped align-middle nowrap w-100">
-                                            <thead>
-                                                <tr>
-                                                    <th>Id</th>
-                                                    <th>Data</th>
-                                                    <th>Tipo</th>
-                                                    <th>Material</th>
-                                                    <th>Quantidade</th>
-                                                    <th>Responsável</th>
-                                                    <th class="text-center coluna-acoes">Ações</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
 
+                                        <div class="table-responsive">
+                                            <table id="datatable" class="table table-striped align-middle nowrap w-100">
+                                                <thead>
+                                                    <tr>
+                                                        <!-- <th>Id</th> -->
+                                                        <th>Data</th>
+                                                        <th>Tipo</th>
+                                                        <th>Material</th>
+                                                        <th>Quantidade</th>
+                                                        <th>Responsável</th>
+                                                        <th class="text-center coluna-acoes">Ações</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div> <!-- end col -->

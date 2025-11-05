@@ -70,3 +70,8 @@ table thead tr th {
   color: black !important;
   font-weight: 600 !important;
 }
+
+.btn {
+  padding-right: 0.75rem;
+  padding-left: 0.75rem;
+}
