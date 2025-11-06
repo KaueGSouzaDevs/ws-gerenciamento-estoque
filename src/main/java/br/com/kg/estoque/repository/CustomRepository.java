@@ -2,6 +2,8 @@ package br.com.kg.estoque.repository;
 
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import br.com.kg.estoque.custom.Auxiliar;
 import br.com.kg.estoque.custom.DataTableParams;
 import jakarta.persistence.EntityManager;
@@ -14,6 +16,7 @@ import jakarta.persistence.PersistenceContext;
  *
  * @param <T> O tipo da entidade a ser manipulada pelo repositório.
  */
+@Repository
 public abstract class CustomRepository<T> {
 
     /**
@@ -34,17 +37,10 @@ public abstract class CustomRepository<T> {
      */
     public List<T> listEntitiesToDataTable(String[] colunas, DataTableParams params, Class<T> type) {
         StringBuilder jpql = new StringBuilder();
-        jpql.append(" FROM ").append(type.getSimpleName()).append(" t WHERE t.id > 0");
-        jpql.append(" AND ( 1 = 0 ");
-
+        jpql.append(" FROM ").append(type.getSimpleName()).append(" t WHERE t.id > 0 AND ( 1 = 0 ");
         for (String coluna : colunas) {
-            if (coluna.equals("id")) {
-                // Faz CAST do id direto pra string (sem UNACCENT)
-                jpql.append(" OR CAST(t.").append(coluna).append(" AS string) LIKE :searchValue ");
-            } else {
-                // Para os campos String, aplica lower + unaccent para busca case-insensitive e accent-insensitive
-                jpql.append(" OR LOWER(CAST(UNACCENT(t.").append(coluna).append(") AS string)) LIKE :searchValue ");
-            }
+            // Primeiro faz o CAST para string, depois aplica UNACCENT e LOWER. Funciona para qualquer tipo de dado.
+            jpql.append(" OR LOWER(UNACCENT(CAST(t.").append(coluna).append(" AS string))) LIKE :searchValue ");
         }
 
         jpql.append(" ) ");
@@ -69,17 +65,10 @@ public abstract class CustomRepository<T> {
      */
     public Long totalEntitiesToDataTable(String[] colunas, String sSearch, Class<T> type) {
         StringBuilder jpql = new StringBuilder();
-        jpql.append("SELECT COUNT(*) FROM ").append(type.getSimpleName()).append(" t WHERE t.id > 0");
-        jpql.append(" AND ( 1 = 0 ");
-
+        jpql.append("SELECT COUNT(*) FROM ").append(type.getSimpleName()).append(" t WHERE t.id > 0 AND ( 1 = 0 ");
         for (String coluna : colunas) {
-            if (coluna.equals("id")) {
-                // Faz CAST do id direto pra string (sem UNACCENT)
-                jpql.append(" OR CAST(t.").append(coluna).append(" AS string) LIKE :searchValue ");
-            } else {
-                // Para os campos String, aplica lower + unaccent para busca case-insensitive e accent-insensitive
-                jpql.append(" OR LOWER(CAST(UNACCENT(t.").append(coluna).append(") AS string)) LIKE :searchValue ");
-            }
+            // Primeiro faz o CAST para string, depois aplica UNACCENT e LOWER. Funciona para qualquer tipo de dado.
+            jpql.append(" OR LOWER(UNACCENT(CAST(t.").append(coluna).append(" AS string))) LIKE :searchValue ");
         }
 
         jpql.append(" ) ");

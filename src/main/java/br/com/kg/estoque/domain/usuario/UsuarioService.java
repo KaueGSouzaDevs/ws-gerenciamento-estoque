@@ -54,7 +54,7 @@ public class UsuarioService {
 		String[] colunas = {"id", "nome", "login", "email", "situacaoUsuario"};
 		
 		List<Usuario> usuariosList = customUsuarioRepository.listEntitiesToDataTable(colunas, params, Usuario.class); 
-		Long registrosFiltrados = customUsuarioRepository.totalEntitiesToDataTable(colunas, Auxiliar.removeAcentos(params.getSearchValue()), Usuario.class);
+		Long registrosFiltrados = customUsuarioRepository.totalEntitiesToDataTable(colunas, params.getSearchValue(), Usuario.class);
 		
 		DataTableResult dataTable = new DataTableResult();
 		dataTable.setDraw(params.getDraw());

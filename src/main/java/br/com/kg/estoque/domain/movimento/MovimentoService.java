@@ -7,7 +7,6 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
-import br.com.kg.estoque.custom.Auxiliar;
 import br.com.kg.estoque.custom.DataTableParams;
 import br.com.kg.estoque.custom.DataTableResult;
 import br.com.kg.estoque.domain.material.Material;
@@ -151,7 +150,7 @@ public class MovimentoService {
     public DataTableResult dataTableMovimento(DataTableParams params){
 
         String[] colunas={"id", "dataMovimento", "tipoMovimento", "material.nome", "quantidade", "responsavel"};
-        List<Movimento> movimentoList = movimentoCustomRepository.listMovimentosToDataTable(colunas, params);
+        List<Movimento> movimentoList = movimentoCustomRepository.listEntitiesToDataTable(colunas, params, Movimento.class);
         List<Object[]> listaObjects = new ArrayList<>();
 
         movimentoList.forEach( movimento -> {
@@ -167,7 +166,7 @@ public class MovimentoService {
             listaObjects.add(linha);
         });
 
-        Long registrosFiltrados = movimentoCustomRepository.totalMovimentosToDataTable(colunas, Auxiliar.removeAcentos(params.getSearchValue()));
+        Long registrosFiltrados = movimentoCustomRepository.totalEntitiesToDataTable(colunas, params.getSearchValue(), Movimento.class);
         DataTableResult dataTable = new DataTableResult();
         dataTable.setDraw(params.getDraw());
         dataTable.setRecordsTotal((int) movimentoRepository.count());

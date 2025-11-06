@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import br.com.kg.estoque.custom.Auxiliar;
 import br.com.kg.estoque.custom.DataTableParams;
 import br.com.kg.estoque.custom.DataTableResult;
 
@@ -81,8 +80,8 @@ public class CategoriaService {
 		
 		String[] colunas = {"id", "nome", "situacao"};
 
-		List<Categoria> categoriasList = categoriaCustomRepository.listEntitiesToDataTableCategoria(colunas, params);
-		long totalFiltrado = categoriaCustomRepository.totalEntitiesToDataTableCategoria(colunas, Auxiliar.removeAcentos(params.getSearchValue()));
+		List<Categoria> categoriasList = categoriaCustomRepository.listEntitiesToDataTable(colunas, params, Categoria.class);
+		long totalFiltrado = categoriaCustomRepository.totalEntitiesToDataTable(colunas, params.getSearchValue(), Categoria.class);
 		
 		DataTableResult dataTable = new DataTableResult();
 		dataTable.setDraw(params.getDraw());

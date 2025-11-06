@@ -13,6 +13,6 @@ import br.com.kg.estoque.repository.CustomRepository;
  * métodos genéricos para consultas dinâmicas usadas pelo DataTables.
  */
 @Repository
-public class UsuarioCustomRepository extends CustomRepository<Usuario>{
+public class UsuarioCustomRepository extends CustomRepository<Usuario> {
 
 }

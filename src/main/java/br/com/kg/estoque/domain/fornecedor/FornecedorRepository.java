@@ -16,7 +16,7 @@ import br.com.kg.estoque.enuns.SituacaoFornecedor;
  * Também inclui métodos de consulta derivados do nome para buscas específicas.
  */
 @Repository
-public interface FornecedorRepository extends JpaRepository<Fornecedor, Long>, FornecedorCustomRepository{
+public interface FornecedorRepository extends JpaRepository<Fornecedor, Long>{
 
     /**
      * Busca um fornecedor pelo seu CNPJ.

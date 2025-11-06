@@ -7,7 +7,6 @@ import java.util.Optional;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import br.com.kg.estoque.custom.Auxiliar;
 import br.com.kg.estoque.custom.DataTableParams;
 import br.com.kg.estoque.custom.DataTableResult;
 import br.com.kg.estoque.enuns.SituacaoMaterial;
@@ -81,7 +80,7 @@ public class MaterialService {
         
         String[] colunas={"id", "nome", "categoria.nome", "fabricante", "fornecedor.nome", "precoVenda", "saldo", "situacao", "precoCusto"};
 
-        List<Material> materiaisList = materialCustomRepository.listEntitiesToDataTable(colunas, params);
+        List<Material> materiaisList = materialCustomRepository.listEntitiesToDataTable(colunas, params, Material.class);
         
         List<Object[]> listaObjects = new ArrayList<>();
 
@@ -101,7 +100,7 @@ public class MaterialService {
             listaObjects.add(linha);
         });
 
-        Long registrosFiltrados = materialCustomRepository.totalEntitiesToDataTable(colunas, Auxiliar.removeAcentos(params.getSearchValue()));
+        Long registrosFiltrados = materialCustomRepository.totalEntitiesToDataTable(colunas, params.getSearchValue(), Material.class);
 
         DataTableResult dataTable = new DataTableResult();
         dataTable.setDraw(params.getDraw());

@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
-import br.com.kg.estoque.custom.Auxiliar;
 import br.com.kg.estoque.custom.DataTableParams;
 import br.com.kg.estoque.custom.DataTableResult;
 import br.com.kg.estoque.enuns.SituacaoFornecedor;
@@ -20,14 +19,17 @@ import br.com.kg.estoque.enuns.SituacaoFornecedor;
 public class FornecedorService {
 
     private final FornecedorRepository fornecedorRepository;
+    private final FornecedorCustomRepository fornecedorCustomRepository;
+
 
     /**
      * Constrói o serviço com a dependência do repositório de fornecedor.
      *
      * @param fornecedorRepository O repositório para acesso aos dados de fornecedores.
      */
-    public FornecedorService(FornecedorRepository fornecedorRepository) {
+    public FornecedorService(FornecedorRepository fornecedorRepository, FornecedorCustomRepository fornecedorCustomRepository) {
         this.fornecedorRepository = fornecedorRepository;
+        this.fornecedorCustomRepository = fornecedorCustomRepository;
     }
 
     /**
@@ -125,8 +127,8 @@ public class FornecedorService {
 
 		String[] colunas = {"id", "nome", "telefone", "email", "contato", "situacao", "cnpjCpf"};
 				
-		List<Fornecedor> fornecedoresList = fornecedorRepository.listFornecedoresToDataTable(colunas, params);
-        long registrosFiltrados = fornecedorRepository.totalFornecedoresToDataTable(colunas, Auxiliar.removeAcentos(params.getSearchValue()));
+		List<Fornecedor> fornecedoresList = fornecedorCustomRepository.listEntitiesToDataTable(colunas, params, Fornecedor.class);
+        long registrosFiltrados = fornecedorCustomRepository.totalEntitiesToDataTable(colunas, params.getSearchValue(), Fornecedor.class);
 		
 		DataTableResult dataTable = new DataTableResult();
 		dataTable.setDraw(params.getDraw());
