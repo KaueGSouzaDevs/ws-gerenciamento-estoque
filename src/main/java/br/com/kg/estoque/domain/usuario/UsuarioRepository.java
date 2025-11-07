@@ -42,4 +42,12 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
      */
     Optional<Usuario> findByEmailAndIdIsNot(String email, Long id);
 
+    /**
+     * Busca um usuário pelo seu login, ignorando a capitalização.
+     *
+     * @param login O login do usuário a ser buscado.
+     * @return Um {@link Optional} contendo o {@link Usuario} se encontrado, ou vazio caso contrário.
+     */
+    Optional<Usuario> findByLoginIgnoringCase(String login);
+
 }

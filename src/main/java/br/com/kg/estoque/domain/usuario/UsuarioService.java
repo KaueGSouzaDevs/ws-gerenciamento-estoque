@@ -109,7 +109,7 @@ public class UsuarioService {
      * @param login O login do usuário a ser buscado.
      * @return Um {@link Optional} contendo os detalhes do usuário ({@link UserDetails}) se encontrado.
      */
-    public Optional<UserDetails> findByLogin(String login) {
+    public Optional<UserDetails> findByLoginReturnUserDetails(String login) {
         return usuarioRepository.findByLoginIgnoreCase(login);
     }
 
@@ -141,7 +141,7 @@ public class UsuarioService {
 
 		int i = 1;
 
-		while (findByLogin(loginFinal).isPresent()) {
+		while (findByLoginReturnUserDetails(loginFinal).isPresent()) {
 			loginFinal = loginBase + i;
 			i++;
 		}
@@ -152,4 +152,8 @@ public class UsuarioService {
 	public Optional<Usuario> findByEmailAndIdNot(String email, Long id) {
 		return usuarioRepository.findByEmailAndIdIsNot(email, id);
 	}
+
+    public Optional<Usuario> findByLogin(String login) {
+		return usuarioRepository.findByLoginIgnoringCase(login);
+    }
 }
