@@ -1,23 +1,27 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    $("#datatable").DataTable({
+    let table = new DataTable(`#datatable`, {
         language: { url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json' },
         processing: true,
         ajax: {
             url: `/fornecedores/jsonDataTable`,
-            type: 'GET' // ou 'POST'
+            type: 'POST', // ou 'POST'
+            contentType: 'application/json',
+            data: function (d) {
+                return JSON.stringify(d);
+            }
         },
         serverSide: true,
         columns: [
-            // { data: 0 }, // id
-            { data: 1 }, // nome
-            { data: 6 }, // cnpjCpf
-            { data: 2 }, // telefone
-            { data: 3 }, // email
-            { data: 4 }, // contato
-            { data: 5 }, // situação
+            // { data: 'id' }, // id
+            { data: 'nome' }, // nome
+            { data: 'cnpjCpf' }, // cnpjCpf
+            { data: 'telefone' }, // telefone
+            { data: 'email' }, // email
+            { data: 'contato' }, // contato
+            { data: 'situacao' }, // situação
             {
-                data: 0, class: "text-center coluna-acoes", orderable: false, width: "100px", // acoes
+                data: 'id', class: "text-center coluna-acoes", orderable: false, width: "100px", // acoes
                 render: function (data, type, row, meta) {
                     return `
                         <div class="dropdown">
@@ -33,8 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
             },
         ],
         dom: 'rt' +
-            '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-        order: [[0, "desc"]]
+            '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>'
     });
 
     //? Campo de busca customizado

@@ -1,14 +1,15 @@
 package br.com.kg.estoque.domain.movimento;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
-import br.com.kg.estoque.custom.DataTableParams;
+import br.com.kg.estoque.custom.DataTableRequest;
 import br.com.kg.estoque.custom.DataTableResult;
+import br.com.kg.estoque.custom.DataTableUtils;
 import br.com.kg.estoque.domain.material.Material;
 import br.com.kg.estoque.domain.material.MaterialService;
 import br.com.kg.estoque.enuns.TipoMovimento;
@@ -22,8 +23,9 @@ import br.com.kg.estoque.enuns.TipoMovimento;
 public class MovimentoService {
 
     private final MovimentoRepository movimentoRepository;
-    private final MaterialService materialService;
     private final MovimentoCustomRepository movimentoCustomRepository;
+    private final MaterialService materialService;
+    private final ModelMapper mapper;
 
     /**
      * Constrói o serviço com as dependências necessárias.
@@ -32,11 +34,11 @@ public class MovimentoService {
      * @param materialService           O serviço para acessar e modificar dados de Material.
      * @param movimentoCustomRepository O repositório customizado para consultas dinâmicas de Movimento.
      */
-    public MovimentoService(MovimentoRepository movimentoRepository, MaterialService materialService,
-            MovimentoCustomRepository movimentoCustomRepository) {
+    public MovimentoService(MovimentoRepository movimentoRepository, MaterialService materialService, MovimentoCustomRepository movimentoCustomRepository, ModelMapper mapper) {
         this.movimentoRepository = movimentoRepository;
         this.materialService = materialService;
         this.movimentoCustomRepository = movimentoCustomRepository;
+        this.mapper = mapper;
     }
 
     /**
@@ -147,31 +149,17 @@ public class MovimentoService {
      * @param params Os parâmetros da requisição do DataTables.
      * @return Um objeto {@link DataTableResult} pronto para ser serializado em JSON.
      */
-    public DataTableResult dataTableMovimento(DataTableParams params){
+    public DataTableResult dataTableMovimento(DataTableRequest params){
 
-        String[] colunas={"id", "dataMovimento", "tipoMovimento", "material.nome", "quantidade", "responsavel"};
-        List<Movimento> movimentoList = movimentoCustomRepository.listEntitiesToDataTable(colunas, params, Movimento.class);
-        List<Object[]> listaObjects = new ArrayList<>();
+        DataTableUtils.parseParams(params);
+        List<Movimento> movimentoList = movimentoCustomRepository.listEntitiesToDataTable(DataTableUtils.parseColumns(params), params, Movimento.class);
+        Integer registrosFiltrados = movimentoCustomRepository.totalEntitiesToDataTable(DataTableUtils.parseColumns(params), params.getSearch().getValue(), Movimento.class);
 
-        movimentoList.forEach( movimento -> {
-            Object[] linha = {
-                movimento.getId(),
-                movimento.getDataMovimento(),
-                movimento.getTipoMovimento().getDescricao(),
-                movimento.getMaterial().getNome(),
-                movimento.getQuantidade(),
-                movimento.getResponsavel(),
-                movimento.getId(),
-            };
-            listaObjects.add(linha);
-        });
-
-        Long registrosFiltrados = movimentoCustomRepository.totalEntitiesToDataTable(colunas, params.getSearchValue(), Movimento.class);
         DataTableResult dataTable = new DataTableResult();
         dataTable.setDraw(params.getDraw());
         dataTable.setRecordsTotal((int) movimentoRepository.count());
         dataTable.setRecordsFiltered(registrosFiltrados);
-        dataTable.setData(listaObjects);
+        dataTable.setData(movimentoList.stream().map(c -> mapper.map(c, MovimentoDTO.class)).toList());
         return dataTable;
     }
 }

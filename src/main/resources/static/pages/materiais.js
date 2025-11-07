@@ -1,34 +1,39 @@
 document.addEventListener('DOMContentLoaded', function () {
+
     let table = new DataTable(`#datatable`, {
         language: { url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json' },
         processing: true,
         ajax: {
             url: `/materiais/jsonDataTable`,
-            type: 'GET' // ou 'POST'
+            type: 'POST',
+            contentType: 'application/json',
+            data: function (d) {
+                return JSON.stringify(d);
+            }
         },
         serverSide: true,
         columns: [
             // { data: 0 }, // id
-            { data: 1 }, // nome
-            { data: 2 }, // categoria
-            { data: 3 }, // fabricante
-            { data: 4 }, // fornecedor
+            { data: 'nome' }, // nome
+            { data: 'categoria.nome' }, // categoria
+            { data: 'fabricante' }, // fabricante
+            { data: 'fornecedor.nome' }, // fornecedor
             {
-                data: 9, // preço de custo
+                data: 'precoCusto', // preço de custo
                 render: function (data, type, row, meta) {
                     return `R$ ${Intl.NumberFormat('pt-BR').format(data)}`;
                 }
             },
             {
-                data: 5, // preço de venda
+                data: 'precoVenda', // preço de venda
                 render: function (data, type, row, meta) {
                     return `R$ ${Intl.NumberFormat('pt-BR').format(data)}`;
                 }
             },
-            { data: 6 }, // saldo
-            { data: 7 }, // status
+            { data: 'saldo' }, // saldo
+            { data: 'situacao' }, // situacao
             {
-                data: 8, class: "text-center coluna-acoes", orderable: false, width: "100px",
+                data: 'id', class: "text-center coluna-acoes", orderable: false, width: "100px",
                 render: function (data, type, row, meta) {
                     return `
                         <div class="dropdown">
@@ -45,7 +50,6 @@ document.addEventListener('DOMContentLoaded', function () {
         ],
         dom: 'rt' +
             '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-        order: [[0, "desc"]],
     });
 
     //? Campo de busca customizado

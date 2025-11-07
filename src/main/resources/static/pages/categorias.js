@@ -1,18 +1,23 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-    let table = new DataTable('#datatable', {
+    let table = new DataTable(`#datatable`, {
         language: { url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json' },
+        processing: true,
         ajax: {
             url: `/categorias/dataTable`,
-            type: 'GET'
+            type: 'POST',
+            contentType: 'application/json',
+            data: function (d) {
+                return JSON.stringify(d);
+            }
         },
         serverSide: true,
         columns: [
-            //{ data: 0 }, // id
-            { data: 1 }, // nome
-            { data: 2, width: "200px" }, // situação
+            //  { data: 'id', visible: false }, // id
+            { data: 'nome' }, // nome
+            { data: 'situacao', width: "200px" }, // situação
             {
-                data: 0, class: "text-center coluna-acoes", orderable: false, width: "100px", // ações
+                data: 'id', class: "text-center coluna-acoes", orderable: false, width: "100px", // ações
                 render: function (data, type, row, meta) {
                     return `
 
@@ -30,7 +35,6 @@ document.addEventListener('DOMContentLoaded', function () {
         ],
         dom: 'rt' +
             '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-        order: [[0, "desc"]],
     });
 
     //? Campo de busca customizado

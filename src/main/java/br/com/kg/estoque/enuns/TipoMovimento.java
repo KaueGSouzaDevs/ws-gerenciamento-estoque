@@ -1,6 +1,8 @@
 package br.com.kg.estoque.enuns;
 
-public enum TipoMovimento {
+import br.com.kg.estoque.custom.EnumComDescricao;
+
+public enum TipoMovimento implements EnumComDescricao {
     ENTRADA("Entrada"),
     SAIDA("Saída");
     
@@ -9,7 +11,8 @@ public enum TipoMovimento {
     private TipoMovimento(String descricao) {
         this.descricao = descricao;
     }
-    
+
+    @Override
     public String getDescricao() {
         return descricao;
     }

@@ -1,10 +1,12 @@
 package br.com.kg.estoque.enuns;
 
+import br.com.kg.estoque.custom.EnumComDescricao;
+
 /**
  * Enum que representa as diversas unidades de medida utilizadas para os materiais no estoque.
  * Cada unidade de medida possui um símbolo e uma descrição associada.
  */
-public enum UnidadeMedida {
+public enum UnidadeMedida implements EnumComDescricao {
 
     // Comprimento
     /** Metro (m) */
@@ -76,6 +78,7 @@ public enum UnidadeMedida {
      *
      * @return A descrição como uma String.
      */
+    @Override
     public String getDescricao() {
         return descricao;
     }

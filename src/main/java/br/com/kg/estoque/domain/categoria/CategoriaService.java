@@ -3,11 +3,13 @@ package br.com.kg.estoque.domain.categoria;
 import java.util.List;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import br.com.kg.estoque.custom.DataTableParams;
+import br.com.kg.estoque.custom.DataTableRequest;
 import br.com.kg.estoque.custom.DataTableResult;
+import br.com.kg.estoque.custom.DataTableUtils;
 
 /**
  * Serviço de negócios para a entidade {@link Categoria}.
@@ -19,6 +21,7 @@ public class CategoriaService {
 
 	private final CategoriaRepository categoriaRepository;
 	private final CategoriaCustomRepository categoriaCustomRepository;
+	private final ModelMapper mapper;
 
 	/**
 	 * Constrói o serviço com as dependências de repositório necessárias.
@@ -26,9 +29,10 @@ public class CategoriaService {
 	 * @param categoriaRepository       O repositório JPA padrão para operações CRUD.
 	 * @param categoriaCustomRepository O repositório customizado para consultas dinâmicas.
 	 */
-	public CategoriaService(CategoriaRepository categoriaRepository, CategoriaCustomRepository categoriaCustomRepository) {
+	public CategoriaService(CategoriaRepository categoriaRepository, CategoriaCustomRepository categoriaCustomRepository, ModelMapper mapper) {
 		this.categoriaRepository = categoriaRepository;
 		this.categoriaCustomRepository = categoriaCustomRepository;
+		this.mapper = mapper;
 	}
 
 	/**
@@ -76,24 +80,18 @@ public class CategoriaService {
 	 * @param params Os parâmetros da requisição do DataTables, contendo informações de busca, paginação e ordenação.
 	 * @return Um objeto {@link DataTableResult} pronto para ser serializado em JSON e enviado ao cliente.
 	 */
-	public DataTableResult dataTableCategoria(DataTableParams params) {
-		
-		String[] colunas = {"id", "nome", "situacao"};
+	public DataTableResult dataTableCategoria(DataTableRequest params) {
 
-		List<Categoria> categoriasList = categoriaCustomRepository.listEntitiesToDataTable(colunas, params, Categoria.class);
-		long totalFiltrado = categoriaCustomRepository.totalEntitiesToDataTable(colunas, params.getSearchValue(), Categoria.class);
-		
+		DataTableUtils.parseParams(params);
+		List<Categoria> categoriasList = categoriaCustomRepository.listEntitiesToDataTable(DataTableUtils.parseColumns(params), params, Categoria.class);
+		Integer totalFiltrado = categoriaCustomRepository.totalEntitiesToDataTable(DataTableUtils.parseColumns(params), params.getSearch().getValue(), Categoria.class);
+
 		DataTableResult dataTable = new DataTableResult();
 		dataTable.setDraw(params.getDraw());
 		dataTable.setRecordsTotal((int) categoriaRepository.count());
 		dataTable.setRecordsFiltered(totalFiltrado);
 		dataTable.setData(categoriasList.stream()
-				.map(c -> new Object[]{
-						c.getId(),
-						c.getNome(),
-						c.getSituacao(),
-						c.getId()
-				}).toList());
+				.map(c -> mapper.map(c, CategoriaDTO.class)).toList());
 
 		return dataTable;
 	}

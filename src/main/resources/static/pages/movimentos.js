@@ -1,26 +1,31 @@
 document.addEventListener('DOMContentLoaded', function () {
-    let table = new DataTable('#datatable', {
+
+    let table = new DataTable(`#datatable`, {
         language: { url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json' },
         processing: true,
         ajax: {
             url: '/movimentos/jsonDataTable',
-            type: 'GET' // ou 'POST'
+            type: 'POST', // ou 'POST'
+            contentType: 'application/json',
+            data: function (d) {
+                return JSON.stringify(d);
+            }
         },
         serverSide: true,
         columns: [
-            //{ data: 0 }, // id
+            //{ data: 'id' },
             {
-                data: 1,
+                data: 'dataMovimento',
                 render: function (data, type, row, meta) {
                     return `${Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(data))}`;
                 }
-            }, // data
-            { data: 2 }, // tipo
-            { data: 3 }, // material
-            { data: 4 }, // quantidade
-            { data: 5 }, // responsavel
+            },
+            { data: 'tipoMovimento' },
+            { data: 'material.nome' },
+            { data: 'quantidade' },
+            { data: 'responsavel' },
             {
-                data: 6, class: "text-center coluna-acoes", orderable: false, width: "100px",
+                data: 'id', class: "text-center coluna-acoes", orderable: false, width: "100px",
                 render: function (data, type, row, meta) {
                     return `
                         <div class="dropdown">
@@ -39,7 +44,6 @@ document.addEventListener('DOMContentLoaded', function () {
         ],
         dom: 'rt' +
             '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-        order: [[0, "desc"]]
     });
 
     //? Campo de busca customizado

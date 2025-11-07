@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import br.com.kg.estoque.custom.DataTableParams;
+import br.com.kg.estoque.custom.DataTableRequest;
 import br.com.kg.estoque.custom.DataTableResult;
 import br.com.kg.estoque.domain.grupo_acesso.GrupoAcesso;
 import br.com.kg.estoque.domain.grupo_acesso.GrupoAcessoService;
@@ -65,26 +65,13 @@ public class UsuarioController {
     /**
      * Fornece dados para o componente DataTables na página de listagem de usuários.
      *
-     * @param draw        O contador de sorteio.
-     * @param start       O índice do registro inicial.
-     * @param length      O número de registros a serem exibidos.
-     * @param searchValue O valor de pesquisa global.
-     * @param orderCol    O índice da coluna a ser ordenada.
-     * @param orderDir    A direção da ordenação.
+     * @param dataTableRequest O objeto {@link DataTableRequest} contendo os parâmetros de pesquisa.
      * @return Um {@link DataTableResult} contendo os dados para a tabela.
      */
-    @GetMapping("/dataTable")
+    @PostMapping("/dataTable")
     @ResponseBody
-    public DataTableResult jsonDataTable(
-            @RequestParam("draw") String draw,
-            @RequestParam("start") Integer start,
-            @RequestParam("length") Integer length,
-            @RequestParam("search[value]") String searchValue,
-            @RequestParam("order[0][column]") Integer orderCol,
-            @RequestParam("order[0][dir]") String orderDir) {
-
-        DataTableParams params = new DataTableParams(draw, start, length, searchValue, orderCol, orderDir);
-        return usuarioService.dataTableUsuarios(params);
+    public DataTableResult jsonDataTable(@RequestBody DataTableRequest dataTableRequest) {
+        return usuarioService.dataTableUsuarios(dataTableRequest);
     }
 
     /**

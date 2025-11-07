@@ -1,14 +1,15 @@
 package br.com.kg.estoque.domain.material;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import br.com.kg.estoque.custom.DataTableParams;
+import br.com.kg.estoque.custom.DataTableRequest;
 import br.com.kg.estoque.custom.DataTableResult;
+import br.com.kg.estoque.custom.DataTableUtils;
 import br.com.kg.estoque.enuns.SituacaoMaterial;
 
 /**
@@ -18,9 +19,11 @@ import br.com.kg.estoque.enuns.SituacaoMaterial;
  */
 @Service
 public class MaterialService {
-
+    
+    
     private final MaterialRepository materialRepository;
     private final MaterialCustomRepository materialCustomRepository;
+    private final ModelMapper mapper;
 
     /**
      * Constrói o serviço com as dependências de repositório necessárias.
@@ -28,9 +31,10 @@ public class MaterialService {
      * @param materialRepository       O repositório JPA padrão para operações CRUD.
      * @param materialCustomRepository O repositório customizado para consultas dinâmicas.
      */
-    public MaterialService(MaterialRepository materialRepository, MaterialCustomRepository materialCustomRepository) {
+    public MaterialService(MaterialRepository materialRepository, MaterialCustomRepository materialCustomRepository, ModelMapper mapper) {
         this.materialRepository = materialRepository;
         this.materialCustomRepository = materialCustomRepository;
+        this.mapper = mapper;
     }
 
     /**
@@ -76,37 +80,18 @@ public class MaterialService {
      * @param params Os parâmetros da requisição do DataTables.
      * @return Um objeto {@link DataTableResult} pronto para ser serializado em JSON.
      */
-    public DataTableResult dataTableMaterial(DataTableParams params) {
-        
-        String[] colunas={"id", "nome", "categoria.nome", "fabricante", "fornecedor.nome", "precoVenda", "saldo", "situacao", "precoCusto"};
+    public DataTableResult dataTableMaterial(DataTableRequest params) {
 
-        List<Material> materiaisList = materialCustomRepository.listEntitiesToDataTable(colunas, params, Material.class);
-        
-        List<Object[]> listaObjects = new ArrayList<>();
-
-        materiaisList.forEach( material -> {
-            Object[] linha = {
-                material.getId(),
-                material.getNome(),
-                material.getCategoria().getNome(),
-                material.getFabricante(),
-                material.getFornecedor().getNome(),
-                material.getPrecoVenda(),
-                material.getSaldo(),
-                material.getSituacao().getDescricao(),
-                material.getId(),
-                material.getPrecoCusto()
-            };
-            listaObjects.add(linha);
-        });
-
-        Long registrosFiltrados = materialCustomRepository.totalEntitiesToDataTable(colunas, params.getSearchValue(), Material.class);
+        DataTableUtils.parseParams(params);
+        List<Material> materiaisList = materialCustomRepository.listEntitiesToDataTable(DataTableUtils.parseColumns(params), params, Material.class);
+        Integer registrosFiltrados = materialCustomRepository.totalEntitiesToDataTable(DataTableUtils.parseColumns(params), params.getSearch().getValue(), Material.class);
 
         DataTableResult dataTable = new DataTableResult();
         dataTable.setDraw(params.getDraw());
-        dataTable.setRecordsTotal((int) materialRepository.count());
+        dataTable.setRecordsTotal((int)materialRepository.count());
         dataTable.setRecordsFiltered(registrosFiltrados);
-        dataTable.setData(listaObjects);
+        dataTable.setData(materiaisList.stream().map(c -> mapper.map(c, MaterialDTO.class)).toList());
+        dataTable.setError(null);
         return dataTable;
     }
 

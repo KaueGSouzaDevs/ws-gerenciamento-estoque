@@ -3,11 +3,13 @@ package br.com.kg.estoque.domain.fornecedor;
 import java.util.List;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
-import br.com.kg.estoque.custom.DataTableParams;
+import br.com.kg.estoque.custom.DataTableRequest;
 import br.com.kg.estoque.custom.DataTableResult;
+import br.com.kg.estoque.custom.DataTableUtils;
 import br.com.kg.estoque.enuns.SituacaoFornecedor;
 
 /**
@@ -20,6 +22,7 @@ public class FornecedorService {
 
     private final FornecedorRepository fornecedorRepository;
     private final FornecedorCustomRepository fornecedorCustomRepository;
+    private final ModelMapper mapper;
 
 
     /**
@@ -27,9 +30,10 @@ public class FornecedorService {
      *
      * @param fornecedorRepository O repositório para acesso aos dados de fornecedores.
      */
-    public FornecedorService(FornecedorRepository fornecedorRepository, FornecedorCustomRepository fornecedorCustomRepository) {
+    public FornecedorService(FornecedorRepository fornecedorRepository, FornecedorCustomRepository fornecedorCustomRepository, ModelMapper mapper) {
         this.fornecedorRepository = fornecedorRepository;
         this.fornecedorCustomRepository = fornecedorCustomRepository;
+        this.mapper = mapper;
     }
 
     /**
@@ -123,28 +127,18 @@ public class FornecedorService {
      * @param params Os parâmetros da requisição do DataTables.
      * @return Um objeto {@link DataTableResult} pronto para ser serializado em JSON.
      */
-    public DataTableResult dataTableFornecedores(DataTableParams params)  {
+    public DataTableResult dataTableFornecedores(DataTableRequest params)  {
 
-		String[] colunas = {"id", "nome", "telefone", "email", "contato", "situacao", "cnpjCpf"};
-				
-		List<Fornecedor> fornecedoresList = fornecedorCustomRepository.listEntitiesToDataTable(colunas, params, Fornecedor.class);
-        long registrosFiltrados = fornecedorCustomRepository.totalEntitiesToDataTable(colunas, params.getSearchValue(), Fornecedor.class);
+        DataTableUtils.parseParams(params);
+        List<Fornecedor> fornecedoresList = fornecedorCustomRepository.listEntitiesToDataTable(DataTableUtils.parseColumns(params), params, Fornecedor.class);
+        Integer registrosFiltrados = fornecedorCustomRepository.totalEntitiesToDataTable(DataTableUtils.parseColumns(params), params.getSearch().getValue(), Fornecedor.class);
 		
 		DataTableResult dataTable = new DataTableResult();
 		dataTable.setDraw(params.getDraw());
 		dataTable.setRecordsTotal((int) fornecedorRepository.count());
 		dataTable.setRecordsFiltered(registrosFiltrados);
-		dataTable.setData(fornecedoresList.stream()
-				.map(c -> new Object[]{
-						c.getId(),
-						c.getNome(),
-                        c.getTelefone(),
-                        c.getEmail(),
-                        c.getContato(),
-						c.getSituacao().getDescricao(),
-                        c.getCnpjCpf()
-				}).toList());
-
+		dataTable.setData(fornecedoresList.stream().map(c -> mapper.map(c, FornecedorDTO.class)).toList());
+        dataTable.setError(null);
 		return dataTable;
 	}
 

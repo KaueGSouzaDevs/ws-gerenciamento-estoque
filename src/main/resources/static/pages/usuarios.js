@@ -1,20 +1,25 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-    let table = new DataTable('#datatable', {
+    let table = new DataTable(`#datatable`, {
         language: { url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json' },
+        processing: true,
         ajax: {
             url: `/usuarios/dataTable`,
-            type: 'GET'
+            type: 'POST',
+            contentType: 'application/json',
+            data: function (d) {
+                return JSON.stringify(d);
+            }
         },
         serverSide: true,
         columns: [
-            { data: 0 },
-            { data: 1 },
-            { data: 2 },
-            { data: 3 },
-            { data: 4 },
+            { data: 'id' },
+            { data: 'nome' },
+            { data: 'login' },
+            { data: 'email' },
+            { data: 'situacaoUsuario' },
             {
-                data: 5, class: "text-center coluna-acoes", orderable: false, width: "100px",
+                data: 'id', class: "text-center coluna-acoes", orderable: false, width: "100px",
                 render: function (data, type, row, meta) {
                     return `
                         <div class="dropdown">

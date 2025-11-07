@@ -3,13 +3,15 @@ package br.com.kg.estoque.domain.usuario;
 import java.util.List;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import br.com.kg.estoque.custom.Auxiliar;
-import br.com.kg.estoque.custom.DataTableParams;
+import br.com.kg.estoque.custom.DataTableRequest;
 import br.com.kg.estoque.custom.DataTableResult;
+import br.com.kg.estoque.custom.DataTableUtils;
 
 /**
  * Serviço de negócios para a entidade {@link Usuario}.
@@ -21,6 +23,7 @@ public class UsuarioService {
 
 	private final UsuarioRepository usuarioRepository;
 	private final UsuarioCustomRepository customUsuarioRepository;
+	private final ModelMapper mapper;
 
 	/**
      * Constrói o serviço com as dependências de repositório necessárias.
@@ -28,9 +31,10 @@ public class UsuarioService {
      * @param usuarioRepository       O repositório JPA padrão para operações CRUD.
      * @param customUsuarioRepository O repositório customizado para consultas dinâmicas.
      */
-	public UsuarioService(UsuarioRepository usuarioRepository, UsuarioCustomRepository customUsuarioRepository) {
+	public UsuarioService(UsuarioRepository usuarioRepository, UsuarioCustomRepository customUsuarioRepository, ModelMapper mapper) {
 		this.usuarioRepository = usuarioRepository;
 		this.customUsuarioRepository = customUsuarioRepository;
+		this.mapper = mapper;
 	}
 
 	/**
@@ -49,19 +53,17 @@ public class UsuarioService {
      * @param params Os parâmetros da requisição do DataTables (busca, paginação, ordenação).
      * @return Um objeto {@link DataTableResult} pronto para ser serializado em JSON.
      */
-	public DataTableResult dataTableUsuarios(DataTableParams params) {
-
-		String[] colunas = {"id", "nome", "login", "email", "situacaoUsuario"};
+	public DataTableResult dataTableUsuarios(DataTableRequest params) {
 		
-		List<Usuario> usuariosList = customUsuarioRepository.listEntitiesToDataTable(colunas, params, Usuario.class); 
-		Long registrosFiltrados = customUsuarioRepository.totalEntitiesToDataTable(colunas, params.getSearchValue(), Usuario.class);
+		List<Usuario> usuariosList = customUsuarioRepository.listEntitiesToDataTable(DataTableUtils.parseColumns(params), params, Usuario.class); 
+		Integer registrosFiltrados = customUsuarioRepository.totalEntitiesToDataTable(DataTableUtils.parseColumns(params), params.getSearch().getValue(), Usuario.class);
 		
 		DataTableResult dataTable = new DataTableResult();
 		dataTable.setDraw(params.getDraw());
 		dataTable.setRecordsTotal((int) usuarioRepository.count());
 		dataTable.setRecordsFiltered(registrosFiltrados);
-		dataTable.setData(usuariosList.stream().map(c -> new Object[]{c.getId(), c.getNome(), c.getLogin(), c.getEmail(), c.getSituacaoUsuario().getDescricao(), c.getId()}).toList());
-
+		dataTable.setData(usuariosList.stream().map(u -> mapper.map(u, UsuarioDTO.class)).toList());
+		
 		return dataTable;
 	}
 

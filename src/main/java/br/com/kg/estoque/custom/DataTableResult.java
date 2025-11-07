@@ -7,12 +7,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Representa o objeto de resultado esperado pelo DataTables para popular a tabela.
  * Esta classe é serializada para JSON e enviada como resposta a uma requisição AJAX do DataTables.
  */
 @JsonSerialize
+@ToString
 public class DataTableResult {
 
 	/**
@@ -21,7 +23,7 @@ public class DataTableResult {
 	 */
 	@Getter @Setter
 	@JsonProperty("draw")
-	private String draw;
+	private Integer draw;
 
 	/**
 	 * O número total de registros no banco de dados, antes de qualquer filtro.
@@ -36,7 +38,7 @@ public class DataTableResult {
 	 */
 	@Getter @Setter
 	@JsonProperty("recordsFiltered")
-	private Long recordsFiltered;
+	private Integer recordsFiltered;
 
 	/**
 	 * A lista de dados a ser exibida na tabela.
@@ -44,5 +46,13 @@ public class DataTableResult {
 	 */
 	@Getter @Setter
 	@JsonProperty("data")
-	private List<Object[]> data;
+	private List<?> data;
+
+	/**
+	 * O erro ocorrido durante a requisição.
+	 * Se nenhuma erro ocorrer, este campo deve ser nulo.
+	 */
+	@Getter @Setter
+	@JsonProperty("error")
+	private String error;
 }

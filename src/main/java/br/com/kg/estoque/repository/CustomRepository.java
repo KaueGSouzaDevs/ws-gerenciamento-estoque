@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import br.com.kg.estoque.custom.Auxiliar;
-import br.com.kg.estoque.custom.DataTableParams;
+import br.com.kg.estoque.custom.DataTableRequest;
+import br.com.kg.estoque.custom.DataTableRequest.Order;
+import br.com.kg.estoque.custom.DataTableUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
@@ -35,7 +37,10 @@ public abstract class CustomRepository<T> {
      * @param type A classe da entidade a ser consultada.
      * @return Uma {@link List} de entidades do tipo {@code T} que correspondem aos critérios.
      */
-    public List<T> listEntitiesToDataTable(String[] colunas, DataTableParams params, Class<T> type) {
+    public List<T> listEntitiesToDataTable(List<String> colunas, DataTableRequest params, Class<T> type) {
+
+        List<Order> orders = DataTableUtils.parseOrder(params);
+
         StringBuilder jpql = new StringBuilder();
         jpql.append(" FROM ").append(type.getSimpleName()).append(" t WHERE t.id > 0 AND ( 1 = 0 ");
         for (String coluna : colunas) {
@@ -44,13 +49,15 @@ public abstract class CustomRepository<T> {
         }
 
         jpql.append(" ) ");
-        jpql.append(" ORDER BY ").append(colunas[params.getOrderCol()]).append(" ").append(params.getOrderDir());
 
+        orders.forEach(order -> {
+            jpql.append(" ORDER BY t.").append(colunas.get(order.getColumn())).append(" ").append(order.getDir());
+        });
+        
         var query = em.createQuery(jpql.toString(), type);
-        query.setParameter("searchValue", "%" + Auxiliar.removeAcentos(params.getSearchValue().toLowerCase()) + "%");
+        query.setParameter("searchValue", "%" + Auxiliar.removeAcentos(params.getSearch().getValue().toLowerCase()) + "%");
         query.setFirstResult(params.getStart());
         query.setMaxResults(params.getLength());
-
         return query.getResultList();
     }
 
@@ -63,7 +70,7 @@ public abstract class CustomRepository<T> {
      * @param type O tipo da entidade.
      * @return O número total de entidades que correspondem aos critérios de pesquisa.
      */
-    public Long totalEntitiesToDataTable(String[] colunas, String sSearch, Class<T> type) {
+    public Integer totalEntitiesToDataTable(List<String> colunas, String sSearch, Class<T> type) {
         StringBuilder jpql = new StringBuilder();
         jpql.append("SELECT COUNT(*) FROM ").append(type.getSimpleName()).append(" t WHERE t.id > 0 AND ( 1 = 0 ");
         for (String coluna : colunas) {
@@ -76,6 +83,6 @@ public abstract class CustomRepository<T> {
         var query = em.createQuery(jpql.toString(), Long.class);
         query.setParameter("searchValue", "%" + Auxiliar.removeAcentos(sSearch.toLowerCase()) + "%");
 
-        return query.getSingleResult();
+        return query.getSingleResult().intValue();
     }
 }

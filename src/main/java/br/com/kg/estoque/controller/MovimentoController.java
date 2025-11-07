@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import br.com.kg.estoque.custom.DataTableParams;
+import br.com.kg.estoque.custom.DataTableRequest;
 import br.com.kg.estoque.custom.DataTableResult;
 import br.com.kg.estoque.domain.fornecedor.FornecedorService;
 import br.com.kg.estoque.domain.material.MaterialService;
@@ -59,26 +59,13 @@ public class MovimentoController {
     /**
      * Fornece dados para o componente DataTables na página de listagem de movimentos.
      *
-     * @param draw        O contador de sorteio do DataTables.
-     * @param start       O índice do registro inicial.
-     * @param length      O número de registros por página.
-     * @param searchValue O valor de busca.
-     * @param orderCol    O índice da coluna para ordenação.
-     * @param orderDir    A direção da ordenação (asc/desc).
+     * @param dataTableRequest O objeto {@link DataTableRequest} contendo os parâmetros de pesquisa.
      * @return Um {@link DataTableResult} com os dados para a tabela.
      */
-	@GetMapping("jsonDataTable")
+	@PostMapping("jsonDataTable")
     @ResponseBody
-	public DataTableResult jsonDataTable(
-            @RequestParam("draw") String draw,
-            @RequestParam("start") Integer start,
-            @RequestParam("length") Integer length,
-            @RequestParam("search[value]") String searchValue,
-            @RequestParam("order[0][column]") Integer orderCol,
-            @RequestParam("order[0][dir]") String orderDir) {
-
-        DataTableParams params = new DataTableParams(draw, start, length, searchValue, orderCol, orderDir);
-		return movimentoService.dataTableMovimento(params);
+	public DataTableResult jsonDataTable(@RequestBody DataTableRequest dataTableRequest) {
+		return movimentoService.dataTableMovimento(dataTableRequest);
 	}
 
     /**

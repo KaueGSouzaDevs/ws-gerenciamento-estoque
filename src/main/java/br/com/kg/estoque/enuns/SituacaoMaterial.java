@@ -1,6 +1,8 @@
 package br.com.kg.estoque.enuns;
 
-public enum SituacaoMaterial {
+import br.com.kg.estoque.custom.EnumComDescricao;
+
+public enum SituacaoMaterial implements EnumComDescricao {
     ATIVO("Ativo"),
     INATIVO("Inativo");
     
@@ -10,6 +12,7 @@ public enum SituacaoMaterial {
         this.descricao = descricao;
     }
 
+    @Override
     public String getDescricao() {
         return descricao;
     }

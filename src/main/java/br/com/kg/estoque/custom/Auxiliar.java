@@ -30,5 +30,9 @@ public class Auxiliar {
 		}
 		return string;
 	}
+
+	public static boolean isEmptyOrNull(String value) {
+		return value == null || value.isEmpty();
+	}
     
 }

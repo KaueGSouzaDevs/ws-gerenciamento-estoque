@@ -1,10 +1,12 @@
 package br.com.kg.estoque.enuns;
 
+import br.com.kg.estoque.custom.EnumComDescricao;
+
 /**
  * Enum que representa os possíveis estados ou situações de uma conta de usuário no sistema.
  * Cada estado tem uma descrição textual amigável associada.
  */
-public enum SituacaoUsuario {
+public enum SituacaoUsuario implements EnumComDescricao {
     /**
      * O usuário está ativo e pode usar o sistema normalmente.
      */
@@ -38,6 +40,7 @@ public enum SituacaoUsuario {
      *
      * @return a descrição do estado do usuário.
      */
+    @Override
     public String getDescricao() {
         return descricao;
     }

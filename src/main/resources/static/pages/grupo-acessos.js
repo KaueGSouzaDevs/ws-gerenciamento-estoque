@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
 
     // DataTable with Buttons
-    let table = new DataTable('#datatable', {
+    let table = new DataTable(`#datatable`, {
         language: { url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json' },
         ajax: {
             url: `/grupos-acessos/dataTable`,
@@ -99,7 +99,7 @@ function excluirGrupoAcesso(idGrupoAcesso) {
                             text: "Seu grupo de acesso foi deletado com sucesso!",
                             icon: "success"
                         }).then((result) => {
-                            new DataTable('#datatable').ajax.reload();
+                            new DataTable(`#datatable`).ajax.reload();
                         });
                     } else {
                         Swal.fire({
