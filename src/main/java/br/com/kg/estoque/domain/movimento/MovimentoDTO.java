@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import br.com.kg.estoque.domain.fornecedor.FornecedorDTO;
 import br.com.kg.estoque.domain.material.MaterialDTO;
+import br.com.kg.estoque.enuns.TipoMovimento;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,7 +23,7 @@ public class MovimentoDTO {
     private Integer quantidade;
 
     @Getter @Setter
-    private String tipoMovimento;
+    private TipoMovimento tipoMovimento;
 
     @Getter @Setter
     private String notaFiscal;

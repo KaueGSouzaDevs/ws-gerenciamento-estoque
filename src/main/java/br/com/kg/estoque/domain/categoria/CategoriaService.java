@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,9 @@ public class CategoriaService {
 
 	private final CategoriaRepository categoriaRepository;
 	private final CategoriaCustomRepository categoriaCustomRepository;
-	private final ModelMapper mapper;
+
+	@Autowired
+	private ModelMapper mapper;
 
 	/**
 	 * Constrói o serviço com as dependências de repositório necessárias.
@@ -29,10 +32,9 @@ public class CategoriaService {
 	 * @param categoriaRepository       O repositório JPA padrão para operações CRUD.
 	 * @param categoriaCustomRepository O repositório customizado para consultas dinâmicas.
 	 */
-	public CategoriaService(CategoriaRepository categoriaRepository, CategoriaCustomRepository categoriaCustomRepository, ModelMapper mapper) {
+	public CategoriaService(CategoriaRepository categoriaRepository, CategoriaCustomRepository categoriaCustomRepository) {
 		this.categoriaRepository = categoriaRepository;
 		this.categoriaCustomRepository = categoriaCustomRepository;
-		this.mapper = mapper;
 	}
 
 	/**

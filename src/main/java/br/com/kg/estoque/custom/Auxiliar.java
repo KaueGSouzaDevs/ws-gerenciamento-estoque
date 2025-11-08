@@ -24,13 +24,20 @@ public class Auxiliar {
 	 * @return A string resultante sem acentos, ou a string original se for nula.
 	 */
 	public static String removeAcentos(String string) {
-		if (string != null) {
+		if (!isEmptyOrNull(string)) {
 			string = Normalizer.normalize(string, Normalizer.Form.NFD);
 			string = string.replaceAll("[^\\p{ASCII}]", "");
 		}
 		return string;
 	}
 
+	/**
+	 * Verifica se uma string é nula ou vazia.
+	 * <p>
+	 * Este método pode ser usado para verificar se uma string tem algum valor ou se está nula ou vazia.
+	 * @param value A string a ser verificada.
+	 * @return true se a string for nula ou vazia, false caso contrário.
+	 */
 	public static boolean isEmptyOrNull(String value) {
 		return value == null || value.isEmpty();
 	}

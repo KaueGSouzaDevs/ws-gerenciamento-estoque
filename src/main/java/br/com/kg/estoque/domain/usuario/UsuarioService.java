@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
@@ -23,7 +24,9 @@ public class UsuarioService {
 
 	private final UsuarioRepository usuarioRepository;
 	private final UsuarioCustomRepository customUsuarioRepository;
-	private final ModelMapper mapper;
+
+	@Autowired
+	private ModelMapper mapper;
 
 	/**
      * Constrói o serviço com as dependências de repositório necessárias.
@@ -31,10 +34,9 @@ public class UsuarioService {
      * @param usuarioRepository       O repositório JPA padrão para operações CRUD.
      * @param customUsuarioRepository O repositório customizado para consultas dinâmicas.
      */
-	public UsuarioService(UsuarioRepository usuarioRepository, UsuarioCustomRepository customUsuarioRepository, ModelMapper mapper) {
-		this.usuarioRepository = usuarioRepository;
+	public UsuarioService(UsuarioRepository usuarioRepository, UsuarioCustomRepository customUsuarioRepository) {
+		this.usuarioRepository = usuarioRepository; 
 		this.customUsuarioRepository = customUsuarioRepository;
-		this.mapper = mapper;
 	}
 
 	/**

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import br.com.kg.estoque.domain.categoria.CategoriaDTO;
 import br.com.kg.estoque.domain.fornecedor.FornecedorDTO;
+import br.com.kg.estoque.enuns.SituacaoMaterial;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -49,5 +50,5 @@ public class MaterialDTO {
     private Integer saldo;
 
     @Getter @Setter
-    private String situacao;
+    private SituacaoMaterial situacao;
 }
