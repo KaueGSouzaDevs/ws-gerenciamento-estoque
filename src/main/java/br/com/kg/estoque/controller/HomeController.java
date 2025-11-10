@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import br.com.kg.estoque.domain.material.MaterialService;
+import br.com.kg.estoque.domain.movimento.MovimentoService;
 import br.com.kg.estoque.session.SessionParameters;
 
 /**
@@ -21,14 +23,13 @@ public class HomeController {
 
     private final Logger logger = Logger.getLogger(HomeController.class.getName());
     private final SessionParameters sessionParameters;
+    private final MaterialService materialService;
+    private final MovimentoService movimentoService;
 
-    /**
-     * Constrói um novo HomeController com os parâmetros de sessão especificados.
-     *
-     * @param sessionParameters Os parâmetros de sessão para gerenciar o estado da interface do usuário.
-     */
-    public HomeController(SessionParameters sessionParameters) {
+    public HomeController(SessionParameters sessionParameters, MaterialService materialService, MovimentoService movimentoService) {
         this.sessionParameters = sessionParameters;
+        this.materialService = materialService;
+        this.movimentoService = movimentoService;
     }
 
     /**
@@ -39,11 +40,17 @@ public class HomeController {
      */
     @GetMapping("/")
     public ModelAndView index() {
+        ModelAndView model = new ModelAndView("home/index");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         logger.log(Level.ALL, () -> "Principal:"+ auth.getPrincipal());
         auth.getAuthorities().forEach(autho -> logger.log(Level.ALL, () -> "Authority: " + autho.getAuthority()));
 
-        return new ModelAndView("home/index");
+        model.addObject("materiaisEmEstoqueBaixo", materialService.getMateriaisEmEstoqueBaixo());
+        model.addObject("valorTotalEstoque", materialService.getValorTotalEstoque());
+        model.addObject("valorSaidasMes", movimentoService.getValorSaidasMes());
+        model.addObject("materiaisEmEstoque", materialService.getMateriaisEmEstoque());
+        
+        return model;
     }
 
     /**

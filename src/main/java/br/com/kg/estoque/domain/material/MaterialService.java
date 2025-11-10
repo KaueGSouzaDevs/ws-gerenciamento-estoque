@@ -1,5 +1,6 @@
 package br.com.kg.estoque.domain.material;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -99,5 +100,17 @@ public class MaterialService {
 
     public List<Material> buscarTodosAtivos() {
         return materialRepository.findAllBySituacao(SituacaoMaterial.ATIVO);
+    }
+
+    public Long getMateriaisEmEstoqueBaixo() {
+        return materialRepository.getMateriaisEmEstoqueBaixo();
+    }
+
+    public BigDecimal getValorTotalEstoque() {
+        return materialRepository.getValorTotalEstoque();
+    }
+
+    public Long getMateriaisEmEstoque() {
+        return materialRepository.getMateriaisEmEstoque(SituacaoMaterial.ATIVO);
     }
 }

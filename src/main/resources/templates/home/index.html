@@ -14,7 +14,21 @@
 
     <!-- Cards -->
     <div class="row">
-        <div class="col-sm-12 col-md-6 col-lg-2 mb-3">
+        <div class="col-sm-12 col-md-6 col-lg-3 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title">
+                        <h6 class="text-nowrap mb-1">Materiais em estoque baixo/zerado</h6>
+                    </div>
+                    <div class="d-inline-flex">
+                        <h4 class="text-success rounded-2 fw-bolder bg-success-subtle p-1 me-2"><i class="bx bx-cart fs-3"></i></h4>
+                        <h4 class="p-1 mt-1" th:utext="${materiaisEmEstoqueBaixo}"></h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-3 mb-3">
             <div class="card">
                 <div class="card-body">
                     <div class="card-title">
@@ -22,55 +36,13 @@
                     </div>
                     <div class="d-inline-flex">
                         <h4 class="text-success rounded-2 fw-bolder bg-success-subtle p-1 me-2"><i class="bx bx-cart fs-3"></i></h4>
-                        <h4 class="p-1 mt-1">3.500</h4>
+                        <h4 class="p-1 mt-1" th:text="${#numbers.formatCurrency(valorTotalEstoque)}"></h4>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-sm-12 col-md-6 col-lg-2 mb-3">
-            <div class="card">
-                <div class="card-body">
-                    <div class="card-title">
-                        <h6 class="text-nowrap mb-1">Itens em estoque</h6>
-                    </div>
-                    <div class="d-inline-flex">
-                        <h4 class="text-success rounded-2 fw-bolder bg-success-subtle p-1 me-2"><i class="bx bx-cart fs-3"></i></h4>
-                        <h4 class="p-1 mt-1">3.500</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-sm-12 col-md-6 col-lg-2 mb-3">
-            <div class="card">
-                <div class="card-body">
-                    <div class="card-title">
-                        <h6 class="text-nowrap mb-1">Movimentações do dia</h6>
-                    </div>
-                    <div class="d-inline-flex">
-                        <h4 class="text-success rounded-2 fw-bolder bg-success-subtle p-1 me-2"><i class="bx bx-cart fs-3"></i></h4>
-                        <h4 class="p-1 mt-1">3.500</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-sm-12 col-md-6 col-lg-2 mb-3">
-            <div class="card">
-                <div class="card-body">
-                    <div class="card-title">
-                        <h6 class="text-nowrap mb-1">Itens em estoque baixo</h6>
-                    </div>
-                    <div class="d-inline-flex">
-                        <h4 class="text-success rounded-2 fw-bolder bg-success-subtle p-1 me-2"><i class="bx bx-cart fs-3"></i></h4>
-                        <h4 class="p-1 mt-1">3.500</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-sm-12 col-md-6 col-lg-2 mb-3">
+        <div class=" col-sm-12 col-md-6 col-lg-3 mb-3">
             <div class="card">
                 <div class="card-body">
                     <div class="card-title">
@@ -78,13 +50,41 @@
                     </div>
                     <div class="d-inline-flex">
                         <h4 class="text-success rounded-2 fw-bolder bg-success-subtle p-1 me-2"><i class="bx bx-cart fs-3"></i></h4>
-                        <h4 class="p-1 mt-1">3.500</h4>
+                        <h4 class="p-1 mt-1" th:utext="${#numbers.formatCurrency(valorSaidasMes)}"></h4>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-sm-12 col-md-6 col-lg-2 mb-3">
+        <div class="col-sm-12 col-md-6 col-lg-3 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title">
+                        <h6 class="text-nowrap mb-1">Materiais em estoque</h6>
+                    </div>
+                    <div class="d-inline-flex">
+                        <h4 class="text-success rounded-2 fw-bolder bg-success-subtle p-1 me-2"><i class="bx bx-cart fs-3"></i></h4>
+                        <h4 class="p-1 mt-1" th:utext="${materiaisEmEstoque}"></h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-lg-none col-sm-12 col-md-6 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title">
+                        <h6 class="text-nowrap mb-1">Movimentações do dia</h6>
+                    </div>
+                    <div class="d-inline-flex">
+                        <h4 class="text-success rounded-2 fw-bolder bg-success-subtle p-1 me-2"><i class="bx bx-cart fs-3"></i></h4>
+                        <h4 class="p-1 mt-1" th:utext="${movimentacoesDoDia}">3.500</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-lg-none col-sm-12 col-md-6 mb-3">
             <div class="card">
                 <div class="card-body">
                     <div class="card-title">
@@ -92,7 +92,7 @@
                     </div>
                     <div class="d-inline-flex">
                         <h4 class="text-success rounded-2 fw-bolder bg-success-subtle p-1 me-2"><i class="bx bx-cart fs-3"></i></h4>
-                        <h4 class="p-1 mt-1">3.500</h4>
+                        <h4 class="p-1 mt-1" th:utext="${fornecedoresAtivos}">3.500</h4>
                     </div>
                 </div>
             </div>

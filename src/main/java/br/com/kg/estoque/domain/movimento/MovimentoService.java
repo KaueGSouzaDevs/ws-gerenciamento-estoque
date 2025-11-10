@@ -1,5 +1,7 @@
 package br.com.kg.estoque.domain.movimento;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -163,5 +165,11 @@ public class MovimentoService {
         dataTable.setRecordsFiltered(registrosFiltrados);
         dataTable.setData(movimentoList.stream().map(c -> mapper.map(c, MovimentoDTO.class)).toList());
         return dataTable;
+    }
+
+    public BigDecimal getValorSaidasMes() {
+        LocalDateTime dataInicioMes = LocalDateTime.now().withDayOfMonth(1);
+        LocalDateTime dataFimMes = dataInicioMes.plusMonths(1).minusDays(1);
+        return movimentoRepository.getValorSaidasMes(dataInicioMes, dataFimMes, TipoMovimento.SAIDA);
     }
 }

@@ -1,8 +1,10 @@
 package br.com.kg.estoque.domain.material;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import br.com.kg.estoque.enuns.SituacaoMaterial;
 
@@ -16,6 +18,20 @@ import br.com.kg.estoque.enuns.SituacaoMaterial;
 public interface MaterialRepository extends JpaRepository<Material, Long>{
 
     List<Material> findAllBySituacao(SituacaoMaterial ativo);
+
+    @Query("SELECT COUNT(m) FROM Material m WHERE m.saldo < m.estoqueMinimo")
+    Long getMateriaisEmEstoqueBaixo();
+
+    @Query("SELECT SUM(m.precoCusto * m.saldo) FROM Material m")
+    BigDecimal getValorTotalEstoque();
+
+    @Query("""
+        SELECT COUNT(m)
+        FROM Material m
+        WHERE m.saldo > 0
+            AND m.situacao = :situacao
+        """)
+    Long getMateriaisEmEstoque(SituacaoMaterial situacao);
     
     
 }
