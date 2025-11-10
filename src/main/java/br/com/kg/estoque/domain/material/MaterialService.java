@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,9 @@ public class MaterialService {
     
     private final MaterialRepository materialRepository;
     private final MaterialCustomRepository materialCustomRepository;
-    private final ModelMapper mapper;
+
+    @Autowired
+    private ModelMapper mapper;
 
     /**
      * Constrói o serviço com as dependências de repositório necessárias.
@@ -31,10 +34,9 @@ public class MaterialService {
      * @param materialRepository       O repositório JPA padrão para operações CRUD.
      * @param materialCustomRepository O repositório customizado para consultas dinâmicas.
      */
-    public MaterialService(MaterialRepository materialRepository, MaterialCustomRepository materialCustomRepository, ModelMapper mapper) {
+    public MaterialService(MaterialRepository materialRepository, MaterialCustomRepository materialCustomRepository) {
         this.materialRepository = materialRepository;
         this.materialCustomRepository = materialCustomRepository;
-        this.mapper = mapper;
     }
 
     /**

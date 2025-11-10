@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
@@ -22,7 +23,9 @@ public class FornecedorService {
 
     private final FornecedorRepository fornecedorRepository;
     private final FornecedorCustomRepository fornecedorCustomRepository;
-    private final ModelMapper mapper;
+
+    @Autowired
+    private ModelMapper mapper;
 
 
     /**
@@ -30,10 +33,9 @@ public class FornecedorService {
      *
      * @param fornecedorRepository O repositório para acesso aos dados de fornecedores.
      */
-    public FornecedorService(FornecedorRepository fornecedorRepository, FornecedorCustomRepository fornecedorCustomRepository, ModelMapper mapper) {
+    public FornecedorService(FornecedorRepository fornecedorRepository, FornecedorCustomRepository fornecedorCustomRepository) {
         this.fornecedorRepository = fornecedorRepository;
         this.fornecedorCustomRepository = fornecedorCustomRepository;
-        this.mapper = mapper;
     }
 
     /**

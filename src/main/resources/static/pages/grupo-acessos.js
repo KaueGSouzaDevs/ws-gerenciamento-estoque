@@ -3,17 +3,22 @@ document.addEventListener('DOMContentLoaded', function () {
     // DataTable with Buttons
     let table = new DataTable(`#datatable`, {
         language: { url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json' },
+        processing: true,
         ajax: {
             url: `/grupos-acessos/dataTable`,
-            type: 'GET' // ou 'POST'
+            type: 'POST', // ou 'POST'
+            contentType: 'application/json',
+            data: function (d) {
+                return JSON.stringify(d);
+            }
         },
         serverSide: true,
         columns: [
-            { data: 0 },
-            { data: 1 },
-            { data: 2 },
+            { data: 'id' },
+            { data: 'grupo' },
+            { data: 'situacao' },
             {
-                data: 3, class: "text-center coluna-acoes", orderable: false, width: "100px",
+                data: 'id', class: "text-center coluna-acoes", orderable: false, width: "100px",
                 render: function (data, type, row, meta) {
                     return `
                         <div class="dropdown">

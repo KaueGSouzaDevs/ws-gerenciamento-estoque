@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
@@ -25,7 +26,9 @@ public class MovimentoService {
     private final MovimentoRepository movimentoRepository;
     private final MovimentoCustomRepository movimentoCustomRepository;
     private final MaterialService materialService;
-    private final ModelMapper mapper;
+
+    @Autowired
+    private ModelMapper mapper;
 
     /**
      * Constrói o serviço com as dependências necessárias.
@@ -34,11 +37,10 @@ public class MovimentoService {
      * @param materialService           O serviço para acessar e modificar dados de Material.
      * @param movimentoCustomRepository O repositório customizado para consultas dinâmicas de Movimento.
      */
-    public MovimentoService(MovimentoRepository movimentoRepository, MaterialService materialService, MovimentoCustomRepository movimentoCustomRepository, ModelMapper mapper) {
+    public MovimentoService(MovimentoRepository movimentoRepository, MaterialService materialService, MovimentoCustomRepository movimentoCustomRepository) {
         this.movimentoRepository = movimentoRepository;
         this.materialService = materialService;
         this.movimentoCustomRepository = movimentoCustomRepository;
-        this.mapper = mapper;
     }
 
     /**

@@ -1,5 +1,6 @@
 package br.com.kg.estoque.domain.categoria;
 
+import br.com.kg.estoque.enuns.SituacaoCategoria;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,6 @@ public class CategoriaDTO {
     private String nome;
 
     @Getter @Setter
-    private String situacao;
+    private SituacaoCategoria situacao;
     
 }

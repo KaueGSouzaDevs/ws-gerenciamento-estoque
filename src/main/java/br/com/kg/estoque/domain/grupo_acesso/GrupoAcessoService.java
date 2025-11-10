@@ -3,10 +3,14 @@ package br.com.kg.estoque.domain.grupo_acesso;
 import java.util.List;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.kg.estoque.custom.DataTableParams;
+import br.com.kg.estoque.custom.Auxiliar;
+import br.com.kg.estoque.custom.DataTableRequest;
 import br.com.kg.estoque.custom.DataTableResult;
+import br.com.kg.estoque.custom.DataTableUtils;
 
 /**
  * Serviço de negócios para a entidade {@link GrupoAcesso}.
@@ -18,6 +22,9 @@ public class GrupoAcessoService {
 
 	private final GrupoAcessoRepository grupoAcessoRepository;
 	private final GrupoAcessoCustomRepository customGrupoAcessoRepository;
+
+	@Autowired
+	private ModelMapper mapper;
 
 	/**
      * Constrói o serviço com as dependências de repositório necessárias.
@@ -36,18 +43,18 @@ public class GrupoAcessoService {
      * @param params Os parâmetros da requisição do DataTables, contendo informações de busca, paginação e ordenação.
      * @return Um objeto {@link DataTableResult} pronto para ser serializado em JSON e enviado ao cliente.
      */
-	public DataTableResult dataTableGrupoAcessos(DataTableParams params) {
+	public DataTableResult dataTableGrupoAcessos(DataTableRequest params) {
 
-		String[] colunas = {"id", "grupo", "situacao"};
 		
-		// List<GrupoAcesso> gruposList = customGrupoAcessoRepository.listEntitiesToDataTable(colunas, params, GrupoAcesso.class);
-		// Long registrosFiltrados = customGrupoAcessoRepository.totalEntitiesToDataTable(colunas, Auxiliar.removeAcentos(params.getSearchValue()), GrupoAcesso.class);
-
-		// dataTable.setDraw(params.getDraw());
-		// dataTable.setRecordsTotal((int) grupoAcessoRepository.count());
-		// dataTable.setRecordsFiltered(registrosFiltrados);
-		// dataTable.setData(gruposList.stream().map(c -> new Object[]{c.getId(), c.getGrupo(), c.getSituacao(), c.getId()}).toList());
+		DataTableUtils.parseParams(params);
+		List<GrupoAcesso> gruposList = customGrupoAcessoRepository.listEntitiesToDataTable(DataTableUtils.parseColumns(params), params, GrupoAcesso.class);
+		Integer registrosFiltrados = customGrupoAcessoRepository.totalEntitiesToDataTable(DataTableUtils.parseColumns(params), Auxiliar.removeAcentos(params.getSearch().getValue()), GrupoAcesso.class);
+		
 		DataTableResult dataTable = new DataTableResult();
+		dataTable.setDraw(params.getDraw());
+		dataTable.setRecordsTotal((int) grupoAcessoRepository.count());
+		dataTable.setRecordsFiltered(registrosFiltrados);
+		dataTable.setData(gruposList.stream().map(c -> mapper.map(c, GrupoAcessoDTO.class)).toList());
 
 		return dataTable;
 	}

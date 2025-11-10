@@ -1,5 +1,6 @@
 package br.com.kg.estoque.domain.fornecedor;
 
+import br.com.kg.estoque.enuns.SituacaoFornecedor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,6 +25,6 @@ public class FornecedorDTO {
     private String contato;
 
     @Getter @Setter
-    private String situacao;
+    private SituacaoFornecedor situacao;
     
 }

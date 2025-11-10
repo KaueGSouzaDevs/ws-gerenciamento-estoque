@@ -1,12 +1,8 @@
 package br.com.kg.estoque.config;
 
-import org.modelmapper.AbstractConverter;
-import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import br.com.kg.estoque.custom.EnumComDescricao;
 
 @Configuration
 public class ModelMapperConfig {
@@ -14,7 +10,8 @@ public class ModelMapperConfig {
     ModelMapper modelMapper() {
         ModelMapper mapper = new ModelMapper();
 
-        // AQUI ESTÁ A GRANDE JOGADA!
+        /*
+         *TODO: CRIAR UM CONVERSOR PARA ENUM COM DESCRICAO
         // Um conversor que sabe transformar QUALQUER EnumComDescricao em String
         Converter<EnumComDescricao, String> enumParaStringConverter = new AbstractConverter<EnumComDescricao, String>() {
             protected String convert(EnumComDescricao source) {
@@ -26,6 +23,7 @@ public class ModelMapperConfig {
 
         // Adiciona o conversor genérico
         mapper.addConverter(enumParaStringConverter);
+        */
 
         return mapper;
     }
