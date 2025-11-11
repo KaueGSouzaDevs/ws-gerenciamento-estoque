@@ -2,69 +2,159 @@ package br.com.kg.estoque.custom;
 
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
-@ToString
 public class DataTableRequest {
 
-    @Getter @Setter
     private Integer draw;
-
-    @Getter @Setter
     private Integer start;
-
-    @Getter @Setter
     private Integer length;
-
-    @Getter @Setter
     private List<Order> order;
-
-    @Getter @Setter
     private List<Column> columns;
-
-    @Getter @Setter
     private Search search;
 
+    public Integer getDraw() {
+        return draw;
+    }
 
-    @ToString
+    public void setDraw(Integer draw) {
+        this.draw = draw;
+    }
+
+    public Integer getStart() {
+        return start;
+    }
+
+    public void setStart(Integer start) {
+        this.start = start;
+    }
+
+    public Integer getLength() {
+        return length;
+    }
+
+    public void setLength(Integer length) {
+        this.length = length;
+    }
+
+    public List<Order> getOrder() {
+        return order;
+    }
+
+    public void setOrder(List<Order> order) {
+        this.order = order;
+    }
+
+    public List<Column> getColumns() {
+        return columns;
+    }
+
+    public void setColumns(List<Column> columns) {
+        this.columns = columns;
+    }
+
+    public Search getSearch() {
+        return search;
+    }
+
+    public void setSearch(Search search) {
+        this.search = search;
+    }
+
     public static class Search {
-        @Getter @Setter
         private String value;
-
-        @Getter @Setter
         private boolean regex;
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+
+        public boolean isRegex() {
+            return regex;
+        }
+
+        public void setRegex(boolean regex) {
+            this.regex = regex;
+        }
     }
 
-    @ToString
     public static class Order {
-        @Getter @Setter
         private Integer column;
-
-        @Getter @Setter
         private String dir;
-
-        @Getter @Setter
         private String name;
+
+        public Integer getColumn() {
+            return column;
+        }
+
+        public void setColumn(Integer column) {
+            this.column = column;
+        }
+
+        public String getDir() {
+            return dir;
+        }
+
+        public void setDir(String dir) {
+            this.dir = dir;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
     }
 
-    @ToString
     public static class Column {
-        @Getter @Setter
         private String data;
-
-        @Getter @Setter
         private String name;
-
-        @Getter @Setter
         private boolean searchable;
-
-        @Getter @Setter
         private boolean orderable;
-
-        @Getter @Setter
         private Search search;
-    }
 
+        public String getData() {
+            return data;
+        }
+
+        public void setData(String data) {
+            this.data = data;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public boolean isSearchable() {
+            return searchable;
+        }
+
+        public void setSearchable(boolean searchable) {
+            this.searchable = searchable;
+        }
+
+        public boolean isOrderable() {
+            return orderable;
+        }
+
+        public void setOrderable(boolean orderable) {
+            this.orderable = orderable;
+        }
+
+        public Search getSearch() {
+            return search;
+        }
+
+        public void setSearch(Search search) {
+            this.search = search;
+        }
+    }
 }

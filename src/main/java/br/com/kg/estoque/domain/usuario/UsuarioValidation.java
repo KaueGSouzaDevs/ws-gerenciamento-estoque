@@ -16,7 +16,7 @@ public class UsuarioValidation {
 
 
     public void validarNome(Usuario usuario, BindingResult result) {
-        String nome = usuario.getNome();
+        String nome = usuario.getName();
 
         // 1. Valida se o nome não é nulo ou vazio
         if (!StringUtils.hasText(nome)) {

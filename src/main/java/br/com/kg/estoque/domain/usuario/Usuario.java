@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import br.com.kg.estoque.domain.Tenant;
 import br.com.kg.estoque.domain.grupo_acesso.GrupoAcesso;
 import br.com.kg.estoque.enuns.SituacaoUsuario;
 import jakarta.persistence.Column;
@@ -23,6 +24,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.persistence.UniqueConstraint;
@@ -30,23 +32,14 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
 /**
  * Representa a entidade Usuário no banco de dados.
  * Esta classe implementa a interface {@link UserDetails} do Spring Security,
  * o que a torna a principal fonte de informações do usuário para fins de autenticação e autorização.
  */
-@ToString
 @Entity
-@Table(name = "usuarios", indexes = {
-		@Index(name = "id_usuario_index", columnList = "id_usuario"),
-		@Index(name = "login_usuario_index", columnList = "login")
-}, uniqueConstraints = {
-		@UniqueConstraint(name = "login_unique", columnNames = { "login" }),
-		@UniqueConstraint(name = "email_unique", columnNames = { "email" }) })
+@Table(name = "users", schema = "public")
 public class Usuario implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
@@ -58,45 +51,22 @@ public class Usuario implements UserDetails {
 	}
 
 	/**
-     * Construtor que inicializa o usuário com um login.
-     * @param login O nome de usuário (login).
-     */
-	public Usuario(String login) {
-		this.login = login;
-	}
-
-	/**
      * Identificador único do usuário.
      */
-	@Getter
-	@Setter
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id_usuario")
 	private Long id;
-
-	/**
-     * O nome de usuário (login) usado para autenticação.
-     */
-	@Getter
-	@Setter
-	@Column(length = 35)
-	private String login;
 
 	/**
      * O nome completo do usuário.
      */
-	@Getter
-	@Setter
 	@Size(min = 3, max = 30)
 	@Column(length = 30)
-	private String nome;
+	private String name;
 
 	/**
      * O endereço de e-mail do usuário. É obrigatório e deve ser único.
      */
-	@Getter
-	@Setter
 	@NotEmpty(message = "* Informe o e-mail do usuário")
 	@Size(max = 70, message = "* Limite de 70 caracteres")
 	@Column(length = 70)
@@ -106,9 +76,7 @@ public class Usuario implements UserDetails {
 	/**
      * A senha do usuário, armazenada de forma criptografada.
      */
-	@Getter
-	@Setter
-	private String senha;
+	private String password;
 
 	/**
      * Verifica se a conta do usuário está com o status "RESETADO".
@@ -130,16 +98,12 @@ public class Usuario implements UserDetails {
      * Campo transiente para armazenar a representação da imagem do usuário em Base64.
      * Não é persistido no banco de dados.
      */
-	@Getter
-	@Setter
 	@Transient
 	private String image64;
 
 	/**
      * A situação atual da conta do usuário (ex: ATIVO, INATIVO, RESETADO).
      */
-	@Getter
-	@Setter
 	@NotNull(message = "Selecione uma opção")
 	@Column(length = 10)
 	@Enumerated(EnumType.STRING)
@@ -148,19 +112,19 @@ public class Usuario implements UserDetails {
 	/**
      * A data e hora da última atualização dos dados do usuário.
      */
-	@Getter
-	@Setter
 	private LocalDateTime dataAtualizacao;
 
 	/**
      * A lista de grupos de acesso aos quais o usuário pertence.
      * O relacionamento é Muitos-para-Muitos e é carregado de forma EAGER.
      */
-	@Getter
-	@Setter
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "rel_usuarios_grupos_acessos", joinColumns = @JoinColumn(name = "id_usuario"), inverseJoinColumns = @JoinColumn(name = "id_grupo_acesso"))
 	private List<GrupoAcesso> gruposAcessos;
+
+    @ManyToOne
+    @JoinColumn(name = "tenant_id")
+    private Tenant tenant;
 
 	/**
      * Retorna as permissões (autoridades) concedidas ao usuário.
@@ -180,14 +144,69 @@ public class Usuario implements UserDetails {
 		return authorities;
 	}
 
-	/**
-     * Retorna a senha usada para autenticar o usuário.
-     * @return A senha criptografada.
-     */
-	@Override
-	public String getPassword() {
-		return this.getSenha();
-	}
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getImage64() {
+        return image64;
+    }
+
+    public void setImage64(String image64) {
+        this.image64 = image64;
+    }
+
+    public SituacaoUsuario getSituacaoUsuario() {
+        return situacaoUsuario;
+    }
+
+    public void setSituacaoUsuario(SituacaoUsuario situacaoUsuario) {
+        this.situacaoUsuario = situacaoUsuario;
+    }
+
+    public LocalDateTime getDataAtualizacao() {
+        return dataAtualizacao;
+    }
+
+    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
+        this.dataAtualizacao = dataAtualizacao;
+    }
+
+    public List<GrupoAcesso> getGruposAcessos() {
+        return gruposAcessos;
+    }
+
+    public void setGruposAcessos(List<GrupoAcesso> gruposAcessos) {
+        this.gruposAcessos = gruposAcessos;
+    }
 
 	/**
      * Retorna o nome de usuário usado para autenticar o usuário.
@@ -195,7 +214,7 @@ public class Usuario implements UserDetails {
      */
 	@Override
 	public String getUsername() {
-		return this.getLogin();
+		return this.getEmail();
 	}
 
 	/**
@@ -233,4 +252,12 @@ public class Usuario implements UserDetails {
 	public boolean isEnabled() {
 		return true;
 	}
+
+    public Tenant getTenant() {
+        return tenant;
+    }
+
+    public void setTenant(Tenant tenant) {
+        this.tenant = tenant;
+    }
 }

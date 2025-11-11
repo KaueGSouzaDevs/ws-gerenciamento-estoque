@@ -19,8 +19,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Representa a entidade Movimento no banco de dados.
@@ -34,7 +32,6 @@ public class Movimento {
      * Identificador único do movimento.
      * Gerado automaticamente pelo banco de dados.
      */
-    @Getter @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -44,7 +41,6 @@ public class Movimento {
      * A data em que o movimento ocorreu.
      * É um campo obrigatório e o valor padrão é a data atual.
      */
-    @Getter @Setter
     @NotNull(message = "* Data é obrigatória")
     @Column(name = "data_movimento", nullable = false)
     private LocalDateTime dataMovimento = LocalDateTime.now();
@@ -53,7 +49,6 @@ public class Movimento {
      * O material que está sendo movimentado.
      * Relacionamento Muitos-para-Um com a entidade {@link Material}.
      */
-    @Getter @Setter
     @NotNull(message = "* Material é obrigatório")
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="id_material", foreignKey = @ForeignKey(name="fk_material"))
@@ -63,7 +58,6 @@ public class Movimento {
      * A quantidade de material movimentada.
      * É um campo obrigatório.
      */
-    @Getter @Setter
     @NotNull(message = "* Quantidade é obrigatória")
     @Column(name = "quantidade", nullable = false)
     private Integer quantidade;
@@ -72,7 +66,6 @@ public class Movimento {
      * O tipo de movimento, que pode ser "Entrada" ou "Saída".
      * É um campo obrigatório.
      */
-    @Getter @Setter
     @Enumerated(EnumType.STRING)
     @NotNull(message = "* Tipo de movimento é obrigatório")
     @Column(name = "tipo_movimento", length = 10, nullable = false)
@@ -81,7 +74,6 @@ public class Movimento {
     /**
      * O número da nota fiscal associada ao movimento, se aplicável (principalmente para entradas).
      */
-    @Getter @Setter
     @Column(name = "nota_fiscal", length = 50)
     private String notaFiscal;
 
@@ -89,7 +81,6 @@ public class Movimento {
      * O fornecedor do material, aplicável para movimentos de entrada.
      * Relacionamento Muitos-para-Um com a entidade {@link Fornecedor}.
      */
-    @Getter @Setter
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="id_fornecedor", foreignKey = @ForeignKey(name="fk_fornecedor"))
     private Fornecedor fornecedor;
@@ -98,8 +89,71 @@ public class Movimento {
      * O nome do responsável por registrar o movimento.
      * É um campo obrigatório.
      */
-    @Getter @Setter
     @NotBlank(message = "* Responsável é obrigatório")
     @Column(name = "responsavel", length = 50)
     private String responsavel;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public LocalDateTime getDataMovimento() {
+        return dataMovimento;
+    }
+
+    public void setDataMovimento(LocalDateTime dataMovimento) {
+        this.dataMovimento = dataMovimento;
+    }
+
+    public Material getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(Material material) {
+        this.material = material;
+    }
+
+    public Integer getQuantidade() {
+        return quantidade;
+    }
+
+    public void setQuantidade(Integer quantidade) {
+        this.quantidade = quantidade;
+    }
+
+    public TipoMovimento getTipoMovimento() {
+        return tipoMovimento;
+    }
+
+    public void setTipoMovimento(TipoMovimento tipoMovimento) {
+        this.tipoMovimento = tipoMovimento;
+    }
+
+    public String getNotaFiscal() {
+        return notaFiscal;
+    }
+
+    public void setNotaFiscal(String notaFiscal) {
+        this.notaFiscal = notaFiscal;
+    }
+
+    public Fornecedor getFornecedor() {
+        return fornecedor;
+    }
+
+    public void setFornecedor(Fornecedor fornecedor) {
+        this.fornecedor = fornecedor;
+    }
+
+    public String getResponsavel() {
+        return responsavel;
+    }
+
+    public void setResponsavel(String responsavel) {
+        this.responsavel = responsavel;
+    }
 }

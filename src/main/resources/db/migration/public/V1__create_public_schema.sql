@@ -1,0 +1,15 @@
+CREATE TABLE tenants (
+    id SERIAL PRIMARY KEY,
+    tenant_id VARCHAR(255) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    schema_name VARCHAR(255) NOT NULL UNIQUE
+);
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    tenant_id BIGINT NOT NULL,
+    FOREIGN KEY (tenant_id) REFERENCES tenants(id)
+);

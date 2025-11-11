@@ -7,7 +7,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
-import br.com.kg.estoque.domain.usuario.UsuarioRepository;
+import br.com.kg.estoque.domain.usuario.Usuario;
+import br.com.kg.estoque.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 
 /**
@@ -40,7 +41,7 @@ public class AutenticacaoService implements UserDetailsService{
 	@Override
 	public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
 		
-		Optional<UserDetails> user = userRepository.findByLoginIgnoreCase(login);
+		Optional<Usuario> user = userRepository.findByNameIgnoreCase(login);
         if (user.isEmpty()) {
             throw new UsernameNotFoundException("Usuário não encontrado");
         }

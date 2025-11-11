@@ -1,18 +1,14 @@
 package br.com.kg.estoque.domain.usuario;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import br.com.kg.estoque.custom.Auxiliar;
-import br.com.kg.estoque.custom.DataTableRequest;
-import br.com.kg.estoque.custom.DataTableResult;
-import br.com.kg.estoque.custom.DataTableUtils;
+import br.com.kg.estoque.repository.UsuarioRepository;
 
 /**
  * Serviço de negócios para a entidade {@link Usuario}.
@@ -23,7 +19,6 @@ import br.com.kg.estoque.custom.DataTableUtils;
 public class UsuarioService {
 
 	private final UsuarioRepository usuarioRepository;
-	private final UsuarioCustomRepository customUsuarioRepository;
 
 	@Autowired
 	private ModelMapper mapper;
@@ -32,11 +27,9 @@ public class UsuarioService {
      * Constrói o serviço com as dependências de repositório necessárias.
      *
      * @param usuarioRepository       O repositório JPA padrão para operações CRUD.
-     * @param customUsuarioRepository O repositório customizado para consultas dinâmicas.
      */
-	public UsuarioService(UsuarioRepository usuarioRepository, UsuarioCustomRepository customUsuarioRepository) {
+	public UsuarioService(UsuarioRepository usuarioRepository) {
 		this.usuarioRepository = usuarioRepository; 
-		this.customUsuarioRepository = customUsuarioRepository;
 	}
 
 	/**
@@ -47,26 +40,6 @@ public class UsuarioService {
      */
 	public Usuario save(Usuario usuario) {
 		return usuarioRepository.save(usuario);
-	}
-
-	/**
-     * Prepara os dados do usuário para serem exibidos em um componente DataTables.
-     *
-     * @param params Os parâmetros da requisição do DataTables (busca, paginação, ordenação).
-     * @return Um objeto {@link DataTableResult} pronto para ser serializado em JSON.
-     */
-	public DataTableResult dataTableUsuarios(DataTableRequest params) {
-		
-		List<Usuario> usuariosList = customUsuarioRepository.listEntitiesToDataTable(DataTableUtils.parseColumns(params), params, Usuario.class); 
-		Integer registrosFiltrados = customUsuarioRepository.totalEntitiesToDataTable(DataTableUtils.parseColumns(params), params.getSearch().getValue(), Usuario.class);
-		
-		DataTableResult dataTable = new DataTableResult();
-		dataTable.setDraw(params.getDraw());
-		dataTable.setRecordsTotal((int) usuarioRepository.count());
-		dataTable.setRecordsFiltered(registrosFiltrados);
-		dataTable.setData(usuariosList.stream().map(u -> mapper.map(u, UsuarioDTO.class)).toList());
-		
-		return dataTable;
 	}
 
 	/**
@@ -108,11 +81,11 @@ public class UsuarioService {
     /**
      * Busca um usuário pelo seu login (ignorando maiúsculas/minúsculas).
      *
-     * @param login O login do usuário a ser buscado.
+     * @param name O login do usuário a ser buscado.
      * @return Um {@link Optional} contendo os detalhes do usuário ({@link UserDetails}) se encontrado.
      */
-    public Optional<UserDetails> findByLogin(String login) {
-        return usuarioRepository.findByLoginIgnoreCase(login);
+    public Optional<Usuario> findByName(String name) {
+        return usuarioRepository.findByNameIgnoreCase(name);
     }
 
 	/**
@@ -135,7 +108,7 @@ public class UsuarioService {
 	}
 
     public void gerarLogin(Usuario usuario) {
-		String nomeCompleto = Auxiliar.removeAcentos(usuario.getNome().trim());
+		String nomeCompleto = Auxiliar.removeAcentos(usuario.getName().trim());
 		String[] nomes = nomeCompleto.split(" ");
 
 		String loginBase = nomes[0].toLowerCase() + "." + nomes[nomes.length - 1].toLowerCase();
@@ -143,12 +116,12 @@ public class UsuarioService {
 
 		int i = 1;
 
-		while (findByLogin(loginFinal).isPresent()) {
+		while (findByName(loginFinal).isPresent()) {
 			loginFinal = loginBase + i;
 			i++;
 		}
 
-		usuario.setLogin(loginFinal);
+		usuario.setName(loginFinal);
     }
 
 	public Optional<Usuario> findByEmailAndIdNot(String email, Long id) {

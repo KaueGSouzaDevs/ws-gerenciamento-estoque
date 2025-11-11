@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import br.com.kg.estoque.custom.DataTableRequest;
-import br.com.kg.estoque.custom.DataTableResult;
 import br.com.kg.estoque.domain.grupo_acesso.GrupoAcesso;
 import br.com.kg.estoque.domain.grupo_acesso.GrupoAcessoService;
 import br.com.kg.estoque.domain.usuario.Usuario;
@@ -60,18 +58,6 @@ public class UsuarioController {
     @ModelAttribute("gruposAcessos")
     public List<GrupoAcesso> allGruposAcessos() {
         return grupoAcessoService.findAll(false);
-    }
-
-    /**
-     * Fornece dados para o componente DataTables na página de listagem de usuários.
-     *
-     * @param dataTableRequest O objeto {@link DataTableRequest} contendo os parâmetros de pesquisa.
-     * @return Um {@link DataTableResult} contendo os dados para a tabela.
-     */
-    @PostMapping("/dataTable")
-    @ResponseBody
-    public DataTableResult jsonDataTable(@RequestBody DataTableRequest dataTableRequest) {
-        return usuarioService.dataTableUsuarios(dataTableRequest);
     }
 
     /**

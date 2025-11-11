@@ -20,9 +20,6 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
 /**
  * Representa a entidade Grupo de Acesso no banco de dados.
@@ -30,7 +27,6 @@ import lombok.ToString;
  */
 @Entity
 @Table(name = "grupos_acessos")
-@ToString
 public class GrupoAcesso implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -39,7 +35,6 @@ public class GrupoAcesso implements Serializable {
      * Identificador único do grupo de acesso.
      * Gerado automaticamente pelo banco de dados.
      */
-	@Getter @Setter
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -48,7 +43,6 @@ public class GrupoAcesso implements Serializable {
      * O nome do grupo de acesso (ex: "ADMINISTRADORES", "USUARIOS").
      * É um campo obrigatório.
      */
-	@Getter @Setter
 	@NotEmpty(message = "* Informe o nome do grupo")
 	@Size(max = 40, message = "Máximo de 40 caracteres")
 	@Column(name="grupo", length=40)
@@ -59,7 +53,6 @@ public class GrupoAcesso implements Serializable {
      * Mapeado para uma tabela separada `permissao_grupo`.
      * As permissões são carregadas de forma EAGER.
      */
-	@Getter	@Setter
 	@ElementCollection(fetch=FetchType.EAGER)
 	@CollectionTable (name ="permissao_grupo",joinColumns = @JoinColumn (name="id_grupo"), foreignKey = @ForeignKey(name="fk_id_grupo"))
 	@Column(name ="permissoes")
@@ -68,7 +61,6 @@ public class GrupoAcesso implements Serializable {
 	/**
      * Descrição textual do propósito do grupo de acesso.
      */
-	@Getter	@Setter
 	@Size(max = 100, message = "Máximo de 100 caracteres")
 	@Column(name="descricao", length=100)
 	private String descricao;
@@ -77,10 +69,48 @@ public class GrupoAcesso implements Serializable {
      * A situação do grupo de acesso (ex: "Ativo", "Inativo").
      * É um campo obrigatório.
      */
-	@Getter	@Setter
 	@NotNull(message = "* Selecione uma opção")
 	@Column(name="situacao", length=10)
 	@Enumerated(EnumType.STRING)
 	private SituacaoGrupoAcesso situacao;
 	
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getGrupo() {
+        return grupo;
+    }
+
+    public void setGrupo(String grupo) {
+        this.grupo = grupo;
+    }
+
+    public List<String> getPermissoes() {
+        return permissoes;
+    }
+
+    public void setPermissoes(List<String> permissoes) {
+        this.permissoes = permissoes;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public SituacaoGrupoAcesso getSituacao() {
+        return situacao;
+    }
+
+    public void setSituacao(SituacaoGrupoAcesso situacao) {
+        this.situacao = situacao;
+    }
 }
