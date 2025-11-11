@@ -50,8 +50,15 @@ public abstract class CustomRepository<T> {
 
         jpql.append(" ) ");
 
+        if (orders.size() > 0) {
+            jpql.append(" ORDER BY");
+        }
+
         orders.forEach(order -> {
-            jpql.append(" ORDER BY t.").append(colunas.get(order.getColumn())).append(" ").append(order.getDir());
+            jpql.append(" t.").append(colunas.get(order.getColumn())).append(" ").append(order.getDir());
+            if (orders.size() > 1 && order != orders.get(orders.size() - 1)) {
+                jpql.append(", ");
+            }
         });
         
         var query = em.createQuery(jpql.toString(), type);
