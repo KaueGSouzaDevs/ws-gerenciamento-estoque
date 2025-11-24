@@ -36,6 +36,7 @@ public class Auth {
     }
 
 
+    // @CrossOrigin(origins = "*")
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody AuthUser user) throws UsernameNotFoundException {
         // Verifica se o login e senha estão corretos

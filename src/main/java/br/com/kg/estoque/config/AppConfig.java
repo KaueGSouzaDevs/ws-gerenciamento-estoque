@@ -10,7 +10,7 @@ public class AppConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**") // (1) Aplica a configuração para TODAS as rotas da sua API
-            .allowedOrigins("http://localhost:5173") // (2) Lista de "casas" (origens) que podem acessar.
+            .allowedOrigins("http://localhost:8090", "http://192.168.10.127:8090") // (2) Lista de "casas" (origens) que podem acessar.
                                                                         //     Troque a porta (3000, 8081) pela porta que seu front usa!
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // (3) Quais métodos HTTP são permitidos
             .allowedHeaders("*") // (4) Quais cabeçalhos (headers) são permitidos na requisição
