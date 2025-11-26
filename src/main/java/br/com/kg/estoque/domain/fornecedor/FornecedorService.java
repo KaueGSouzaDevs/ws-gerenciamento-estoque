@@ -8,10 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
+import br.com.kg.estoque.custom.Auxiliar;
 import br.com.kg.estoque.custom.DataTableRequest;
 import br.com.kg.estoque.custom.DataTableResult;
 import br.com.kg.estoque.custom.DataTableUtils;
 import br.com.kg.estoque.enuns.SituacaoFornecedor;
+import br.com.kg.estoque.utils.CnpjCpfUtils;
 
 /**
  * Serviço de negócios para a entidade {@link Fornecedor}.
@@ -146,5 +148,13 @@ public class FornecedorService {
 
     public List<Fornecedor> buscarTodosAtivos() {
         return fornecedorRepository.findAllBySituacao(SituacaoFornecedor.ATIVO);
+    }
+
+    public void validaCnpjCpf(Fornecedor fornecedor, BindingResult result) {
+        if (!Auxiliar.isEmptyOrNull(fornecedor.getCnpjCpf())) {
+            if (!CnpjCpfUtils.isValid(fornecedor.getCnpjCpf())) {
+                result.rejectValue("cnpjCpf", "cnpjCpf.invalid", "* CNPJ/CPF inválido");
+            }
+        }
     }
 }

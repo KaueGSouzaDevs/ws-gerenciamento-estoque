@@ -88,6 +88,7 @@ public class FornecedorController {
     public ModelAndView salvar(@Valid Fornecedor fornecedor, BindingResult result){
         fornecedorService.validaInclusao(fornecedor, result);
         fornecedorService.validaAlteracao(fornecedor, result);
+        fornecedorService.validaCnpjCpf(fornecedor, result);
         
         if(result.hasErrors()){
             return new ModelAndView("fornecedores/form");

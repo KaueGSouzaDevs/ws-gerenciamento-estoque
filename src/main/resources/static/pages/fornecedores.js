@@ -59,6 +59,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const telefoneInput = document.querySelector('.telefone-dinamico');
         telefoneInput.addEventListener('input', () => setPhoneMask(telefoneInput));
         setPhoneMask(telefoneInput);
+
+        const docInput = document.querySelector('.doc-dinamico');
+        docInput.addEventListener('input', () => setDocMask(docInput));
+        setDocMask(docInput);
     }
 
 });

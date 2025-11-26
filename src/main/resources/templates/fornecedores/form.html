@@ -39,7 +39,7 @@ th:with= "menu='cadastro', submenu='fornecedores'">
 
                                             <div class="col-lg-6 col-xl-3 mb-3">
                                                 <label for="cnpjCpf" class="form-label">CNPJ/CPF</label>
-                                                <input type="text" th:field="*{cnpjCpf}" th:errorclass="is-invalid" class="form-control" id="cnpjCpf" maxlength="18">
+                                                <input type="text" th:field="*{cnpjCpf}" th:errorclass="is-invalid" class="form-control doc-dinamico" id="cnpjCpf" maxlength="18">
                                                 <span class="error" th:if="${#fields.hasErrors('cnpjCpf')}" th:errors="*{cnpjCpf}"></span>
                                             </div>
 
