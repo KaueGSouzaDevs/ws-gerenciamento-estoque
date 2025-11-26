@@ -55,6 +55,12 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     };
 
+    if (document.getElementById('id')) {
+        const telefoneInput = document.querySelector('.telefone-dinamico');
+        telefoneInput.addEventListener('input', () => setPhoneMask(telefoneInput));
+        setPhoneMask(telefoneInput);
+    }
+
 });
 
 // Função para excluir um fornecedor

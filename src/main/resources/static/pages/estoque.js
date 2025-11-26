@@ -43,3 +43,33 @@ function executeScripts(element) {
         oldScript.parentNode.replaceChild(newScript, oldScript);
     });
 }
+
+
+
+let cleaveTelefoneDinamico;
+
+function setPhoneMask(input) {
+    const rawValue = input.value.replace(/\D/g, '');
+
+    // Destroi a instância anterior (se existir)
+    if (cleaveTelefoneDinamico) {
+        cleaveTelefoneDinamico.destroy();
+    }
+
+    // Aplica máscara dinâmica dependendo do comprimento
+    if (rawValue.length > 10) {
+        // Celular: (99) 99999-9999
+        cleaveTelefoneDinamico = new Cleave(input, {
+            delimiters: ['(', ') ', '-'],
+            blocks: [0, 2, 5, 4],
+            numericOnly: true
+        });
+    } else {
+        // Fixo: (99) 9999-9999
+        cleaveTelefoneDinamico = new Cleave(input, {
+            delimiters: ['(', ') ', '-'],
+            blocks: [0, 2, 4, 4],
+            numericOnly: true
+        });
+    }
+}

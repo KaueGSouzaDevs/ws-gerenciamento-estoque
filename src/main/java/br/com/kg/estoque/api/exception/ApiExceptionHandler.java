@@ -1,6 +1,7 @@
 package br.com.kg.estoque.api.exception;
 
 
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -18,12 +19,14 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import br.com.kg.estoque.common.MensagemErro;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Path;
 import javassist.NotFoundException;
 
 @RestControllerAdvice(basePackages = "br.com.kg.estoque.api")
 public class ApiExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(ApiExceptionHandler.class);
+
 
     /**
      * Trata exceções de violação de constraints de validação.
@@ -34,15 +37,20 @@ public class ApiExceptionHandler {
      * @return ResponseEntity com código 400 (Bad Request) e mensagem de erro detalhada
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<MensagemErro> handleConstraintViolationException(ConstraintViolationException ex) {
-        
+    public ResponseEntity<Map<Path, String>> handleConstraintViolationException(ConstraintViolationException ex) {
+        /*
         // Coleta todas as mensagens de violação de constraints e as concatena
         String mensagem = ex.getConstraintViolations()
             .stream()
             .map(ConstraintViolation::getMessage)
             .collect(Collectors.joining("; "));
-        
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MensagemErro(400, mensagem));
+        */
+
+            // Coleta todas as mensagens de violação de constraints e as concatena
+        Map<Path, String> errors = ex.getConstraintViolations().stream()
+            .collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage));
+
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(errors);
     }
 
 
@@ -65,7 +73,7 @@ public class ApiExceptionHandler {
                 .body(new MensagemErro(400, mensagem));
     }
 
-    
+
     /**
      * Trata todas as exceções não capturadas pelos handlers específicos.
      * Este é o manipulador genérico que funciona como uma rede de segurança
@@ -81,7 +89,8 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new MensagemErro(500, "Erro interno no servidor"));
     }
-    
+
+
     /**
      * Trata exceções de conflito de negócio da aplicação.
      * Esta exceção é lançada quando ocorrem situações de conflito específicas
@@ -96,6 +105,7 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(new MensagemErro(409, ex.getMessage()));
     }
+
 
     /**
      * Trata exceções de violação de integridade de dados do banco.
@@ -112,10 +122,19 @@ public class ApiExceptionHandler {
                 .body(new MensagemErro(409, "Violação de integridade de dados."));
     }
 
+
+    /**
+     * Trata exceções de requisição malformada.
+     * Ocorre quando o corpo da requisição não é válido ou não pode ser lido.
+     *
+     * @param ex A exceção de requisição malformada capturada.
+     * @return ResponseEntity com código 400 (Bad Request) e mensagem de erro.
+     */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<MensagemErro> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MensagemErro(400, "Corpo da requisição inválido ou malformado."));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MensagemErro(406, "Corpo da requisição inválido ou malformado."));
     }
+
 
     /**
      * Trata exceções de recurso não encontrado.
@@ -131,6 +150,7 @@ public class ApiExceptionHandler {
                 .body(new MensagemErro(404, ex.getMessage()));
     }
 
+
     /**
      * Trata exceções de acesso negado do Spring Security.
      * Lançada quando um usuário autenticado tenta acessar um recurso
@@ -144,6 +164,7 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(new MensagemErro(403, "Acesso negado. Você não tem permissão para executar esta operação."));
     }
+
 
     /**
      * Trata exceções de tipo de argumento de método inválido.
@@ -163,9 +184,41 @@ public class ApiExceptionHandler {
     }
 
 
+    /**
+     * Trata exceções de usuário não encontrado.
+     * Ocorre quando um usuário tenta autenticar com um nome de usuário que não existe no sistema.
+     *
+     * @param ex A exceção de usuário não encontrado capturada.
+     * @return ResponseEntity com código 404 (Not Found) e mensagem de erro.
+     */
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<MensagemErro> handleUsernameNotFoundException(UsernameNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new MensagemErro(404, ex.getMessage()));
     }
+
+
+    /**
+     * Trata exceções de argumentos inválidos em métodos de controllers.
+     * Esta exceção é lançada quando dados enviados no request não passam
+     * nas validações definidas nos DTOs (@Valid, @NotNull, @Size, etc.).
+     * 
+     * @param ex A exceção de argumentos inválidos capturada
+     * @return ResponseEntity com código 400 (Bad Request) e mensagem de erro com detalhes dos campos inválidos
+     */
+    /*
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+
+        List<String> errors = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> error.getField())
+                .collect(Collectors.toList());
+
+        String message = "Erro de validação: " + errors;
+
+        return ResponseEntity.badRequest().body(Map.of("ERROR", message));
+    }
+    */
 }

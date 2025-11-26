@@ -57,7 +57,7 @@ th:with= "menu='cadastro', submenu='fornecedores'">
 
                                             <div class="col-lg-6 col-xl-2 mb-3">
                                                 <label for="telefone" class="form-label">Telefone</label>
-                                                <input type="text" th:field="*{telefone}" class="form-control" id="telefone" placeholder="Informe um telefone" maxlength="15">
+                                                <input type="text" th:field="*{telefone}" class="form-control telefone-dinamico" id="telefone" placeholder="Informe um telefone" maxlength="15">
                                             </div>
 
                                             <div class="col-lg-6 col-xl-3 mb-3">
@@ -88,7 +88,7 @@ th:with= "menu='cadastro', submenu='fornecedores'">
     </th:block>
 
     <th:block layout:fragment="pageJs">
-
+    <script th:src="@{/pages/fornecedores.js}"></script>
     </th:block>
         
 
