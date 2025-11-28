@@ -9,29 +9,30 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import br.com.kg.estoque.domain.Tenant;
 import br.com.kg.estoque.domain.grupo_acesso.GrupoAcesso;
+import br.com.kg.estoque.domain.tenant.Tenant;
 import br.com.kg.estoque.enuns.SituacaoUsuario;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
-import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Representa a entidade Usuário no banco de dados.
@@ -44,93 +45,69 @@ public class Usuario implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
 
-	/**
-     * Construtor padrão.
-     */
 	public Usuario() {
 	}
 
-	/**
-     * Identificador único do usuário.
-     */
-	@Id
+	public Usuario(Long id) {
+        this.id = id;
+    }
+
+
+
+    @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter @Setter
+	@Column(name = "id")
 	private Long id;
 
-	/**
-     * O nome completo do usuário.
-     */
-	@Size(min = 3, max = 30)
-	@Column(length = 30)
+	@Size(min = 3, max = 100)
+	@Column(name = "name", length = 100)
+    @Getter @Setter
 	private String name;
 
-	/**
-     * O endereço de e-mail do usuário. É obrigatório e deve ser único.
-     */
 	@NotEmpty(message = "* Informe o e-mail do usuário")
-	@Size(max = 70, message = "* Limite de 70 caracteres")
-	@Column(length = 70)
 	@Email(message = "* E-mail inválido")
+	@Size(max = 100, message = "* Limite de 100 caracteres")
+    @Getter @Setter
+	@Column(name = "email", length = 100)
 	private String email;
 
-	/**
-     * A senha do usuário, armazenada de forma criptografada.
-     */
+	@Getter @Setter
+	@Column(name = "password", length = 100)
 	private String password;
 
-	/**
-     * Verifica se a conta do usuário está com o status "RESETADO".
-     * @return {@code true} se a situação for RESETADO, {@code false} caso contrário.
-     */
 	public boolean isContaResetada() {
 		return this.getSituacaoUsuario() == SituacaoUsuario.RESETADO;
 	}
 
-	/**
-     * Verifica se a conta do usuário é uma nova conta (status "NOVO").
-     * @return {@code true} se a situação for NOVO, {@code false} caso contrário.
-     */
 	public boolean isNovaConta() {
 		return this.getSituacaoUsuario() == SituacaoUsuario.NOVO;
 	}
 
-	/**
-     * Campo transiente para armazenar a representação da imagem do usuário em Base64.
-     * Não é persistido no banco de dados.
-     */
 	@Transient
+    @Getter @Setter
 	private String image64;
 
-	/**
-     * A situação atual da conta do usuário (ex: ATIVO, INATIVO, RESETADO).
-     */
-	@NotNull(message = "Selecione uma opção")
-	@Column(length = 10)
+    @NotNull(message = "Selecione uma opção")
 	@Enumerated(EnumType.STRING)
+	@Getter @Setter
+	@Column(name = "situacao_usuario", length = 10)
 	private SituacaoUsuario situacaoUsuario;
 
-	/**
-     * A data e hora da última atualização dos dados do usuário.
-     */
+    @Getter @Setter
+	@Column(name = "data_atualizacao")
 	private LocalDateTime dataAtualizacao;
 
-	/**
-     * A lista de grupos de acesso aos quais o usuário pertence.
-     * O relacionamento é Muitos-para-Muitos e é carregado de forma EAGER.
-     */
+    @Getter @Setter
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "rel_usuarios_grupos_acessos", joinColumns = @JoinColumn(name = "id_usuario"), inverseJoinColumns = @JoinColumn(name = "id_grupo_acesso"))
 	private List<GrupoAcesso> gruposAcessos;
 
+    @Getter @Setter
     @ManyToOne
-    @JoinColumn(name = "tenant_id")
+    @JoinColumn(name = "id_tenant", foreignKey = @ForeignKey(name = "fk_usuario_tenant"))
     private Tenant tenant;
 
-	/**
-     * Retorna as permissões (autoridades) concedidas ao usuário.
-     * Este método agrega todas as permissões de todos os grupos de acesso do usuário.
-     * @return Uma coleção de {@link GrantedAuthority}.
-     */
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		List<GrantedAuthority> authorities = new ArrayList<>();
@@ -143,70 +120,6 @@ public class Usuario implements UserDetails {
 		);
 		return authorities;
 	}
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getImage64() {
-        return image64;
-    }
-
-    public void setImage64(String image64) {
-        this.image64 = image64;
-    }
-
-    public SituacaoUsuario getSituacaoUsuario() {
-        return situacaoUsuario;
-    }
-
-    public void setSituacaoUsuario(SituacaoUsuario situacaoUsuario) {
-        this.situacaoUsuario = situacaoUsuario;
-    }
-
-    public LocalDateTime getDataAtualizacao() {
-        return dataAtualizacao;
-    }
-
-    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
-        this.dataAtualizacao = dataAtualizacao;
-    }
-
-    public List<GrupoAcesso> getGruposAcessos() {
-        return gruposAcessos;
-    }
-
-    public void setGruposAcessos(List<GrupoAcesso> gruposAcessos) {
-        this.gruposAcessos = gruposAcessos;
-    }
 
 	/**
      * Retorna o nome de usuário usado para autenticar o usuário.
@@ -252,12 +165,4 @@ public class Usuario implements UserDetails {
 	public boolean isEnabled() {
 		return true;
 	}
-
-    public Tenant getTenant() {
-        return tenant;
-    }
-
-    public void setTenant(Tenant tenant) {
-        this.tenant = tenant;
-    }
 }

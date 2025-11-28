@@ -1,15 +1,16 @@
-CREATE TABLE tenants (
+CREATE TABLE IF NOT EXISTS tenants (
     id SERIAL PRIMARY KEY,
-    tenant_id VARCHAR(255) NOT NULL UNIQUE,
-    name VARCHAR(255) NOT NULL,
-    schema_name VARCHAR(255) NOT NULL UNIQUE
+    name VARCHAR(100) NOT NULL,
+    schema_name VARCHAR(100) NOT NULL UNIQUE
 );
 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    tenant_id BIGINT NOT NULL,
-    FOREIGN KEY (tenant_id) REFERENCES tenants(id)
+    name VARCHAR(100) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(100) NOT NULL,
+    id_tenant BIGINT NOT NULL,
+    FOREIGN KEY (id) REFERENCES tenants(id),
+    situacao_usuario VARCHAR(10) NOT NULL,
+    data_atualizacao TIMESTAMP NOT NULL,
 );

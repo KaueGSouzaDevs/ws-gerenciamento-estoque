@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
@@ -126,5 +127,11 @@ public class UsuarioService {
 
 	public Optional<Usuario> findByEmailAndIdNot(String email, Long id) {
 		return usuarioRepository.findByEmailAndIdIsNot(email, id);
+	}
+
+	public void validaInclusaoTenant(String email) throws Exception {
+		if(usuarioRepository.findByEmail(email).isPresent()) {
+			throw new Exception("Já existe um usuário cadastrado com este e-mail");
+		}
 	}
 }

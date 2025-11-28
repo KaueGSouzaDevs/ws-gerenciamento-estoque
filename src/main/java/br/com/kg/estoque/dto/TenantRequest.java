@@ -1,5 +1,8 @@
 package br.com.kg.estoque.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * DTO (Data Transfer Object) para encapsular os dados da requisição
  * de provisionamento de um novo tenant.
@@ -9,51 +12,15 @@ package br.com.kg.estoque.dto;
  */
 public class TenantRequest {
 
+    @Getter @Setter
     private String tenantName;
-    private String tenantId;
+
+    @Getter @Setter
     private String userName;
+    
+    @Getter @Setter
     private String userEmail;
+    
+    @Getter @Setter
     private String userPassword;
-
-    // Getters e Setters
-
-    public String getTenantName() {
-        return tenantName;
-    }
-
-    public void setTenantName(String tenantName) {
-        this.tenantName = tenantName;
-    }
-
-    public String getTenantId() {
-        return tenantId;
-    }
-
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getUserEmail() {
-        return userEmail;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
-
-    public String getUserPassword() {
-        return userPassword;
-    }
-
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
-    }
 }

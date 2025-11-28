@@ -1,19 +1,19 @@
 package br.com.kg.estoque.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.sql.DataSource;
+
 import org.hibernate.cfg.Environment;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-
-import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Configuração central para a arquitetura multi-tenant.
@@ -27,7 +27,6 @@ public class MultiTenantConfig {
 
     private final JpaProperties jpaProperties;
 
-    @Autowired
     public MultiTenantConfig(JpaProperties jpaProperties) {
         this.jpaProperties = jpaProperties;
     }
@@ -38,6 +37,7 @@ public class MultiTenantConfig {
     }
 
     @Bean
+    @org.springframework.context.annotation.DependsOn("flyway")
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(
             DataSource dataSource,
             MultiTenantConnectionProvider multiTenantConnectionProvider,
